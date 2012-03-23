@@ -1,0 +1,5 @@
+# Subway (sources http://en.wikipedia.org/wiki/Montreal_Metro)
+	nbCars : 6 to 9
+	capacity : 160 (40 seated)
+	max speed : 70 km/h
+	
