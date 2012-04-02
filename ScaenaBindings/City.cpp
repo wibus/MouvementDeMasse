@@ -3,8 +3,6 @@
 #include <iostream>
 
 using namespace std;
-//using namespace cellar;
-//using namespace prop;
 using namespace scaena;
 
 
@@ -37,7 +35,6 @@ void City::exitStage()
 
 bool City::keyPressEvent(const scaena::KeyboardEvent &event)
 {
-    cout << "Hello!" << endl;
 }
 
 bool City::mousePressEvent(const scaena::MouseEvent &event)

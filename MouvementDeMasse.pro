@@ -32,11 +32,21 @@ DEPENDPATH += $$PWD/../Scaena-library/libScaena
 
 SOURCES += \
     main.cpp \
-    MdMPlay.cpp \
-    City.cpp \
-    Intersection.cpp
+    ScaenaBindings/MdMPlay.cpp \
+    ScaenaBindings/City.cpp \
+    Infrastructures/Intersection.cpp \
+    Infrastructures/Land.cpp \
+    Maps/Map.cpp \
+    Infrastructures/HStreet.cpp \
+    Infrastructures/VStreet.cpp
 
 HEADERS += \
-    MdMPlay.h \
-    City.h \
-    Intersection.h
+    ScaenaBindings/MdMPlay.h \
+    ScaenaBindings/City.h \
+    Infrastructures/Intersection.h \
+    MdMTypes.h \
+    Infrastructures/Land.h \
+    Maps/Map.h \
+    Infrastructures/HStreet.h \
+    Infrastructures/VStreet.h \
+    Maps/TemplateMap.h
