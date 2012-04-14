@@ -1,1 +1,0 @@
-I -> Application	Total running time : 270 seconds
