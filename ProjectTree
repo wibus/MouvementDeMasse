@@ -1,0 +1,24 @@
+Map
+	Algorithm (Djisk, A*, etc)
+
+
+Elements
+	Junction
+	Road
+	Land
+
+Vehicles
+	Car
+		Individual
+		Taxi
+	Pedestrian
+
+	Mass transport
+		Metro
+		Autobus
+
+Fauna
+	Person
+
+
+
