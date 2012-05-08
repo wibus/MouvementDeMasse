@@ -41,8 +41,17 @@ DEPENDPATH += $$PWD/../Scaena-library/libScaena
 SOURCES += \
     main.cpp \
     MdMPlay.cpp \
-    MdMCharacter.cpp
+    MdMCharacter.cpp \
+    CityMap.cpp \
+    Algorithm/Algorithm.cpp \
+    Road/Junction.cpp \
+    Land/Land.cpp
 
 HEADERS += \
     MdMPlay.h \
-    MdMCharacter.h
+    MdMCharacter.h \
+    CityMap.h \
+    Algorithm/Algorithm.h \
+    Road/Junction.h \
+    MdMTypes.h \
+    Land/Land.h

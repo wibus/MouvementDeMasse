@@ -25,3 +25,7 @@
 *.Release*
 *.pro.*
 *Thumbs*
+
+#Log
+Log.txt
+MouvementDeMasse
