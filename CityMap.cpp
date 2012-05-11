@@ -1,4 +1,8 @@
 #include "CityMap.h"
+#include "Algorithm/DrawAlgorithm/DrawAlgorithm.h"
+#include "Algorithm/HeightsAlgorithm/HeightsAlgorithm.h"
+#include "Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h"
+
 
 using namespace std;
 

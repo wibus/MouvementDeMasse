@@ -51,7 +51,9 @@ SOURCES += \
     Road/Junction.cpp \
     Land/Land.cpp \
     Algorithm/HeightsAlgorithm/HeightsAlgorithm.cpp \
-    Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.cpp
+    Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.cpp \
+    Algorithm/DrawAlgorithm/DrawAlgorithm.cpp \
+    Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -62,7 +64,9 @@ HEADERS += \
     MdMTypes.h \
     Land/Land.h \
     Algorithm/HeightsAlgorithm/HeightsAlgorithm.h \
-    Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h
+    Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h \
+    Algorithm/DrawAlgorithm/DrawAlgorithm.h \
+    Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h
 
 
 
