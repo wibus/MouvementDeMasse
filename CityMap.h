@@ -6,12 +6,13 @@
 #include <DataStructures/PGrid.h>
 #include <MathsAndPhysics/Vector.h>
 
+#include "Land/Land.h"
+#include "Road/Junction.h"
+
 class DrawAlgorithm;
 class HeightsAlgorithm;
 class MapElementsAlgorithm;
 
-class Land;
-class Junction;
 
 class CityMap
 {
