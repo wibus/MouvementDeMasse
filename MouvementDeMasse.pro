@@ -10,10 +10,14 @@ INCLUDEPATH += $$PWD/
 win32:      QMAKE_CXXFLAGS += -std=gnu++0x
 else:unix:  QMAKE_CXXFLAGS += -std=c++0x
 
+#Lib Paths
+win32: INCLUDEPATH += %DEV_HOME%/glew-1.7.0/include/
+win32: LIBS += %DEV_HOME%/glew-1.7.0/bin/glew32.dll
+else:unix: LIBS += -L/usr/lib -lGLEW
 
 # libCellarWorkBench
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/ -lCellarWorkbench
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/ -lCellarWorkbenchd
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/release/ -lCellarWorkbench
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/debug/ -lCellarWorkbench
 else:unix:!macx:!symbian: LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/ -lCellarWorkbench
 
 INCLUDEPATH += $$PWD/../Scaena-library/libCellarWorkbench
@@ -21,8 +25,8 @@ DEPENDPATH += $$PWD/../Scaena-library/libCellarWorkbench
 
 
 # Prop Room library
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom/ -lPropRoom
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom/ -lPropRoomd
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom/release/ -lPropRoom
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom/debug/ -lPropRoom
 else:unix:!macx:!symbian: LIBS += -L$$PWD/../Scaena-library/libPropRoom/ -lPropRoom
 
 INCLUDEPATH += $$PWD/../Scaena-library/libPropRoom
@@ -31,8 +35,8 @@ DEPENDPATH += $$PWD/../Scaena-library/libPropRoom
 
 # libScaena
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libScaena/ -lScaena
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libScaena/ -lScaenad
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libScaena/release/ -lScaena
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libScaena/debug/ -lScaena
 else:unix:!macx:!symbian: LIBS += -L$$PWD/../Scaena-library/libScaena/ -lScaena
 
 INCLUDEPATH += $$PWD/../Scaena-library/libScaena
@@ -45,7 +49,9 @@ SOURCES += \
     CityMap.cpp \
     Algorithm/Algorithm.cpp \
     Road/Junction.cpp \
-    Land/Land.cpp
+    Land/Land.cpp \
+    Algorithm/HeightsAlgorithm/HeightsAlgorithm.cpp \
+    Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -54,4 +60,14 @@ HEADERS += \
     Algorithm/Algorithm.h \
     Road/Junction.h \
     MdMTypes.h \
-    Land/Land.h
+    Land/Land.h \
+    Algorithm/HeightsAlgorithm/HeightsAlgorithm.h \
+    Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h
+
+
+
+
+
+
+
+

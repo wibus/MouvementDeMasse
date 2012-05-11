@@ -15,9 +15,9 @@
 *.a
 
 # Some folders
-*/debug/*
-*/release/*
-*/unused*
+debug
+release
+unused
 
 # Qt files
 *Makefile

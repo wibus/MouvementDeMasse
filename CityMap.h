@@ -23,6 +23,7 @@ public:
     void setHeightsAlgorithm(HeightsAlgorithm* algorithm);
     void setMapElementsAlgorthm(MapElementsAlgorithm* algorithm);
 
+    cellar::Vec2ui size() const;
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
 
@@ -43,6 +44,11 @@ private:
 
 
 // Implementation //
+inline cellar::Vec2ui CityMap::size() const
+{
+    return _size;
+}
+
 inline cellar::PGrid<Land>& CityMap::lands()
 {
     return _lands;
