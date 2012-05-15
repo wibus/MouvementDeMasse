@@ -9,7 +9,7 @@ using namespace std;
 CityMap::CityMap(uint width, uint height):
     _size(width, height),
     _lands(width, height),
-    _junctions(width, height),
+    _junctions(width+1, height+1),
     _drawAlgo(),
     _heightsAlgo(),
     _mapElementsAlgo()
@@ -33,7 +33,14 @@ void CityMap::setMapElementsAlgorthm(MapElementsAlgorithm *algorithm)
 
 void CityMap::setup()
 {
-    return;
+    if( _heightsAlgo )
+        _heightsAlgo->setup( *this );
+
+    if( _mapElementsAlgo )
+        _mapElementsAlgo->setup( *this );
+
+    if( _drawAlgo )
+        _drawAlgo->setup( *this );
 }
 
 bool CityMap::load(const string &fileName)

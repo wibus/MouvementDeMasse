@@ -1,4 +1,5 @@
 #include <exception>
+#include <iostream>
 using namespace std;
 
 #include <ScaenaApplication/Application.h>
@@ -14,7 +15,7 @@ int main(int argc, char** argv) try
 
     QGLStage* stage = new QGLStage();
     getApplication().addCustomStage(stage);
-    getApplication().setupStage(stage->id());
+    getApplication().chooseStage(stage->id());
 
     return getApplication().execute();
 }

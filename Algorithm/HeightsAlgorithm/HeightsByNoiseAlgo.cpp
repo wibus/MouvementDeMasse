@@ -15,20 +15,38 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
 {
     HeightsAlgorithm::setup( cityMap );
 
-    float amplitude = (_maxHeight - _minHeight) / 2.0f;
-    int nbNoises = 100;
-    Grid<float>** noises = new Grid<float>*[nbNoises];
-    for(int i=0; i<nbNoises; ++i)
-        noises[i] = new Grid<float>(_mapSize.x(),
-                                   _mapSize.y());
+    unsigned char prev=0, next=1;
+    float maxHeight = 0.0f;
+    float weight = noiseWeight(0);
+    bool usedNoise = inBounds((unsigned int)0, _minNoise, _maxNoise);
+    bool isLastPass = false;
+
+    Grid<float> result(_mapSize.x(), _mapSize.y());
+    Grid<float> noises[2] = {
+        Grid<float>(_mapSize.x(), _mapSize.y()),
+        Grid<float>(_mapSize.x(), _mapSize.y())
+    };
 
 
     for(unsigned int j=0; j< _mapSize.y(); ++j)
-        for(unsigned int i=0; i< _mapSize.x(); ++i)
-            noises[0]->set(i, j, random(-amplitude, amplitude));
-
-    for(int n=1; n<nbNoises; ++n)
     {
+        for(unsigned int i=0; i< _mapSize.x(); ++i)
+        {
+            float height = random(-1.0, 1.0);
+            noises[prev].set(i, j, height);
+            if(usedNoise) result.set(i, j, height);
+        }
+    }
+
+    for(unsigned int n=1; n<_nbNoises; ++n)
+    {
+        // This is truly an assignation
+        if( (usedNoise = inBounds(n, _minNoise, _maxNoise)) )
+            weight = noiseWeight(n);
+
+        isLastPass = (n == _nbNoises-1) ? true : false;
+
+
         for(unsigned int j=0; j< _mapSize.y(); ++j)
         {
             for(unsigned int i=0; i< _mapSize.x(); ++i)
@@ -39,69 +57,108 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
                 if(i > 0)
                 {
                     ++nb;
-                    moy += noises[n-1]->get(i-1, j);
+                    moy += noises[prev].get(i-1, j);
+
+                    if(j > 0)
+                    {
+                        ++nb;
+                        moy += noises[prev].get(i-1, j-1);
+                    }
+                    if(j < _mapSize.y() - 1)
+                    {
+                        ++nb;
+                        moy += noises[prev].get(i-1, j+1);
+                    }
                 }
                 if(i < _mapSize.x() - 1)
                 {
                     ++nb;
-                    moy += noises[n-1]->get(i+1, j);
+                    moy += noises[prev].get(i+1, j);
+
+                    if(j > 0)
+                    {
+                        ++nb;
+                        moy += noises[prev].get(i+1, j-1);
+                    }
+
+                    if(j < _mapSize.y() - 1)
+                    {
+                        ++nb;
+                        moy += noises[prev].get(i+1, j+1);
+                    }
                 }
+
                 if(j > 0)
                 {
                     ++nb;
-                    moy += noises[n-1]->get(i, j-1);
+                    moy += noises[prev].get(i, j-1);
                 }
+
                 if(j < _mapSize.y() - 1)
                 {
                     ++nb;
-                    moy += noises[n-1]->get(i, j+1);
+                    moy += noises[prev].get(i, j+1);
                 }
 
-                if(i > 0 && j > 0)
-                {
-                    ++nb;
-                    moy += noises[n-1]->get(i-1, j-1);
-                }
+                float h = moy / nb;
+                noises[next].set(i, j, h);
 
-                if(i < _mapSize.x() - 1 && j > 0)
-                {
-                    ++nb;
-                    moy += noises[n-1]->get(i+1, j-1);
-                }
 
-                if(i < _mapSize.x() - 1 && j < _mapSize.y() - 1)
-                {
-                    ++nb;
-                    moy += noises[n-1]->get(i+1, j+1);
-                }
+                if(usedNoise)
+                    result.get(i, j) += h * weight;
 
-                if(i > 0 && j < _mapSize.y() - 1)
-                {
-                    ++nb;
-                    moy += noises[n-1]->get(i-1, j+1);
-                }
-
-                noises[n]->set(i, j, moy / nb);
+                if(isLastPass)
+                    maxHeight = max(maxHeight, abs(result.get(i, j)));
             }
         }
+
+        prev ^= 0x1;
+        next ^= 0x1;
     }
 
+    Junction* junction;
     for(unsigned int j=0; j< _mapSize.y(); ++j)
     {
         for(unsigned int i=0; i< _mapSize.x(); ++i)
         {
-            float height = 0;
-
-            for(int n=6; n<nbNoises; ++n)
-            {
-                height += noises[n]->get(i, j) / sqrt(nbNoises - n);
-            }
-
-            _cityMap->junctions().get(i, j)->setHeight(height);
+            // This is truly an assignation
+            if( (junction = _cityMap->junctions().get(i, j)) )
+                junction->setHeight( result.get(i, j)/maxHeight );
         }
     }
-    // END
-    for(int i=0; i<nbNoises; ++i)
-        delete noises[i];
-    delete [] noises;
+}
+
+void HeightByNoiseAlgo::process()
+{
+}
+
+float HeightByNoiseAlgo::noiseWeight(unsigned int idx)
+{
+    return sqrt(idx / static_cast<float>(_nbNoises));
+}
+
+unsigned int HeightByNoiseAlgo::nbNoises() const
+{
+    return _nbNoises;
+}
+
+unsigned int HeightByNoiseAlgo::minWeightedNoise() const
+{
+    return _minNoise;
+}
+
+unsigned int HeightByNoiseAlgo::maxWeightedNoise() const
+{
+    return _maxNoise;
+}
+
+void HeightByNoiseAlgo::setNbNoises(unsigned int nb)
+{
+    _nbNoises = nb;
+}
+
+void HeightByNoiseAlgo::setWeightedNoisesRange(unsigned int min, unsigned int max)
+{
+    _minNoise = min;
+    _maxNoise = max;
 }

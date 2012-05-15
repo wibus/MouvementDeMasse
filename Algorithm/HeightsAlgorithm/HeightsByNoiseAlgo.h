@@ -9,7 +9,21 @@ public:
     HeightByNoiseAlgo();
 
     virtual void setup(CityMap& cityMap);
-    virtual void process() = 0;
+    virtual void process();
+
+    unsigned int nbNoises() const;
+    unsigned int minWeightedNoise() const;
+    unsigned int maxWeightedNoise() const;
+
+    void setNbNoises(unsigned int nb);
+    void setWeightedNoisesRange(unsigned int min, unsigned int max);
+
+private:
+    float noiseWeight(unsigned int idx);
+
+    unsigned int _nbNoises;
+    unsigned int _minNoise;
+    unsigned int _maxNoise;
 };
 
 #endif // HEIGHTSBYNOISEALGO_H
