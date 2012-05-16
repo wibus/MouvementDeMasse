@@ -23,6 +23,10 @@ public:
     void setHeightsAlgorithm(HeightsAlgorithm* algorithm);
     void setMapElementsAlgorthm(MapElementsAlgorithm* algorithm);
 
+    DrawAlgorithm& drawAlgorithm();
+    HeightsAlgorithm& heightsAlgorithm();
+    MapElementsAlgorithm& mapElementsAlgorithm();
+
     cellar::Vec2ui size() const;
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
@@ -30,6 +34,9 @@ public:
     void setup();
     bool load(const std::string& fileName);
     bool save(const std::string& fileName);
+
+protected:
+    void setJunctions();
 
 private:
     cellar::Vec2ui _size;

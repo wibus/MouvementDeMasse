@@ -14,5 +14,6 @@ Algorithm::~Algorithm()
 void Algorithm::setup(CityMap &cityMap)
 {
     _cityMap = &cityMap;
-    _mapSize(_cityMap->size().x(), _cityMap->size().y());
+    _mapSize(_cityMap->junctions().width(),
+             _cityMap->junctions().height());
 }

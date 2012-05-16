@@ -31,8 +31,25 @@ void CityMap::setMapElementsAlgorthm(MapElementsAlgorithm *algorithm)
     _mapElementsAlgo.reset(algorithm);
 }
 
+DrawAlgorithm& CityMap::drawAlgorithm()
+{
+    return *_drawAlgo;
+}
+
+HeightsAlgorithm& CityMap::heightsAlgorithm()
+{
+    return *_heightsAlgo;
+}
+
+MapElementsAlgorithm& CityMap::mapElementsAlgorithm()
+{
+    return *_mapElementsAlgo;
+}
+
 void CityMap::setup()
 {
+    setJunctions();
+
     if( _heightsAlgo )
         _heightsAlgo->setup( *this );
 
@@ -51,4 +68,11 @@ bool CityMap::load(const string &fileName)
 bool CityMap::save(const string &fileName)
 {
     return false;
+}
+
+void CityMap::setJunctions()
+{
+    for(unsigned int j=0; j<_junctions.height(); ++j)
+        for(unsigned int i=0; i<_junctions.width(); ++i)
+            _junctions.set(i, j, new Junction());
 }

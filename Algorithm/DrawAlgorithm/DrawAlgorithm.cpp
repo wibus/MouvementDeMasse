@@ -10,4 +10,5 @@ DrawAlgorithm::~DrawAlgorithm()
 
 void DrawAlgorithm::setup(CityMap& cityMap)
 {
+    Algorithm::setup( cityMap );
 }

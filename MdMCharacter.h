@@ -3,6 +3,10 @@
 
 #include <memory>
 
+#include <Graphics/Camera/CameraManFree.h>
+
+#include <Text/2D/Text.h>
+
 #include <Characters/AbstractCharacter.h>
 
 class CityMap;
@@ -17,6 +21,7 @@ public:
     virtual void enterStage();
     virtual void beginStep(const scaena::StageTime &time);
     virtual void endStep(const scaena::StageTime &time);
+    virtual void draw(const scaena::StageTime &time);
     virtual void exitStage();
 
     // CityMap manip
@@ -24,9 +29,11 @@ public:
     void setCityMap(CityMap* map);
 
 private:
-    void chooseAlgorithms();
+    void setAlgorithms();
 
     std::shared_ptr<CityMap> _cityMap;
+    prop::twoD::Text _fps;
+    cellar::CameraManFree _camMan;
 };
 
 #endif // MDMCHARACTER_H
