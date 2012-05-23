@@ -1,18 +1,28 @@
 #version 120
 
-varying vec3 pos;
+struct DirectionnalLight
+{
+    vec4 direction;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+uniform DirectionnalLight sun;
+
+varying vec4 eyeVec;
+varying vec3 normal;
+varying vec4 color;
 
 void main(void)
 {
-    float val = (pos.z + 1.0) / 2.0;
-    vec4 color = vec4(val, val, val, 0.5);
+    vec3 eyeN = normalize(eyeVec.xyz);
+    vec3 lightN = normalize(-sun.direction.xyz);
+    vec3 normalN = normalize(normal);
 
-    if(pos.x - floor(pos.x) < 0.1 ||
-       pos.y - floor(pos.y) < 0.1)
-        color.rgb = vec3(0.0, 0.0, 1.0);
+    vec3 ambient  = sun.ambient;
+    vec3 diffuse  = sun.diffuse * max(dot(normalN, lightN), 0.0);
+    vec4 specular = vec4(sun.specular, 1.0) * pow(max(dot(-eyeN, reflect(-lightN, normalN)), 0.0), 100);
 
-    if(pos.z * 10 - floor(pos.z * 10) < 0.1)
-        color.rgb = vec3(0.8, 0.8, 0.2);
-
-    gl_FragColor = color;
+    gl_FragColor = vec4((ambient + diffuse)*color.rgb + specular.rgb, max(color.a, specular.a));
 }

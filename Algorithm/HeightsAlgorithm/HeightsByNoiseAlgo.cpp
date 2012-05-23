@@ -1,5 +1,8 @@
 #include "HeightsByNoiseAlgo.h"
 
+#include <iostream>
+using namespace std;
+
 #include <Misc/CellarUtils.h>
 
 #include "CityMap.h"
@@ -15,13 +18,16 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
 {
     HeightsAlgorithm::setup( cityMap );
 
+    float middleHeight = (_maxHeight + _minHeight) / 2.0f;
+    float amplitude = (_maxHeight - _minHeight) / 2.0f;
+
     unsigned char prev=0, next=1;
     float maxHeight = 0.0f;
     float weight = noiseWeight(0);
     bool usedNoise = inBounds((unsigned int)0, _minNoise, _maxNoise);
     bool isLastPass = false;
 
-    Grid<float> result(_mapSize.x(), _mapSize.y());
+    Grid<float> result(_mapSize.x(), _mapSize.y(), 0);
     Grid<float> noises[2] = {
         Grid<float>(_mapSize.x(), _mapSize.y()),
         Grid<float>(_mapSize.x(), _mapSize.y())
@@ -44,7 +50,7 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
         if( (usedNoise = inBounds(n, _minNoise, _maxNoise)) )
             weight = noiseWeight(n);
 
-        isLastPass = (n == _nbNoises-1) ? true : false;
+        isLastPass = (n == _nbNoises-1);
 
 
         for(unsigned int j=0; j< _mapSize.y(); ++j)
@@ -108,7 +114,7 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
                     result.get(i, j) += h * weight;
 
                 if(isLastPass)
-                    maxHeight = max(maxHeight, abs(result.get(i, j)));
+                    maxHeight = cellar::max(maxHeight, abs(result.get(i, j)));
             }
         }
 
@@ -117,13 +123,18 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
     }
 
     Junction* junction;
+    float amplitudeCorection = amplitude / maxHeight;
+
     for(unsigned int j=0; j< _mapSize.y(); ++j)
     {
         for(unsigned int i=0; i< _mapSize.x(); ++i)
         {
             // This is truly an assignation
             if( (junction = _cityMap->junctions().get(i, j)) )
-                junction->setHeight( result.get(i, j)/maxHeight );
+            {
+                junction->setHeight( result.get(i, j) * amplitudeCorection
+                                     + middleHeight);
+            }
         }
     }
 }

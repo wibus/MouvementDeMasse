@@ -19,11 +19,15 @@ using namespace scaena;
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _cityMap( new CityMap(300, 200)),
+    _cityMap( new CityMap(200, 200)),
     _fps(),
     _camMan( stage.camera() )
 {
     _fps.setPosition(5, 5);
+
+    stage.camera().setTripod(Vec3f(_cityMap->size().x()/2, 0, 10),
+                             Vec3f(_cityMap->size().x()/2, _cityMap->size().y()/2, 0),
+                             Vec3f(0, 0 ,1));
 }
 
 void MdMCharacter::enterStage()
@@ -98,11 +102,13 @@ void MdMCharacter::setAlgorithms()
     HeightByNoiseAlgo* heightAlgo = new HeightByNoiseAlgo();
     heightAlgo->setNbNoises( cellar::min(_cityMap->size().x(), _cityMap->size().y()) / 2 );
     heightAlgo->setWeightedNoisesRange(1, heightAlgo->nbNoises());
+    heightAlgo->setMinHeight(-14.0);
+    heightAlgo->setMaxHeight(20.0);
     _cityMap->setHeightsAlgorithm( heightAlgo );
 
     // Draw algorithm
     DrawNudeHills* drawAlgo = new DrawNudeHills();
-    drawAlgo->setSizeRatio( 0.3 );
+    drawAlgo->setSizeRatio( 1.0 );
     stage().camera().registerObserver( *drawAlgo );
     _cityMap->setDrawAlgorithm( drawAlgo );
 }

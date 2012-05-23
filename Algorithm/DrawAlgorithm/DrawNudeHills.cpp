@@ -8,10 +8,32 @@ using namespace cellar;
 
 DrawNudeHills::DrawNudeHills() :
     _shader(),
-    _sizeRatio(1.0f)
+    _sun(),
+    _sunRotation(),
+    _xyScale(1.0f)
 {
-    _shader.loadShaders("resources/shaders/nudeHills.vert",
-                        "resources/shaders/nudeHills.frag");
+    GLInOutProgramLocation locations;
+    locations.setInput(0, "position_att");
+    locations.setInput(1, "normal_att");
+    locations.setInput(2, "color_att");
+    _shader.setInAndOutLocations(locations);
+    _shader.loadShadersFromFile("resources/shaders/nudeHills.vert",
+                                "resources/shaders/nudeHills.frag");
+
+    Vec3f rotationAxis(-1.0, -1.0, 1.0);
+    rotationAxis.normalize();
+    _sunRotation.rotate(rotationAxis.x(), rotationAxis.y(), rotationAxis.z(), 0.03);
+    _sun.direction(-1.0, -1.0, -1.0, 0.0).normalize();
+    _sun.ambient( 0.16, 0.18, 0.24);
+    _sun.diffuse( 0.62, 0.62, 0.60);
+    _sun.specular(0.65, 0.50, 0.30);
+
+    _shader.pushThisProgram();
+    _shader.setVec4f("sun.direction", _sun.direction);
+    _shader.setVec3f("sun.ambient",   _sun.ambient);
+    _shader.setVec3f("sun.diffuse",   _sun.diffuse);
+    _shader.setVec3f("sun.specular",  _sun.specular);
+    _shader.popProgram();
 }
 
 void DrawNudeHills::notify(cellar::CameraMsg &msg)
@@ -23,19 +45,13 @@ void DrawNudeHills::notify(cellar::CameraMsg &msg)
         Matrix4x4<float> projection = msg.camera.projectionMatrix();
 
         _shader.setMatrix4x4("Projection", projection);
-
-        glMatrixMode( GL_PROJECTION );
-        glLoadMatrixf( projection.transposed().asArray() );
-        glMatrixMode( GL_MODELVIEW );
     }
     else
     {
-        Matrix4x4<float> view = msg.camera.viewMatrix();
+        _modelview = msg.camera.viewMatrix();
 
-        _shader.setMatrix4x4("ModelView",  view);
-        _shader.setMatrix3x3("NormalMatrix", view.subMat3());
-
-        glLoadMatrixf( view.transposed().asArray() );
+        _shader.setMatrix4x4("ModelView",  _modelview);
+        _shader.setMatrix3x3("NormalMatrix", _modelview.subMat3());
     }
 
     _shader.popProgram();
@@ -48,6 +64,7 @@ void DrawNudeHills::setup(CityMap& cityMap)
 
     int position_loc = _shader.getAttributeLocation("position_att");
     int normal_loc = _shader.getAttributeLocation("normal_att");
+    //int color_loc = _shader.getAttributeLocation("color_att");
 
 
     // Ground Algorithm //
@@ -80,24 +97,24 @@ void DrawNudeHills::setup(CityMap& cityMap)
     {
         ++idx;
         gnormals[idx]   = derivate(Vec2ui(0, j));
-        gpositions[idx] = Vec3f(0.0, (j)*_sizeRatio, cityMap.junctions().get(0, j)->height());
+        gpositions[idx] = Vec3f(0.0, (j)*_xyScale, cityMap.junctions().get(0, j)->height());
 
         for(unsigned int i=0; i < _mapSize.x(); ++i)
         {
             ++idx;
             gnormals[idx]   = derivate(Vec2ui(i, j));
-            gpositions[idx] = Vec3f((i)*_sizeRatio, (j)*_sizeRatio, cityMap.junctions().get(i, j)->height());
+            gpositions[idx] = Vec3f((i)*_xyScale, (j)*_xyScale, cityMap.junctions().get(i, j)->height());
 
 
             ++idx;
             gnormals[idx]   = derivate(Vec2ui(i, j+1));
-            gpositions[idx] = Vec3f((i)*_sizeRatio, (j+1)*_sizeRatio, cityMap.junctions().get(i, j+1)->height());
+            gpositions[idx] = Vec3f((i)*_xyScale, (j+1)*_xyScale, cityMap.junctions().get(i, j+1)->height());
         }
 
         ++idx;
         int lastx = _mapSize.x() - 1;
         gnormals[idx]   = derivate(Vec2ui(lastx, j+1));
-        gpositions[idx] = Vec3f((lastx)*_sizeRatio, (j+1)*_sizeRatio, cityMap.junctions().get(lastx, j+1)->height());
+        gpositions[idx] = Vec3f((lastx)*_xyScale, (j+1)*_xyScale, cityMap.junctions().get(lastx, j+1)->height());
     }
 
     // Ground VAO setup
@@ -123,64 +140,54 @@ void DrawNudeHills::setup(CityMap& cityMap)
     delete [] gnormals;
     delete [] gpositions;
 
-/*
+
     // Water //
-    _gNbElems = 4;
-
-    // Colors
-    Vec4f* wcolors = new Vec4f[_wNbElems];
-    for(int i=0; i<4; ++i) wcolors[i](0.03, 0.03, 0.3, 0.4);
-
-    // Normals
-    Vec3f* wnormals = new Vec3f[_wNbElems];
-    for(int i=0; i<4; ++i) wnormals[i](0.0, 0.0, 1.0);
+    _wNbElems = 4;
 
     // Positions
-    float waterHeight = 0;
+    const float waterHeight = 0;
     Vec3f* wpositions = new Vec3f[_wNbElems];
-    wpositions[0] = Vec3f(0.0,                      0.0,                       waterHeight);
-    wpositions[1] = Vec3f(_mapSize.x()*_widthRatio, 0.03,                      waterHeight);
-    wpositions[2] = Vec3f(_mapSize.x()*_widthRatio, _mapSize.y()*_heightRatio, waterHeight);
-    wpositions[3] = Vec3f(0.03,                     _mapSize.y()*_heightRatio, waterHeight);
+    wpositions[0] = Vec3f(0.0,                   0.0,                   waterHeight);
+    wpositions[1] = Vec3f(_mapSize.x()*_xyScale, 0.0,                   waterHeight);
+    wpositions[2] = Vec3f(_mapSize.x()*_xyScale, _mapSize.y()*_xyScale, waterHeight);
+    wpositions[3] = Vec3f(0.0,                   _mapSize.y()*_xyScale, waterHeight);
 
 
     // Water VAO setup
     glGenVertexArrays(1, &_wvao);
     glBindVertexArray( _wvao );
 
-    GLuint wBuffers[3];
-    glGenBuffers(3, wBuffers);
+    GLuint wBuffer;
+    glGenBuffers(1, &wBuffer);
 
-    glBindBuffer(GL_ARRAY_BUFFER, wBuffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(wcolors), wcolors, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(color_loc);
-    glVertexAttribPointer(color_loc, 4, GL_FLOAT, 0, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, wBuffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(wnormals), wnormals, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(normal_loc);
-    glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, wBuffers[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(wpositions), wpositions, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, wBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(*wpositions) * _wNbElems, wpositions, GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
-
 
 
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
-*/
 }
 
 void DrawNudeHills::process()
 {
     _shader.pushThisProgram();
 
-    glEnable(GL_BLEND);
+    _sun.direction = _sunRotation * _sun.direction;
+    _shader.setVec4f("sun.direction", _modelview * _sun.direction);
+
+
     glBindVertexArray(_gvao);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, _gNbElems);
+    glVertexAttrib4fv(_shader.getAttributeLocation("color_att"), Vec4f(1.0, 1.0, 1.0, 1.0).asArray());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, _gNbElems);    
+
+    glEnable(GL_BLEND);
+    glBindVertexArray(_wvao);
+    glVertexAttrib4fv(_shader.getAttributeLocation("color_att"), Vec4f(0.03, 0.03, 0.3, 0.4).asArray());
+    glVertexAttrib3fv(_shader.getAttributeLocation("normal_att"), Vec3f(0.0, 0.0, 1.0).asArray());
+    glDrawArrays(GL_TRIANGLE_FAN, 0, _wNbElems);
     glDisable(GL_BLEND);
 
     _shader.popProgram();
@@ -188,17 +195,17 @@ void DrawNudeHills::process()
 
 void DrawNudeHills::setSizeRatio(float ratio)
 {
-    _sizeRatio = ratio;
+    _xyScale = ratio;
 }
 
-float DrawNudeHills::sizeRatio() const
+float DrawNudeHills::xyScaleFactor() const
 {
-    return _sizeRatio;
+    return _xyScale;
 }
 
 cellar::Vec3f DrawNudeHills::derivate(cellar::Vec2ui pos)
 {
-    Vec3f derivate(0, 0, _sizeRatio);
+    Vec3f derivate(0, 0, _xyScale);
     float currentHeight =_cityMap->junctions().get(pos.x(), pos.y())->height();
 
     if (pos.x() == 0)
@@ -232,5 +239,5 @@ cellar::Vec3f DrawNudeHills::derivate(cellar::Vec2ui pos)
         derivate.setY((prev + next) / 2);
     }
 
-    return derivate;
+    return derivate(-derivate.x(), -derivate.y(), derivate.z());
 }

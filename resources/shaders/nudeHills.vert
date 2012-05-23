@@ -6,11 +6,18 @@ uniform mat3 NormalMatrix;
 
 attribute vec3 position_att;
 attribute vec3 normal_att;
+attribute vec4 color_att;
 
-varying vec3 pos;
+varying vec4 eyeVec;
+varying vec3 normal;
+varying vec4 color;
 
 void main(void)
 {
-    pos = position_att;
-    gl_Position = Projection * ModelView * vec4(position_att, 1.0);
+    eyeVec = ModelView * vec4(position_att, 1.0);
+    gl_Position = Projection * eyeVec;
+
+    normal = NormalMatrix * normal_att;
+
+    color = color_att;
 }
