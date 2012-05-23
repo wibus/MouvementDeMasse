@@ -9,8 +9,7 @@ using namespace cellar;
 DrawNudeHills::DrawNudeHills() :
     _shader(),
     _sun(),
-    _sunRotation(),
-    _xyScale(1.0f)
+    _sunRotation()
 {
     GLInOutProgramLocation locations;
     locations.setInput(0, "position_att");
@@ -97,24 +96,24 @@ void DrawNudeHills::setup(CityMap& cityMap)
     {
         ++idx;
         gnormals[idx]   = derivate(Vec2ui(0, j));
-        gpositions[idx] = Vec3f(0.0, (j)*_xyScale, cityMap.junctions().get(0, j)->height());
+        gpositions[idx] = Vec3f(0.0, j, cityMap.junctions().get(0, j)->height());
 
         for(unsigned int i=0; i < _mapSize.x(); ++i)
         {
             ++idx;
             gnormals[idx]   = derivate(Vec2ui(i, j));
-            gpositions[idx] = Vec3f((i)*_xyScale, (j)*_xyScale, cityMap.junctions().get(i, j)->height());
+            gpositions[idx] = Vec3f(i, j, cityMap.junctions().get(i, j)->height());
 
 
             ++idx;
             gnormals[idx]   = derivate(Vec2ui(i, j+1));
-            gpositions[idx] = Vec3f((i)*_xyScale, (j+1)*_xyScale, cityMap.junctions().get(i, j+1)->height());
+            gpositions[idx] = Vec3f(i, j+1, cityMap.junctions().get(i, j+1)->height());
         }
 
         ++idx;
         int lastx = _mapSize.x() - 1;
         gnormals[idx]   = derivate(Vec2ui(lastx, j+1));
-        gpositions[idx] = Vec3f((lastx)*_xyScale, (j+1)*_xyScale, cityMap.junctions().get(lastx, j+1)->height());
+        gpositions[idx] = Vec3f(lastx, j+1, cityMap.junctions().get(lastx, j+1)->height());
     }
 
     // Ground VAO setup
@@ -147,10 +146,10 @@ void DrawNudeHills::setup(CityMap& cityMap)
     // Positions
     const float waterHeight = 0;
     Vec3f* wpositions = new Vec3f[_wNbElems];
-    wpositions[0] = Vec3f(0.0,                   0.0,                   waterHeight);
-    wpositions[1] = Vec3f(_mapSize.x()*_xyScale, 0.0,                   waterHeight);
-    wpositions[2] = Vec3f(_mapSize.x()*_xyScale, _mapSize.y()*_xyScale, waterHeight);
-    wpositions[3] = Vec3f(0.0,                   _mapSize.y()*_xyScale, waterHeight);
+    wpositions[0] = Vec3f(0.0,          0.0,          waterHeight);
+    wpositions[1] = Vec3f(_mapSize.x(), 0.0,          waterHeight);
+    wpositions[2] = Vec3f(_mapSize.x(), _mapSize.y(), waterHeight);
+    wpositions[3] = Vec3f(0.0,          _mapSize.y(), waterHeight);
 
 
     // Water VAO setup
@@ -171,7 +170,7 @@ void DrawNudeHills::setup(CityMap& cityMap)
     glBindVertexArray( 0 );
 }
 
-void DrawNudeHills::process()
+void DrawNudeHills::draw()
 {
     _shader.pushThisProgram();
 
@@ -193,19 +192,9 @@ void DrawNudeHills::process()
     _shader.popProgram();
 }
 
-void DrawNudeHills::setSizeRatio(float ratio)
-{
-    _xyScale = ratio;
-}
-
-float DrawNudeHills::xyScaleFactor() const
-{
-    return _xyScale;
-}
-
 cellar::Vec3f DrawNudeHills::derivate(cellar::Vec2ui pos)
 {
-    Vec3f derivate(0, 0, _xyScale);
+    Vec3f derivate(0, 0, -1);
     float currentHeight =_cityMap->junctions().get(pos.x(), pos.y())->height();
 
     if (pos.x() == 0)
@@ -239,5 +228,5 @@ cellar::Vec3f DrawNudeHills::derivate(cellar::Vec2ui pos)
         derivate.setY((prev + next) / 2);
     }
 
-    return derivate(-derivate.x(), -derivate.y(), derivate.z());
+    return -derivate;
 }

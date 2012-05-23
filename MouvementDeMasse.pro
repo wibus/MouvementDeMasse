@@ -54,7 +54,9 @@ SOURCES += \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.cpp \
     Algorithm/DrawAlgorithm/DrawAlgorithm.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.cpp \
-    Algorithm/DrawAlgorithm/DrawNudeHills.cpp
+    Algorithm/DrawAlgorithm/DrawNudeHills.cpp \
+    Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.cpp \
+    Road/Street.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -68,7 +70,9 @@ HEADERS += \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h \
     Algorithm/DrawAlgorithm/DrawAlgorithm.h \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h \
-    Algorithm/DrawAlgorithm/DrawNudeHills.h
+    Algorithm/DrawAlgorithm/DrawNudeHills.h \
+    Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h \
+    Road/Street.h
 
 OTHER_FILES += \
     resources/shaders/nudeHills.vert \

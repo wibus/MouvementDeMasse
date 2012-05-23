@@ -9,7 +9,6 @@ public:
     HeightByNoiseAlgo();
 
     virtual void setup(CityMap& cityMap);
-    virtual void process();
 
     unsigned int nbNoises() const;
     unsigned int minWeightedNoise() const;

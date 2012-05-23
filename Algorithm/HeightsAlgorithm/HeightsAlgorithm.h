@@ -15,7 +15,6 @@ public:
     void setMaxHeight(float maxHeight);
 
     virtual void setup(CityMap& cityMap);
-    virtual void process() = 0;
 
 protected:
     float _minHeight;

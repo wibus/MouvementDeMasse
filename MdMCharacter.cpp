@@ -75,7 +75,7 @@ void MdMCharacter::endStep(const StageTime &time)
 
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
-    _cityMap->drawAlgorithm().process();
+    _cityMap->drawAlgorithm().draw();
 
     _fps.setText( toString(1.0f / time.elapsedTime()) );
     _fps.draw();
@@ -108,7 +108,6 @@ void MdMCharacter::setAlgorithms()
 
     // Draw algorithm
     DrawNudeHills* drawAlgo = new DrawNudeHills();
-    drawAlgo->setSizeRatio( 1.0 );
     stage().camera().registerObserver( *drawAlgo );
     _cityMap->setDrawAlgorithm( drawAlgo );
 }

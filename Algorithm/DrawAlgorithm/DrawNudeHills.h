@@ -19,9 +19,7 @@ public:
     virtual void notify(cellar::CameraMsg &msg);
 
     virtual void setup(CityMap& cityMap);
-    virtual void process();
-    void setSizeRatio(float ratio);
-    float xyScaleFactor() const;
+    virtual void draw();
 
 
 protected:
@@ -35,7 +33,6 @@ protected:
     unsigned int  _gvao;
     int _wNbElems;
     unsigned int  _wvao;
-    float _xyScale;
 };
 
 #endif // DRAWNUDEHILLS_H

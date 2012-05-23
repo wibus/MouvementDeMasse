@@ -139,10 +139,6 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
     }
 }
 
-void HeightByNoiseAlgo::process()
-{
-}
-
 float HeightByNoiseAlgo::noiseWeight(unsigned int idx)
 {
     return sqrt(idx / static_cast<float>(_nbNoises));

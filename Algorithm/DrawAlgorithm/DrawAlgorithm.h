@@ -13,7 +13,7 @@ public:
     virtual ~DrawAlgorithm();
 
     virtual void setup(CityMap& cityMap);
-    virtual void process() = 0;
+    virtual void draw() = 0;
 
 protected:
 };

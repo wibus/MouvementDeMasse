@@ -1,6 +1,7 @@
 #ifndef MAPELEMENTSALGORITHM_H
 #define MAPELEMENTSALGORITHM_H
 
+#include "MdMTypes.h"
 #include "Algorithm/Algorithm.h"
 
 
@@ -13,9 +14,10 @@ public:
     virtual ~MapElementsAlgorithm();
 
     virtual void setup(CityMap& cityMap);
-    virtual void process() = 0;
 
 protected:
+    CardinalDirection toCardinal(const cellar::Vec2i& dir);
+    cellar::Vec2ui    getNeighbor(const cellar::Vec2ui& pos, const cellar::Vec2i& dir);
 };
 
 #endif // MAPELEMENTSALGORITHM_H
