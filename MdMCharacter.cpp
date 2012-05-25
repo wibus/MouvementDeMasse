@@ -25,8 +25,8 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
 {
     _fps.setPosition(5, 5);
 
-    stage.camera().setTripod(Vec3f(_cityMap->size().x()/2, 0, 10),
-                             Vec3f(_cityMap->size().x()/2, _cityMap->size().y()/2, 0),
+    stage.camera().setTripod(Vec3f(-10, -10, 10),
+                             Vec3f(0, 0, 0),
                              Vec3f(0, 0 ,1));
 }
 

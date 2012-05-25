@@ -3,57 +3,81 @@
 #include "Road/Junction.h"
 using namespace cellar;
 
+using namespace std;
+
 #include <GL/glew.h>
 
 
 DrawNudeHills::DrawNudeHills() :
-    _shader(),
-    _sun(),
+    _sunShader(),
+    _sunRadius(8.0f),
+    _hillsShader(),
+    _sunLight(),
     _sunRotation()
 {
+    GLInOutProgramLocation sunLocations;
+    sunLocations.setInput(0, "relPos_att");
+     _sunShader.setInAndOutLocations(sunLocations);
+     _sunShader.loadShadersFromFile("resources/shaders/sun.vert",
+                                    "resources/shaders/sun.frag");
+     _sunShader.pushThisProgram();
+     _sunShader.setVec4f("Color", Vec4f(1.0, 0.9, 0.2, 1.0));
+     _sunShader.setFloat("Radius", _sunRadius);
+     _sunShader.popProgram();
+
     GLInOutProgramLocation locations;
     locations.setInput(0, "position_att");
     locations.setInput(1, "normal_att");
     locations.setInput(2, "color_att");
-    _shader.setInAndOutLocations(locations);
-    _shader.loadShadersFromFile("resources/shaders/nudeHills.vert",
-                                "resources/shaders/nudeHills.frag");
+    _hillsShader.setInAndOutLocations(locations);
+    _hillsShader.loadShadersFromFile("resources/shaders/nudeHills.vert",
+                                     "resources/shaders/nudeHills.frag");
 
     Vec3f rotationAxis(-1.0, -1.0, 1.0);
     rotationAxis.normalize();
-    _sunRotation.rotate(rotationAxis.x(), rotationAxis.y(), rotationAxis.z(), 0.03);
-    _sun.direction(-1.0, -1.0, -1.0, 0.0).normalize();
-    _sun.ambient( 0.16, 0.18, 0.24);
-    _sun.diffuse( 0.62, 0.62, 0.60);
-    _sun.specular(0.65, 0.50, 0.30);
+    _sunRotation.rotate(rotationAxis.x(), rotationAxis.y(), rotationAxis.z(), 0.008);
+    _sunLight.direction(-1.0, -1.0, -1.0, 0.0).normalize();
+    _sunLight.ambient( 0.16, 0.18, 0.24);
+    _sunLight.diffuse( 0.62, 0.62, 0.60);
+    _sunLight.specular(0.65, 0.50, 0.30);
 
-    _shader.pushThisProgram();
-    _shader.setVec4f("sun.direction", _sun.direction);
-    _shader.setVec3f("sun.ambient",   _sun.ambient);
-    _shader.setVec3f("sun.diffuse",   _sun.diffuse);
-    _shader.setVec3f("sun.specular",  _sun.specular);
-    _shader.popProgram();
+    _hillsShader.pushThisProgram();
+    _hillsShader.setVec4f("sun.direction", _sunLight.direction);
+    _hillsShader.setVec3f("sun.ambient",   _sunLight.ambient);
+    _hillsShader.setVec3f("sun.diffuse",   _sunLight.diffuse);
+    _hillsShader.setVec3f("sun.specular",  _sunLight.specular);
+    _hillsShader.popProgram();
 }
 
 void DrawNudeHills::notify(cellar::CameraMsg &msg)
 {
-    _shader.pushThisProgram();
+
 
     if(msg.change == CameraMsg::PROJECTION)
     {
         Matrix4x4<float> projection = msg.camera.projectionMatrix();
 
-        _shader.setMatrix4x4("Projection", projection);
+        _sunShader.pushThisProgram();
+        _sunShader.setMatrix4x4("Projection", projection);
+        _sunShader.popProgram();
+
+        _hillsShader.pushThisProgram();
+        _hillsShader.setMatrix4x4("Projection", projection);
+        _hillsShader.popProgram();
     }
     else
     {
         _modelview = msg.camera.viewMatrix();
 
-        _shader.setMatrix4x4("ModelView",  _modelview);
-        _shader.setMatrix3x3("NormalMatrix", _modelview.subMat3());
-    }
+        _sunShader.pushThisProgram();
+        _sunShader.setMatrix4x4("ModelView",  _modelview);
+        _sunShader.popProgram();
 
-    _shader.popProgram();
+        _hillsShader.pushThisProgram();
+        _hillsShader.setMatrix4x4("ModelView",  _modelview);
+        _hillsShader.setMatrix3x3("NormalMatrix", _modelview.subMat3());
+        _hillsShader.popProgram();
+    }
 }
 
 void DrawNudeHills::setup(CityMap& cityMap)
@@ -61,12 +85,33 @@ void DrawNudeHills::setup(CityMap& cityMap)
     // Premilinaries
     DrawAlgorithm::setup( cityMap );
 
-    int position_loc = _shader.getAttributeLocation("position_att");
-    int normal_loc = _shader.getAttributeLocation("normal_att");
-    //int color_loc = _shader.getAttributeLocation("color_att");
+    // Sun
+    _sNbElems = 4;
+    unsigned int sBuffer;
+    glGenVertexArrays(1, &_svao);
+    glBindVertexArray(_svao);
+    glGenBuffers(1, &sBuffer);
+
+    int sRelPos_loc = _sunShader.getAttributeLocation("relPos_att");
+
+    Vec2f srelPos[4];
+    srelPos[0] = Vec2f(-_sunRadius, -_sunRadius);
+    srelPos[1] = Vec2f(+_sunRadius, -_sunRadius);
+    srelPos[2] = Vec2f(+_sunRadius, +_sunRadius);
+    srelPos[3] = Vec2f(-_sunRadius, +_sunRadius);
+
+    glBindBuffer(GL_ARRAY_BUFFER, sBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2f) * _sNbElems, srelPos, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(sRelPos_loc);
+    glVertexAttribPointer(sRelPos_loc, 2, GL_FLOAT, 0, 0, 0);
+
 
 
     // Ground Algorithm //
+
+    int position_loc = _hillsShader.getAttributeLocation("position_att");
+    int normal_loc = _hillsShader.getAttributeLocation("normal_att");
+    //int color_loc = _shader.getAttributeLocation("color_att");
 
     /// Algorithm (pseudo code)
     /// ->
@@ -172,24 +217,37 @@ void DrawNudeHills::setup(CityMap& cityMap)
 
 void DrawNudeHills::draw()
 {
-    _shader.pushThisProgram();
+    _sunLight.direction = _sunRotation * _sunLight.direction;
+    Vec4f viewedSunDirection = _modelview * _sunLight.direction;
 
-    _sun.direction = _sunRotation * _sun.direction;
-    _shader.setVec4f("sun.direction", _modelview * _sun.direction);
-
+    _hillsShader.pushThisProgram();
+    _hillsShader.setVec4f("sun.direction", viewedSunDirection);
 
     glBindVertexArray(_gvao);
-    glVertexAttrib4fv(_shader.getAttributeLocation("color_att"), Vec4f(1.0, 1.0, 1.0, 1.0).asArray());
+    glVertexAttrib4fv(_hillsShader.getAttributeLocation("color_att"), Vec4f(1.0, 1.0, 1.0, 1.0).asArray());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, _gNbElems);    
 
     glEnable(GL_BLEND);
     glBindVertexArray(_wvao);
-    glVertexAttrib4fv(_shader.getAttributeLocation("color_att"), Vec4f(0.03, 0.03, 0.3, 0.4).asArray());
-    glVertexAttrib3fv(_shader.getAttributeLocation("normal_att"), Vec3f(0.0, 0.0, 1.0).asArray());
+    glVertexAttrib4fv(_hillsShader.getAttributeLocation("color_att"), Vec4f(0.03, 0.03, 0.3, 0.4).asArray());
+    glVertexAttrib3fv(_hillsShader.getAttributeLocation("normal_att"), Vec3f(0.0, 0.0, 1.0).asArray());
     glDrawArrays(GL_TRIANGLE_FAN, 0, _wNbElems);
     glDisable(GL_BLEND);
 
-    _shader.popProgram();
+    _hillsShader.popProgram();
+
+
+    _sunShader.pushThisProgram();
+    _sunShader.setVec4f("SunDirection", _sunLight.direction);
+
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBindVertexArray(_svao);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, _sNbElems);
+    glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
+
+    _sunShader.popProgram();
 }
 
 cellar::Vec3f DrawNudeHills::derivate(cellar::Vec2ui pos)

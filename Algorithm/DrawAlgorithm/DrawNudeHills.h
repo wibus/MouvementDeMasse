@@ -25,14 +25,18 @@ public:
 protected:
     cellar::Vec3f derivate(cellar::Vec2ui pos);
 
-    cellar::GLShaderProgram _shader;
-    cellar::DirectionnalLight3D _sun;
+    cellar::GLShaderProgram _sunShader;
+    float _sunRadius;
+    cellar::GLShaderProgram _hillsShader;
+    cellar::DirectionnalLight3D _sunLight;
     cellar::Matrix4x4<float> _sunRotation;
     cellar::Matrix4x4<float> _modelview;
+    int _sNbElems;
     int _gNbElems;
-    unsigned int  _gvao;
     int _wNbElems;
-    unsigned int  _wvao;
+    unsigned int _svao;
+    unsigned int _gvao;
+    unsigned int _wvao;
 };
 
 #endif // DRAWNUDEHILLS_H

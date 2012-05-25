@@ -76,7 +76,9 @@ HEADERS += \
 
 OTHER_FILES += \
     resources/shaders/nudeHills.vert \
-    resources/shaders/nudeHills.frag
+    resources/shaders/nudeHills.frag \
+    resources/shaders/sun.vert \
+    resources/shaders/sun.frag
 
 
 
