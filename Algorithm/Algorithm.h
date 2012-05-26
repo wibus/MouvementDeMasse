@@ -18,6 +18,8 @@ public:
 protected:
     CityMap* _cityMap;
     cellar::Vec2ui _mapSize;
+    float _minHeight;
+    float _maxHeight;
 };
 
 #endif // ALGORITHM_H

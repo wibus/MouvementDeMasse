@@ -3,11 +3,13 @@
 #include "Algorithm/HeightsAlgorithm/HeightsAlgorithm.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h"
 
-
 using namespace std;
+using namespace cellar;
 
-CityMap::CityMap(uint width, uint height):
+
+CityMap::CityMap(uint width, uint height, const Vec2f &heightsRange):
     _size(width, height),
+    _heightsRange(heightsRange),
     _lands(width, height),
     _junctions(width+1, height+1),
     _drawAlgo(),

@@ -6,11 +6,10 @@ uniform mat3 NormalMatrix;
 
 attribute vec3 position_att;
 attribute vec3 normal_att;
-attribute vec4 color_att;
 
 varying vec4 eyeVec;
 varying vec3 normal;
-varying vec4 color;
+varying float height;
 
 void main(void)
 {
@@ -18,6 +17,5 @@ void main(void)
     gl_Position = Projection * eyeVec;
 
     normal = NormalMatrix * normal_att;
-
-    color = color_att;
+    height = position_att.z;
 }

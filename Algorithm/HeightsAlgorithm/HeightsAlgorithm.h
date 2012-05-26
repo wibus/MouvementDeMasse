@@ -11,14 +11,7 @@ protected:
 public:
     virtual ~HeightsAlgorithm();
 
-    void setMinHeight(float minHeight);
-    void setMaxHeight(float maxHeight);
-
     virtual void setup(CityMap& cityMap);
-
-protected:
-    float _minHeight;
-    float _maxHeight;
 };
 
 #endif // HEIGHTSALGORITHM_H

@@ -17,7 +17,7 @@ class MapElementsAlgorithm;
 class CityMap
 {
 public:
-    CityMap(uint width, uint height);
+    CityMap(uint width, uint height, const cellar::Vec2f& heightsRange);
 
     void setDrawAlgorithm(DrawAlgorithm* algorithm);
     void setHeightsAlgorithm(HeightsAlgorithm* algorithm);
@@ -28,6 +28,7 @@ public:
     MapElementsAlgorithm& mapElementsAlgorithm();
 
     cellar::Vec2ui size() const;
+    cellar::Vec2f  heightsRange() const;
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
 
@@ -40,6 +41,7 @@ protected:
 
 private:
     cellar::Vec2ui _size;
+    cellar::Vec2f  _heightsRange;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;
 
@@ -54,6 +56,11 @@ private:
 inline cellar::Vec2ui CityMap::size() const
 {
     return _size;
+}
+
+inline cellar::Vec2f  CityMap::heightsRange() const
+{
+    return _heightsRange;
 }
 
 inline cellar::PGrid<Land>& CityMap::lands()

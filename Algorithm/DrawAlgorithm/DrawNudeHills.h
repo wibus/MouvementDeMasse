@@ -23,20 +23,33 @@ public:
 
 
 protected:
+    void setupSun();
+    void setupGround();
+    void setupWater();
     cellar::Vec3f derivate(cellar::Vec2ui pos);
+    void genGroundTexture();
+    void genWaterTexture();
 
+    cellar::Matrix4x4<float> _modelview;
     cellar::GLShaderProgram _sunShader;
-    float _sunRadius;
+    int _sNbElems;
+    unsigned int _svao;
     cellar::GLShaderProgram _hillsShader;
+    int _gNbElems;
+    unsigned int _gvao;
+    unsigned int _gTex;
+    int _wNbElems;
+    unsigned int _wvao;
+    unsigned int _wTex;
+
+    float _sunRadius;
     cellar::DirectionnalLight3D _sunLight;
     cellar::Matrix4x4<float> _sunRotation;
-    cellar::Matrix4x4<float> _modelview;
-    int _sNbElems;
-    int _gNbElems;
-    int _wNbElems;
-    unsigned int _svao;
-    unsigned int _gvao;
-    unsigned int _wvao;
+    cellar::Vec4f _nightSkyColor;
+    cellar::Vec4f _daySkyColor;
+    cellar::Vec4f _skyColor;
+    cellar::Vec4f _waterColor;
+
 };
 
 #endif // DRAWNUDEHILLS_H

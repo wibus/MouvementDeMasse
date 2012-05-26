@@ -19,7 +19,7 @@ using namespace scaena;
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _cityMap( new CityMap(200, 200)),
+    _cityMap( new CityMap(200, 200, Vec2f(-20.0, 20.0))),
     _fps(),
     _camMan( stage.camera() )
 {
@@ -102,8 +102,6 @@ void MdMCharacter::setAlgorithms()
     HeightByNoiseAlgo* heightAlgo = new HeightByNoiseAlgo();
     heightAlgo->setNbNoises( cellar::min(_cityMap->size().x(), _cityMap->size().y()) / 2 );
     heightAlgo->setWeightedNoisesRange(1, heightAlgo->nbNoises());
-    heightAlgo->setMinHeight(-14.0);
-    heightAlgo->setMaxHeight(20.0);
     _cityMap->setHeightsAlgorithm( heightAlgo );
 
     // Draw algorithm
