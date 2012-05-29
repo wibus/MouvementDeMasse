@@ -32,12 +32,13 @@ public:
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
 
+    void reset();
     void setup();
     bool load(const std::string& fileName);
     bool save(const std::string& fileName);
 
 protected:
-    void setJunctions();
+    void resetJunctions();
 
 private:
     cellar::Vec2ui _size;

@@ -54,9 +54,10 @@ SOURCES += \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.cpp \
     Algorithm/DrawAlgorithm/DrawAlgorithm.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.cpp \
-    Algorithm/DrawAlgorithm/DrawNudeHills.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.cpp \
-    Road/Street.cpp
+    Road/Street.cpp \
+    Algorithm/DrawAlgorithm/DrawSun.cpp \
+    Algorithm/DrawAlgorithm/DrawSunAndGround.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -70,15 +71,16 @@ HEADERS += \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h \
     Algorithm/DrawAlgorithm/DrawAlgorithm.h \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h \
-    Algorithm/DrawAlgorithm/DrawNudeHills.h \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h \
-    Road/Street.h
+    Road/Street.h \
+    Algorithm/DrawAlgorithm/DrawSun.h \
+    Algorithm/DrawAlgorithm/DrawSunAndGround.h
 
 OTHER_FILES += \
-    resources/shaders/nudeHills.vert \
-    resources/shaders/nudeHills.frag \
     resources/shaders/sun.vert \
-    resources/shaders/sun.frag
+    resources/shaders/sun.frag \
+    resources/shaders/ground.vert \
+    resources/shaders/ground.frag
 
 
 

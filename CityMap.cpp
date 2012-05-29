@@ -10,7 +10,7 @@ using namespace cellar;
 CityMap::CityMap(uint width, uint height, const Vec2f &heightsRange):
     _size(width, height),
     _heightsRange(heightsRange),
-    _lands(width, height),
+    _lands(    width,   height),
     _junctions(width+1, height+1),
     _drawAlgo(),
     _heightsAlgo(),
@@ -48,10 +48,13 @@ MapElementsAlgorithm& CityMap::mapElementsAlgorithm()
     return *_mapElementsAlgo;
 }
 
+void CityMap::reset()
+{
+    resetJunctions();
+}
+
 void CityMap::setup()
 {
-    setJunctions();
-
     if( _heightsAlgo )
         _heightsAlgo->setup( *this );
 
@@ -72,9 +75,16 @@ bool CityMap::save(const string &fileName)
     return false;
 }
 
-void CityMap::setJunctions()
+void CityMap::resetJunctions()
 {
     for(unsigned int j=0; j<_junctions.height(); ++j)
+    {
         for(unsigned int i=0; i<_junctions.width(); ++i)
+        {
+            Junction* junc = _junctions.get(i, j);
+            if(junc != 0x0)
+                delete junc;
             _junctions.set(i, j, new Junction());
+        }
+    }
 }
