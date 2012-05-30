@@ -14,25 +14,21 @@ public:
     virtual void draw();
 
     virtual void updateViewMatrix(const cellar::Matrix4x4<float>& view);
-    virtual void updateProjectionMatrix(const cellar::Matrix4x4<float>& proj);
+    virtual void updateProjectionMatrix(const cellar::Matrix4x4<float>& proj);    
 
 protected:
-    virtual void updateSunDirection();
-
     virtual void setupGround();
-    virtual void setupWater();
-
     virtual void genGroundTex();
-    virtual void genWaterTex();
-
     virtual void drawGround();
+
+    virtual void setupWater();    
+    virtual void genWaterTex();    
     virtual void drawWater();
 
     virtual cellar::Vec3f derivate(const cellar::Vec2ui& pos);
-    virtual void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, unsigned int i, unsigned j);
-
-    // Sun
-    cellar::Vec4f _viewedSunDirection;
+    virtual void computeGroundVertex(int& idx,
+                                     cellar::Vec3f* pos, cellar::Vec3f* norm,
+                                     unsigned int i,     unsigned j);
 
     // Ground
     cellar::GLShaderProgram _groundShader;

@@ -18,9 +18,9 @@ public:
 
     virtual void updateViewMatrix(const cellar::Matrix4x4<float>& view);
     virtual void updateProjectionMatrix(const cellar::Matrix4x4<float>& proj);
+    virtual void updateSunDirection(const cellar::Vec4f& direction);
 
 protected:
-    virtual void updateSunDirection();
     virtual void drawSky();
     virtual void drawSun();
 
@@ -32,12 +32,12 @@ protected:
 
     // Sun description
     float _sunRadius;
+    cellar::Vec4f _viewedSunDirection;
     cellar::DirectionnalLight3D _sunLight;
     cellar::Vec4f _sunColor;
     cellar::Vec4f _nightSkyColor;
     cellar::Vec4f _daySkyColor;
     cellar::Vec4f _skyColor;
-    cellar::Matrix4x4<float> _sunRotation;
 };
 
 #endif // DRAWSUN_H

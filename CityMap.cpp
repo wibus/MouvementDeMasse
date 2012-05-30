@@ -65,12 +65,12 @@ void CityMap::setup()
         _drawAlgo->setup( *this );
 }
 
-bool CityMap::load(const string &fileName)
+bool CityMap::load(const string &)
 {
     return false;
 }
 
-bool CityMap::save(const string &fileName)
+bool CityMap::save(const string &)
 {
     return false;
 }

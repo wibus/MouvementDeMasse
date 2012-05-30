@@ -19,6 +19,8 @@ MapElementsDepthFirst::~MapElementsDepthFirst()
 
 void MapElementsDepthFirst::setup(CityMap& cityMap)
 {
+    // TODO : Complete the algorithm
+
     MapElementsAlgorithm::setup(cityMap);
 
     const float waterHeight = 0.0f;

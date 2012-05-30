@@ -12,8 +12,10 @@
 
 #include <Characters/AbstractCharacter.h>
 
+#include "Algorithm/DrawAlgorithm/Sun.h"
+#include "Algorithm/DrawAlgorithm/DrawSunAndGround.h"
+
 class CityMap;
-class DrawAlgorithm;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
@@ -38,9 +40,12 @@ public:
 
 private:
     void setAlgorithms();
+    void updateCalendar();
+    void updateCamera(float elapsedtime);
 
+    Sun _sun;
     std::shared_ptr<CityMap> _cityMap;
-    std::shared_ptr<DrawAlgorithm> _drawAlgorithm;
+    DrawSunAndGround _drawAlgorithm;
     cellar::CameraManFree _camMan;
     cellar::Calendar _calendar;
     prop::twoD::Text _dateText;

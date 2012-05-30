@@ -12,14 +12,14 @@ using namespace scaena;
 
 #include "MdMCharacter.h"
 #include "CityMap.h"
-
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
-#include "Algorithm/DrawAlgorithm/DrawSunAndGround.h"
 
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _cityMap( new CityMap(200, 200, Vec2f(-20.0, 20.0))),    
+    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
+    _cityMap( new CityMap(200, 200, Vec2f(-20.0, 20.0))),
+    _drawAlgorithm(),
     _camMan( stage.camera() ),
     _fpsText()
 {
@@ -32,37 +32,52 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
 }
 
 void MdMCharacter::enterStage()
-{
-    cout << "I'm here" << endl;
-
-    setAlgorithms();
+{    
+    _calendar.setClock(Calendar::Clock(Calendar::Clock::MINUTE));
+    _calendar.setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 0, 0));
     _calendar.start();
+
+    updateCalendar();
+    setAlgorithms();
     stage().camera().refresh();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
 {
-    _calendar.tic();
-    _dateText.setPosition(10, stage().height() - 20);
-    _dateText.setText(_calendar.dateToString());
+    updateCalendar();
+    updateCamera( time.elapsedTime() );
+}
 
+void MdMCharacter::updateCalendar()
+{
+    _calendar.tic();
+
+    _dateText.setPosition(10, stage().height() - 20);
+    _dateText.setText(_calendar.date().toString(true, true));
+
+    _sun.setTime(_calendar.date().hour, _calendar.date().minute);
+    _drawAlgorithm.updateSunDirection( _sun.direction() );
+}
+
+void MdMCharacter::updateCamera(float elapsedtime)
+{
     const float speed = 10.0f;
 
     if(stage().synchronousKeyboard().isAsciiPressed('w'))
     {
-        _camMan.forward(time.elapsedTime() * speed);
+        _camMan.forward(elapsedtime * speed);
     }
     if(stage().synchronousKeyboard().isAsciiPressed('s'))
     {
-        _camMan.forward(-time.elapsedTime() * speed);
+        _camMan.forward(-elapsedtime * speed);
     }
     if(stage().synchronousKeyboard().isAsciiPressed('a'))
     {
-        _camMan.sideward(-time.elapsedTime() * speed);
+        _camMan.sideward(-elapsedtime * speed);
     }
     if(stage().synchronousKeyboard().isAsciiPressed('d'))
     {
-        _camMan.sideward(time.elapsedTime() * speed);
+        _camMan.sideward(elapsedtime * speed);
     }
 
     if(stage().synchronousMouse().displacement() != Vec2i(0, 0) &&
@@ -73,14 +88,14 @@ void MdMCharacter::beginStep(const StageTime &time)
     }
 }
 
-void MdMCharacter::endStep(const StageTime &time)
+void MdMCharacter::endStep(const StageTime &)
 {
 }
 
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
     //_cityMap->drawAlgorithm().draw();
-    _drawAlgorithm->draw();
+    _drawAlgorithm.draw();
     _dateText.draw();
     _fpsText.setText( toString(1.0f / time.elapsedTime()) );
     _fpsText.draw();
@@ -88,7 +103,6 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 
 void MdMCharacter::exitStage()
 {
-    cout << "Goodbye" << endl;
     _calendar.stop();
 }
 
@@ -96,11 +110,11 @@ void MdMCharacter::notify(cellar::CameraMsg &msg)
 {
     if(msg.change == CameraMsg::PROJECTION)
     {
-        _drawAlgorithm->updateProjectionMatrix( msg.camera.projectionMatrix() );
+        _drawAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
     }
     else if(msg.change == CameraMsg::VIEW)
     {
-        _drawAlgorithm->updateViewMatrix( msg.camera.viewMatrix() );
+        _drawAlgorithm.updateViewMatrix( msg.camera.viewMatrix() );
     }
 }
 
@@ -119,15 +133,13 @@ void MdMCharacter::setAlgorithms()
     _cityMap->reset();
 
     // Height algorithm
-    HeightByNoiseAlgo* heightAlgo = new HeightByNoiseAlgo();
-    heightAlgo->setNbNoises( cellar::min(_cityMap->size().x(), _cityMap->size().y()) / 2 );
-    heightAlgo->setWeightedNoisesRange(1, heightAlgo->nbNoises());
-    heightAlgo->setup( *_cityMap );
+    HeightByNoiseAlgo heightAlgo;
+    heightAlgo.setNbNoises( cellar::min(_cityMap->size().x(), _cityMap->size().y()) / 2 );
+    heightAlgo.setWeightedNoisesRange(1, heightAlgo.nbNoises());
+    heightAlgo.setup( *_cityMap );
 
     // Draw algorithm
-    DrawSun* drawSun = new  DrawSunAndGround();
-    drawSun->setup( *_cityMap );
-    _drawAlgorithm.reset( drawSun );
+    _drawAlgorithm.setup( *_cityMap );
 
     _cityMap->setup();
 }

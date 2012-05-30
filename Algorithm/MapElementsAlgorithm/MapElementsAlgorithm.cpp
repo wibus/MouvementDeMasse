@@ -33,5 +33,5 @@ CardinalDirection MapElementsAlgorithm::toCardinal(const Vec2i& dir)
 
 Vec2ui MapElementsAlgorithm::getNeighbor(const Vec2ui& pos, const Vec2i& dir)
 {
-    return Vec2ui();
+    return Vec2ui(pos.x() + dir.x(), pos.y() + dir.y());
 }

@@ -14,8 +14,7 @@ DrawSun::DrawSun() :
     _sunColor(     1.00, 0.90, 0.20, 1),
     _nightSkyColor(0.02, 0.01, 0.05, 1),
     _daySkyColor(  0.40, 0.60, 0.80, 1),
-    _skyColor(_nightSkyColor),
-    _sunRotation()
+    _skyColor(     _nightSkyColor     )
 {
     // Shader specific
     GLInOutProgramLocation locations;
@@ -31,9 +30,7 @@ DrawSun::DrawSun() :
      _sunShader.popProgram();
 
      // Sun description
-     Vec3f rotAxis = Vec3f(-1.0, -1.0, 0.0).normalize();
-     _sunRotation.rotate(rotAxis.x(), rotAxis.y(), rotAxis.z(), 0.008);
-     _sunLight.direction(-1., -1.0, 2.00, 0.0).normalize();
+     _sunLight.direction(0, 0, -1, 0.0).normalize();
      _sunLight.ambient( 0.08, 0.09, 0.12);
      _sunLight.diffuse( 0.62, 0.62, 0.60);
      _sunLight.specular(0.65, 0.50, 0.30);
@@ -70,14 +67,8 @@ void DrawSun::setup(CityMap& cityMap)
 
 void DrawSun::draw()
 {
-    updateSunDirection();
     drawSky();
     drawSun();
-}
-
-void DrawSun::updateSunDirection()
-{
-    _sunLight.direction = _sunRotation * _sunLight.direction;
 }
 
 void DrawSun::drawSky()
@@ -124,4 +115,10 @@ void DrawSun::updateProjectionMatrix(const cellar::Matrix4x4<float>& proj)
     _sunShader.pushThisProgram();
     _sunShader.setMatrix4x4("Projection", _projMat);
     _sunShader.popProgram();
+}
+
+void DrawSun::updateSunDirection(const cellar::Vec4f& direction)
+{
+    _sunLight.direction = direction;
+    _viewedSunDirection = _viewMat * direction;
 }

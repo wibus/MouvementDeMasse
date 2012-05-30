@@ -57,7 +57,8 @@ SOURCES += \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.cpp \
     Road/Street.cpp \
     Algorithm/DrawAlgorithm/DrawSun.cpp \
-    Algorithm/DrawAlgorithm/DrawSunAndGround.cpp
+    Algorithm/DrawAlgorithm/DrawSunAndGround.cpp \
+    Algorithm/DrawAlgorithm/Sun.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -74,7 +75,8 @@ HEADERS += \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h \
     Road/Street.h \
     Algorithm/DrawAlgorithm/DrawSun.h \
-    Algorithm/DrawAlgorithm/DrawSunAndGround.h
+    Algorithm/DrawAlgorithm/DrawSunAndGround.h \
+    Algorithm/DrawAlgorithm/Sun.h
 
 OTHER_FILES += \
     resources/shaders/sun.vert \

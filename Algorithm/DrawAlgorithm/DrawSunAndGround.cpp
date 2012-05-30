@@ -56,17 +56,10 @@ void DrawSunAndGround::updateProjectionMatrix(const cellar::Matrix4x4<float>& pr
 
 void DrawSunAndGround::draw()
 {
-    updateSunDirection();
     drawSky();
     drawSun();
     drawGround();
     drawWater();
-}
-
-void DrawSunAndGround::updateSunDirection()
-{
-    DrawSun::updateSunDirection();
-    _viewedSunDirection = _viewMat * _sunLight.direction;
 }
 
 void DrawSunAndGround::drawGround()
