@@ -25,21 +25,22 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
 {
     _fpsText.setPosition(5, 5);
 
-    stage.camera().setTripod(Vec3f(-10, -10, 10),
-                             Vec3f(0, 0, 0),
+    stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->heightsRange()[1]),
+                             Vec3f(_cityMap->size().x() / 2, _cityMap->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
+
+    _calendar.setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 0, 0));
 }
 
 void MdMCharacter::enterStage()
-{    
-    _calendar.setClock(Calendar::Clock(Calendar::Clock::MINUTE));
-    _calendar.setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 0, 0));
-    _calendar.start();
-
-    updateCalendar();
+{
     setAlgorithms();
     stage().camera().refresh();
+
+    _calendar.setClock(Calendar::Clock(Calendar::Clock::MINUTE));
+    _calendar.start();
+    updateCalendar();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)

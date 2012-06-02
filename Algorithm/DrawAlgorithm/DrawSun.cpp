@@ -30,7 +30,7 @@ DrawSun::DrawSun() :
      _sunShader.popProgram();
 
      // Sun description
-     _sunLight.direction(0, 0, -1, 0.0).normalize();
+     _sunLight.direction(0, 0, 0.0, 0.0).normalize();
      _sunLight.ambient( 0.08, 0.09, 0.12);
      _sunLight.diffuse( 0.62, 0.62, 0.60);
      _sunLight.specular(0.65, 0.50, 0.30);

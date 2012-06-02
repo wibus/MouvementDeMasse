@@ -7,6 +7,7 @@ using namespace std;
 using namespace scaena;
 
 #include "MdMPlay.h"
+#include "Ui/MainWindow.h"
 
 
 int main(int argc, char** argv) try
@@ -16,6 +17,9 @@ int main(int argc, char** argv) try
     QGLStage* stage = new QGLStage();
     getApplication().addCustomStage(stage);
     getApplication().chooseStage(stage->id());
+
+    MainWindow window(stage);
+    window.show();
 
     return getApplication().execute();
 }

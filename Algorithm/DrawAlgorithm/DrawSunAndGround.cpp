@@ -66,7 +66,7 @@ void DrawSunAndGround::drawGround()
 {
     _groundShader.pushThisProgram();
     _groundShader.setVec4f("sun.direction", _viewedSunDirection);
-    _groundShader.setFloat("Shininess", _groundShininess);
+    _groundShader.setFloat("Shininess",     _groundShininess);
 
     glBindVertexArray(_groundVao);
     glBindTexture(GL_TEXTURE_1D, _groundTex);
