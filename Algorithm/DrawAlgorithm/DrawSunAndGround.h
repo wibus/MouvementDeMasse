@@ -17,6 +17,8 @@ public:
     virtual void updateProjectionMatrix(const cellar::Matrix4x4<float>& proj);    
 
 protected:
+    virtual void setupSpotLights();
+
     virtual void setupGround();
     virtual void genGroundTex();
     virtual void drawGround();
@@ -43,6 +45,9 @@ protected:
     const int _waterNbElems;
     cellar::Vec4f _waterColor;
     float _waterShininess;
+
+    // Spot lights
+    cellar::SpotLight3D _spots;
 };
 
 #endif // DRAWSUNANDGROUND_H

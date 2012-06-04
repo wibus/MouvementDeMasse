@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 
 using namespace std;
+
+#include <Misc/CellarUtils.h>
 using namespace cellar;
 
 
@@ -19,7 +21,6 @@ DrawSunAndGround::DrawSunAndGround() :
     _waterColor(0.03, 0.03, 0.30, 0.65),
     _waterShininess(100.0f)
 {
-    // Ground
     GLInOutProgramLocation groundLocations;
     groundLocations.setInput(0, "position_att");
     groundLocations.setInput(1, "normal_att");
@@ -56,6 +57,12 @@ void DrawSunAndGround::updateProjectionMatrix(const cellar::Matrix4x4<float>& pr
 
 void DrawSunAndGround::draw()
 {
+    _groundShader.pushThisProgram();
+    _groundShader.setVec4f("sun.direction",     _viewedSunDirection);
+    _groundShader.setVec4f("spots.position", _viewMat * _spots.position);
+    _groundShader.setVec3f("spots.direction", _viewSubMat3 * _spots.direction);
+    _groundShader.popProgram();
+
     drawSky();
     drawSun();
     drawGround();
@@ -65,8 +72,7 @@ void DrawSunAndGround::draw()
 void DrawSunAndGround::drawGround()
 {
     _groundShader.pushThisProgram();
-    _groundShader.setVec4f("sun.direction", _viewedSunDirection);
-    _groundShader.setFloat("Shininess",     _groundShininess);
+    _groundShader.setFloat("Shininess", _groundShininess);
 
     glBindVertexArray(_groundVao);
     glBindTexture(GL_TEXTURE_1D, _groundTex);
@@ -78,8 +84,7 @@ void DrawSunAndGround::drawGround()
 void DrawSunAndGround::drawWater()
 {
     _groundShader.pushThisProgram();
-    _groundShader.setVec4f("sun.direction", _viewedSunDirection);
-    _groundShader.setFloat("Shininess",     _waterShininess);
+    _groundShader.setFloat("Shininess", _waterShininess);
     glVertexAttrib3f(_groundShader.getAttributeLocation("normal_att"), 0, 0, 1);
 
     glEnable(GL_BLEND);
@@ -95,8 +100,32 @@ void DrawSunAndGround::setup(CityMap& cityMap)
 {
     DrawSun::setup( cityMap );
 
+    setupSpotLights();
     setupGround();
     setupWater();
+}
+
+void DrawSunAndGround::setupSpotLights()
+{
+    _spots.attenuationCoefs(1.0f, 0.1f, 0.001f);
+    _spots.ambient( 0,      0,    0);
+    _spots.diffuse( 1, 1, 1);
+    _spots.specular(1.0f, 1.0f, 1.0f);
+    _spots.direction(1.0f,1.0f, -1.0f).normalize();
+    _spots.cutoff = cos(PI/ 16);
+
+
+    _spots.position(0, 0, _cityMap->heightsRange()[1] * 2);
+
+    _groundShader.pushThisProgram();
+    _groundShader.setVec3f("spots.attCoefs", _spots.attenuationCoefs);
+    _groundShader.setVec3f("spots.ambient",  _spots.ambient);
+    _groundShader.setVec3f("spots.diffuse",  _spots.diffuse);
+    _groundShader.setVec3f("spots.specular", _spots.specular);
+    _groundShader.setVec4f("spots.position", _viewMat * _spots.position);
+    _groundShader.setVec3f("spots.direction",_viewSubMat3 * _spots.direction);
+    _groundShader.setFloat("spots.cutoff",   _spots.cutoff);
+    _groundShader.popProgram();
 }
 
 void DrawSunAndGround::setupGround()
@@ -174,7 +203,7 @@ void DrawSunAndGround::setupGround()
     delete [] gpositions;
 
     _groundShader.pushThisProgram();
-    _groundShader.setFloat("HillsAmplitude", max(abs(_minHeight), abs(_maxHeight)));
+    _groundShader.setFloat("HillsAmplitude", cellar::max(abs(_minHeight), abs(_maxHeight)));
     _groundShader.popProgram();
 }
 

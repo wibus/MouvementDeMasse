@@ -29,6 +29,7 @@ public:
 
     cellar::Vec2ui size() const;
     cellar::Vec2f  heightsRange() const;
+    float          heightAt(const cellar::Vec2f& pos) const;
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
 
