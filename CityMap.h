@@ -8,6 +8,7 @@
 
 #include "Land/Land.h"
 #include "Road/Junction.h"
+#include "Road/Street.h"
 
 class DrawAlgorithm;
 class HeightsAlgorithm;

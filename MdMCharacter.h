@@ -13,7 +13,7 @@
 #include <Characters/AbstractCharacter.h>
 
 #include "Algorithm/DrawAlgorithm/Sun.h"
-#include "Algorithm/DrawAlgorithm/DrawSunAndGround.h"
+#include "Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.h"
 
 class CityMap;
 
@@ -45,7 +45,7 @@ private:
 
     Sun _sun;
     std::shared_ptr<CityMap> _cityMap;
-    DrawSunAndGround _drawAlgorithm;
+    DrawSunGroundAndRoads _drawAlgorithm;
     cellar::CameraManFree _camMan;
     cellar::Calendar _calendar;
     prop::twoD::Text _dateText;

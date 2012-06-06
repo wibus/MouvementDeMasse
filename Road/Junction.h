@@ -11,6 +11,7 @@ class Junction
 {
 public:
     enum Type{GROUND, ASPHALT, GRAVEL, NB_TYPES};
+
     Junction();
     virtual ~Junction();
 

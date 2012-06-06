@@ -140,6 +140,60 @@ void MdMCharacter::setAlgorithms()
     heightAlgo.setup( *_cityMap );
 
     // Draw algorithm
+    Vec2ui pos(_cityMap->size() / 2);
+    Vec2ui next;
+    Vec2i  dir(0, 0);
+    while(pos.x() != 1 &&
+          pos.x() != _cityMap->size().x()-1 &&
+          pos.y() != 1 &&
+          pos.y() != _cityMap->size().y()-1 )
+    {
+        _cityMap->junctions().get( pos )->setType(Junction::ASPHALT);
+
+        dir(0, 0);
+        if(rand() % 2)
+        {
+            if(rand() % 2)
+                dir.setX(-1);
+            else
+                dir.setX(1);
+        }
+        else
+        {
+            if(rand() % 2)
+                dir.setY(-1);
+            else
+                dir.setY(1);
+        }
+
+        next( pos.x() + dir.x(), pos.y() + dir.y());
+        shared_ptr<Street> street( new Street(pos, next) );
+
+        if(dir == Vec2i(-1, 0))
+        {
+            _cityMap->junctions().get(pos)->attach(street, WEST);
+            _cityMap->junctions().get(next)->attach(street, EAST);
+        }
+        else if(dir == Vec2i(1, 0))
+        {
+            _cityMap->junctions().get(pos)->attach(street, EAST);
+            _cityMap->junctions().get(next)->attach(street, WEST);
+        }
+        else if(dir == Vec2i(0, -1))
+        {
+            _cityMap->junctions().get(pos)->attach(street, SOUTH);
+            _cityMap->junctions().get(next)->attach(street, NORTH);
+        }
+        else if(dir == Vec2i(0, 1))
+        {
+            _cityMap->junctions().get(pos)->attach(street, NORTH);
+            _cityMap->junctions().get(next)->attach(street, SOUTH);
+        }
+
+
+        pos = next;
+    }
+
     _drawAlgorithm.setup( *_cityMap );
 
     _cityMap->setup();

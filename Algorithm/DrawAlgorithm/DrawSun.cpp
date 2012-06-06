@@ -76,7 +76,7 @@ void DrawSun::drawSky()
     const double skyCoefCorection = 0.1;
     double skyColorCoef =
             pow(
-                max(_sunLight.direction.normalized() * Vec4f(0, 0, -1, 0) + skyCoefCorection,
+                cellar::max(_sunLight.direction.normalized() * Vec4f(0, 0, -1, 0) + skyCoefCorection,
                     0.0),
                 0.75) / (skyCoefCorection + 1.0);
 

@@ -57,12 +57,6 @@ void DrawSunAndGround::updateProjectionMatrix(const cellar::Matrix4x4<float>& pr
 
 void DrawSunAndGround::draw()
 {
-    _groundShader.pushThisProgram();
-    _groundShader.setVec4f("sun.direction",     _viewedSunDirection);
-    _groundShader.setVec4f("spots.position", _viewMat * _spots.position);
-    _groundShader.setVec3f("spots.direction", _viewSubMat3 * _spots.direction);
-    _groundShader.popProgram();
-
     drawSky();
     drawSun();
     drawGround();
@@ -72,6 +66,13 @@ void DrawSunAndGround::draw()
 void DrawSunAndGround::drawGround()
 {
     _groundShader.pushThisProgram();
+
+    // This is set for ground and water
+    _groundShader.setVec4f("sun.direction",  _viewedSunDirection);
+    _groundShader.setVec4f("spots.position", _viewMat * _spots.position);
+    _groundShader.setVec3f("spots.direction", _viewSubMat3 * _spots.direction);
+    //
+
     _groundShader.setFloat("Shininess", _groundShininess);
 
     glBindVertexArray(_groundVao);
