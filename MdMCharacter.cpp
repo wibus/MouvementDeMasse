@@ -13,6 +13,7 @@ using namespace scaena;
 #include "MdMCharacter.h"
 #include "CityMap.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
+#include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
@@ -139,6 +140,11 @@ void MdMCharacter::setAlgorithms()
     heightAlgo.setWeightedNoisesRange(1, heightAlgo.nbNoises());
     heightAlgo.setup( *_cityMap );
 
+
+
+    MapElementsDepthFirst mapElemAlgo;
+    mapElemAlgo.setup(*_cityMap);
+    /*
     // Draw algorithm
     Vec2ui pos(_cityMap->size() / 2);
     Vec2ui next;
@@ -192,7 +198,7 @@ void MdMCharacter::setAlgorithms()
 
 
         pos = next;
-    }
+    }*/
 
     _drawAlgorithm.setup( *_cityMap );
 
