@@ -19,7 +19,7 @@ DrawSunAndGround::DrawSunAndGround() :
     _waterTex(0),
     _waterNbElems(4),
     _waterColor(0.03, 0.03, 0.30, 0.65),
-    _waterShininess(100.0f)
+    _waterShininess(160.0f)
 {
     GLInOutProgramLocation groundLocations;
     groundLocations.setInput(0, "position_att");
@@ -109,8 +109,8 @@ void DrawSunAndGround::setup(CityMap& cityMap)
 void DrawSunAndGround::setupSpotLights()
 {
     _spots.attenuationCoefs(1.0f, 0.1f, 0.001f);
-    _spots.ambient( 0,      0,    0);
-    _spots.diffuse( 1, 1, 1);
+    _spots.ambient( 0.0f, 0.0f, 0.0f);
+    _spots.diffuse( 1.0f, 1.0f, 1.0f);
     _spots.specular(1.0f, 1.0f, 1.0f);
     _spots.direction(1.0f,1.0f, -1.0f).normalize();
     _spots.cutoff = cos(PI/ 16);
