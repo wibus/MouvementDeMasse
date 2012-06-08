@@ -14,58 +14,13 @@ CityMap::CityMap(int width, int height):
     _size(width, height),    
     _ground(width+1, height+1),
     _lands(    width,   height),
-    _junctions(width+1, height+1),
-    _drawAlgo(),
-    _heightsAlgo(),
-    _mapElementsAlgo()
+    _junctions(width+1, height+1)
 {
-}
-
-void CityMap::setDrawAlgorithm(DrawAlgorithm *algorithm)
-{
-    _drawAlgo.reset(algorithm);
-}
-
-void CityMap::setHeightsAlgorithm(HeightsAlgorithm *algorithm)
-{
-    _heightsAlgo.reset(algorithm);
-}
-
-void CityMap::setMapElementsAlgorthm(MapElementsAlgorithm *algorithm)
-{
-    _mapElementsAlgo.reset(algorithm);
-}
-
-DrawAlgorithm& CityMap::drawAlgorithm()
-{
-    return *_drawAlgo;
-}
-
-HeightsAlgorithm& CityMap::heightsAlgorithm()
-{
-    return *_heightsAlgo;
-}
-
-MapElementsAlgorithm& CityMap::mapElementsAlgorithm()
-{
-    return *_mapElementsAlgo;
 }
 
 void CityMap::reset()
 {
     resetJunctions();
-}
-
-void CityMap::setup()
-{
-    if( _heightsAlgo )
-        _heightsAlgo->setup( *this );
-
-    if( _mapElementsAlgo )
-        _mapElementsAlgo->setup( *this );
-
-    if( _drawAlgo )
-        _drawAlgo->setup( *this );
 }
 
 bool CityMap::load(const string &)

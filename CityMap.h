@@ -21,14 +21,6 @@ class CityMap
 public:
     CityMap(int width, int height);
 
-    void setDrawAlgorithm(DrawAlgorithm* algorithm);
-    void setHeightsAlgorithm(HeightsAlgorithm* algorithm);
-    void setMapElementsAlgorthm(MapElementsAlgorithm* algorithm);
-
-    DrawAlgorithm& drawAlgorithm();
-    HeightsAlgorithm& heightsAlgorithm();
-    MapElementsAlgorithm& mapElementsAlgorithm();
-
     cellar::Vec2i  size() const;
     Ground& ground();
     cellar::PGrid<Land> &lands();
@@ -47,10 +39,6 @@ private:
     Ground _ground;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;
-
-    std::shared_ptr<DrawAlgorithm> _drawAlgo;
-    std::shared_ptr<HeightsAlgorithm> _heightsAlgo;
-    std::shared_ptr<MapElementsAlgorithm> _mapElementsAlgo;
 };
 
 

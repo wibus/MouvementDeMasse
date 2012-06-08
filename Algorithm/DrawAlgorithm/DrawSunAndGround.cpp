@@ -57,22 +57,28 @@ void DrawSunAndGround::updateProjectionMatrix(const cellar::Matrix4x4<float>& pr
 
 void DrawSunAndGround::draw()
 {
+    refresh();
+
     drawSky();
     drawSun();
     drawGround();
     drawWater();
 }
 
-void DrawSunAndGround::drawGround()
+void DrawSunAndGround::refresh()
 {
-    _groundShader.pushThisProgram();
+    DrawSun::refresh();
 
-    // This is set for ground and water
+    _groundShader.pushThisProgram();
     _groundShader.setVec4f("sun.direction",  _viewedSunDirection);
     _groundShader.setVec4f("spots.position", _viewMat * _spots.position);
     _groundShader.setVec3f("spots.direction", _viewSubMat3 * _spots.direction);
-    //
+    _groundShader.popProgram();
+}
 
+void DrawSunAndGround::drawGround()
+{
+    _groundShader.pushThisProgram();
     _groundShader.setFloat("Shininess", _groundShininess);
 
     glBindVertexArray(_groundVao);
@@ -108,7 +114,7 @@ void DrawSunAndGround::setup(CityMap& cityMap)
 
 void DrawSunAndGround::setupSpotLights()
 {
-    _spots.attenuationCoefs(1.0f, 0.1f, 0.001f);
+    _spots.attenuationCoefs(1.0f, 0.0f, 0.001f);
     _spots.ambient( 0.0f, 0.0f, 0.0f);
     _spots.diffuse( 1.0f, 1.0f, 1.0f);
     _spots.specular(1.0f, 1.0f, 1.0f);
@@ -220,12 +226,11 @@ void DrawSunAndGround::setupWater()
     genWaterTex();
 
     // Positions
-    const float waterHeight = 0;
     Vec3f* wpositions = new Vec3f[_waterNbElems];
-    wpositions[0] = Vec3f(0.0,          0.0,          waterHeight);
-    wpositions[1] = Vec3f(_mapSize.x(), 0.0,          waterHeight);
-    wpositions[2] = Vec3f(_mapSize.x(), _mapSize.y(), waterHeight);
-    wpositions[3] = Vec3f(0.0,          _mapSize.y(), waterHeight);
+    wpositions[0] = Vec3f(0.0,            0.0,            _ground->waterHeight());
+    wpositions[1] = Vec3f(_mapSize.x()-1, 0.0,            _ground->waterHeight());
+    wpositions[2] = Vec3f(_mapSize.x()-1, _mapSize.y()-1, _ground->waterHeight());
+    wpositions[3] = Vec3f(0.0,            _mapSize.y()-1, _ground->waterHeight());
 
 
     // Water VAO setup
@@ -252,8 +257,12 @@ void DrawSunAndGround::setupWater()
 
 void DrawSunAndGround::genGroundTex()
 {
+    float relWaterHeiht = _ground->waterHeight() - _ground->minHeight();
+    float relWaterHeihtRatio = relWaterHeiht / (_ground->maxHeight() - _ground->minHeight());
+    relWaterHeihtRatio = clip(relWaterHeihtRatio, 0.0f, 1.0f);
+
     const int size = 128;
-    const int heightZero = size/2;
+    int heightZero = size * relWaterHeihtRatio;
     Vec4ub texels[size];
 
     Vec4f bottomSeaColor(0.05, 0.03, 0.12, 1.0);

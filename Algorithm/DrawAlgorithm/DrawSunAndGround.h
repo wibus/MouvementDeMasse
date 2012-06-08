@@ -17,6 +17,7 @@ public:
     virtual void updateProjectionMatrix(const cellar::Matrix4x4<float>& proj);    
 
 protected:
+    virtual void refresh();
     virtual void setupSpotLights();
 
     virtual void setupGround();

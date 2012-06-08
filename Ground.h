@@ -14,9 +14,11 @@ public:
     int height() const;
     float minHeight() const;
     float maxHeight() const;
+    float waterHeight() const;
 
     void setMinHeight(float height);
     void setMaxHeight(float height);
+    void setWaterHeight(float height);
 
     float heightAt(int x, int y) const;
     float heightAt(const cellar::Vec2i& pos) const;
@@ -35,6 +37,7 @@ private:
     int _height;
     float _minHeight;
     float _maxHeight;
+    float _waterHeight;
     cellar::Grid<float> _heights;
 };
 
@@ -61,6 +64,11 @@ inline float Ground::maxHeight() const
     return _maxHeight;
 }
 
+inline float Ground::waterHeight() const
+{
+    return _waterHeight;
+}
+
 inline void Ground::setMinHeight(float height)
 {
     _minHeight = height;
@@ -69,6 +77,11 @@ inline void Ground::setMinHeight(float height)
 inline void Ground::setMaxHeight(float height)
 {
     _maxHeight = height;
+}
+
+inline void Ground::setWaterHeight(float height)
+{
+    _waterHeight = height;
 }
 
 inline float Ground::heightAt(int x, int y) const

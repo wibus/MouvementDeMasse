@@ -21,6 +21,7 @@ public:
     virtual void updateSunDirection(const cellar::Vec4f& direction);
 
 protected:
+    virtual void refresh();
     virtual void drawSky();
     virtual void drawSun();
 

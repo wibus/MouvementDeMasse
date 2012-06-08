@@ -20,18 +20,15 @@ MapElementsDepthFirst::~MapElementsDepthFirst()
 
 void MapElementsDepthFirst::setup(CityMap& cityMap)
 {
-    // TODO : Complete the algorithm
-
     MapElementsAlgorithm::setup(cityMap);
 
-    const float waterHeight = 0.0f;
-
+    // Begining of algorithm
     Vec2i currentPoint(_mapSize / 2);
 
-    while (_ground->heightAt( currentPoint ) < waterHeight)
+    while (_ground->heightAt( currentPoint ) < _ground->waterHeight())
     {
         currentPoint += Vec2i(1, 1);
-        if (currentPoint.x() > _mapSize.x())
+        if (currentPoint.x() >= _mapSize.x())
         {
             currentPoint(random(0, (int)_mapSize.x()), random(0, (int)_mapSize.y()));
         }
@@ -39,6 +36,8 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
     cityMap.junctions().get(currentPoint)->setType(Junction::ASPHALT);
     _junctionsStack.push(currentPoint);
 
+
+    // Main loop
     while (!_junctionsStack.empty())
     {
         Vec2i currPos = _junctionsStack.top();
@@ -58,7 +57,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
                 neighPos.y() >= _mapSize.y() ||
                 neighPos.x() < 0 ||
                 neighPos.y() < 0 ||
-                _ground->heightAt( neighPos ) < waterHeight )
+                _ground->heightAt( neighPos ) < _ground->waterHeight() )
                 continue;
 
             if (_cityMap->junctions().get(neighPos)->type() != Junction::GROUND)
@@ -84,7 +83,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
                         neighPos.y() >= _mapSize.y() ||
                         neighPos.x() < 0 ||
                         neighPos.y() < 0 ||
-                        _ground->heightAt( neighPos ) < waterHeight )
+                        _ground->heightAt( neighPos ) < _ground->waterHeight() )
                         continue;
 
 

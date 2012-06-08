@@ -67,8 +67,19 @@ void DrawSun::setup(CityMap& cityMap)
 
 void DrawSun::draw()
 {
+    refresh();
+
     drawSky();
     drawSun();
+}
+
+void DrawSun::refresh()
+{
+    DrawAlgorithm::refresh();
+
+    _sunShader.pushThisProgram();
+    _sunShader.setVec4f("SunDirection", _sunLight.direction);
+    _sunShader.popProgram();
 }
 
 void DrawSun::drawSky()
@@ -87,7 +98,6 @@ void DrawSun::drawSky()
 void DrawSun::drawSun()
 {
     _sunShader.pushThisProgram();
-    _sunShader.setVec4f("SunDirection", _sunLight.direction);
 
     glEnable(GL_BLEND);
     glDepthMask(false);

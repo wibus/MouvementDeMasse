@@ -53,6 +53,8 @@ void DrawSunGroundAndRoads::updateProjectionMatrix(const cellar::Matrix4x4<float
 
 void DrawSunGroundAndRoads::draw()
 {
+    refresh();
+
     drawSky();
     drawSun();
     drawGround();
@@ -180,6 +182,8 @@ void DrawSunGroundAndRoads::setupStreets()
     Vec2f* streetsTex = new Vec2f[_streetsNbElems];
     int idx = -1;
 
+    float lengthRatio = (1-2*_roadWidth) / _roadWidth;
+
     for(int j=0; j<_mapSize.y(); ++j)
     {
         for(int i=0; i<_mapSize.x(); ++i)
@@ -191,9 +195,9 @@ void DrawSunGroundAndRoads::setupStreets()
                 streetsPos[++idx] = Vec3f(i + _roadWidth, j-_roadWidth, startHeight);
                 streetsTex[idx] = Vec2f(0, 0);
                 streetsPos[++idx] = Vec3f(i+1-_roadWidth, j-_roadWidth, endHeight);
-                streetsTex[idx] = Vec2f(1, 0);
+                streetsTex[idx] = Vec2f(lengthRatio, 0);
                 streetsPos[++idx] = Vec3f(i+1-_roadWidth, j+_roadWidth, endHeight);
-                streetsTex[idx] = Vec2f(1, 1);
+                streetsTex[idx] = Vec2f(lengthRatio, 1);
                 streetsPos[++idx] = Vec3f(i + _roadWidth, j+_roadWidth, startHeight);
                 streetsTex[idx] = Vec2f(0, 1);
             }
@@ -206,9 +210,9 @@ void DrawSunGroundAndRoads::setupStreets()
                 streetsPos[++idx] = Vec3f(i+_roadWidth, j + _roadWidth, startHeight);
                 streetsTex[idx] = Vec2f(0, 0);
                 streetsPos[++idx] = Vec3f(i+_roadWidth, j+1-_roadWidth, endHeight);
-                streetsTex[idx] = Vec2f(1, 0);
+                streetsTex[idx] = Vec2f(lengthRatio, 0);
                 streetsPos[++idx] = Vec3f(i-_roadWidth, j+1-_roadWidth, endHeight);
-                streetsTex[idx] = Vec2f(1, 1);
+                streetsTex[idx] = Vec2f(lengthRatio, 1);
             }
         }
     }

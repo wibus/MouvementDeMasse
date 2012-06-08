@@ -21,6 +21,8 @@ public:
     virtual void updateProjectionMatrix(const cellar::Matrix4x4<float>& proj);
 
 protected:
+    virtual void refresh();
+
     cellar::Matrix3x3<float> _viewSubMat3;
     cellar::Matrix4x4<float> _viewMat;
     cellar::Matrix4x4<float> _projMat;
