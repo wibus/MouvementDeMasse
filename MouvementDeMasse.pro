@@ -61,7 +61,8 @@ SOURCES += \
     Algorithm/DrawAlgorithm/Sun.cpp \
     Ui/MainWindow.cpp \
     Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.cpp \
-    Ground.cpp
+    Ground.cpp \
+    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -82,7 +83,8 @@ HEADERS += \
     Algorithm/DrawAlgorithm/Sun.h \
     Ui/MainWindow.h \
     Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.h \
-    Ground.h
+    Ground.h \
+    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h
 
 OTHER_FILES += \
     resources/shaders/sun.vert \
@@ -90,7 +92,9 @@ OTHER_FILES += \
     resources/shaders/ground.vert \
     resources/shaders/ground.frag \
     resources/shaders/roads.vert \
-    resources/shaders/roads.frag
+    resources/shaders/roads.frag \
+    resources/shaders/highPrecGround.vert \
+    resources/shaders/highPrecGround.frag
 
 
 

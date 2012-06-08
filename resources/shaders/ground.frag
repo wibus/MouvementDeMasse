@@ -25,6 +25,9 @@ uniform sampler1D TextureUnit;
 uniform float HillsAmplitude;
 uniform float Shininess;
 
+
+varying vec3 norm;
+
 varying vec4 eyeVec;
 varying vec3 normal;
 varying float height;
@@ -61,4 +64,5 @@ void main(void)
 
     gl_FragColor = vec4((totAmbient + totDiffuse)*color.rgb + totSpecular.rgb,
                         max(color.a, totSpecular.a));
+    //gl_FragColor = vec4(abs(norm.xy), 0 , 1);
 }

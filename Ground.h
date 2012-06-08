@@ -101,14 +101,17 @@ inline cellar::Vec3f Ground::normalAt(float x, float y) const
     return cellar::Vec3f(-dzdx(x, y), -dzdy(x, y), 1).normalize();
 }
 
+const float ds = 0.25;
+const float dsd2 = 1.0f/(2.0f*ds);
+
 inline float Ground::dzdx(float x, float y) const
 {
-    return (heightAt(x + 0.5, y) - heightAt(x - 0.5, y));
+    return (heightAt(x + ds, y) - heightAt(x - ds, y)) * dsd2;
 }
 
 inline float Ground::dzdy(float x, float y) const
 {
-    return (heightAt(x, y + 0.5) - heightAt(x, y - 0.5));
+    return (heightAt(x, y + ds) - heightAt(x, y - ds)) * dsd2;
 }
 
 #endif // GROUND_H

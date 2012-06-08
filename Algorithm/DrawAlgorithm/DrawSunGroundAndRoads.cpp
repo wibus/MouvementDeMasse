@@ -249,9 +249,15 @@ void DrawSunGroundAndRoads::setupStreets()
 
 float DrawSunGroundAndRoads::junctionHeight(int x, int y)
 {
-    return cellar::max(_ground->heightAt(Vec2f(x,              y)),             cellar::max(
-                       _ground->heightAt(Vec2f(x - _roadWidth, y - _roadWidth)),cellar::max(
-                       _ground->heightAt(Vec2f(x + _roadWidth, y - _roadWidth)),cellar::max(
-                       _ground->heightAt(Vec2f(x + _roadWidth, y + _roadWidth)),
-                       _ground->heightAt(Vec2f(x - _roadWidth, y + _roadWidth))))));
+    float maxSide = cellar::max(_ground->heightAt(Vec2f(x - _roadWidth, y)),cellar::max(
+                                _ground->heightAt(Vec2f(x + _roadWidth, y)),cellar::max(
+                                _ground->heightAt(Vec2f(x, y - _roadWidth)),
+                                _ground->heightAt(Vec2f(x, y + _roadWidth)))));
+
+    float maxCorner = cellar::max(_ground->heightAt(Vec2f(x - _roadWidth, y - _roadWidth)),cellar::max(
+                                  _ground->heightAt(Vec2f(x + _roadWidth, y - _roadWidth)),cellar::max(
+                                  _ground->heightAt(Vec2f(x + _roadWidth, y + _roadWidth)),
+                                  _ground->heightAt(Vec2f(x - _roadWidth, y + _roadWidth)))));
+
+    return cellar::max(_ground->heightAt(Vec2f(x, y)), cellar::max(maxSide, maxCorner));
 }

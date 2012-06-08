@@ -20,6 +20,8 @@ uniform mat3 NormalMatrix;
 attribute vec3 position_att;
 attribute vec3 normal_att;
 
+varying vec3 norm;
+
 varying vec4 eyeVec;
 varying vec3 normal;
 varying float height;
@@ -33,4 +35,6 @@ void main(void)
     normal = NormalMatrix * normal_att;
     height = position_att.z;
     spotLightDir= (spots.position - eyeVec).xyz;
+
+    norm = normal_att;
 }

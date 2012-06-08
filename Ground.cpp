@@ -1,5 +1,6 @@
 #include "Ground.h"
 
+#include <iostream>
 using namespace std;
 
 #include <Misc/CellarUtils.h>
@@ -24,20 +25,20 @@ float Ground::heightAt(float x, float y) const
     // | -   \ |
     // *-------*
 
-    Vec2f  pos(clip(x, 0.0f, (float)(_width-1)), clip(y, 0.0f, (float)(_height-1)));
+    Vec2f pos(clip(x, 0.0f, (float)(_width-1)), clip(y, 0.0f, (float)(_height-1)));
     Vec2i base(floor(pos.x()),              floor(pos.y()));
-    Vec2f  bias(pos.x() - base.x(),          pos.y() - base.y());
+    Vec2f bias(pos.x() - base.x(),          pos.y() - base.y());
 
     if(bias == Vec2f(0, 0)) return _heights.get(pos.x(), pos.y());
 
     float dx, dy;
     const Vec2f n(0.707106781f, 0.707106781f); // sqrt(2)/2 = 0.707106781f
-    Vec2f p(1.0f - bias.x(), bias.y());
+    Vec2f p(bias.x() - 1.0f, bias.y());
 
     if(p * n <= 0) // Which side of square (- \ +)
     {
-        dx = _heights.get(base + Vec2i(1, 0)) - _heights.get(base);
-        dy = _heights.get(base + Vec2i(0, 1)) - _heights.get(base);
+        dx = _heights.get(cellar::min(base.x()+1, _width-1), base.y()) - _heights.get(base);
+        dy = _heights.get(base.x() , cellar::min(base.y()+1, _height-1)) - _heights.get(base);
     }
     else
     {

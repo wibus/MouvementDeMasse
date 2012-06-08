@@ -133,8 +133,8 @@ void MdMCharacter::setCityMap(CityMap* map)
 void MdMCharacter::setAlgorithms()
 {
     _cityMap->reset();
-    _cityMap->ground().setMinHeight(-20.0);
-    _cityMap->ground().setMaxHeight( 20.0);
+    _cityMap->ground().setMinHeight(-10.0);
+    _cityMap->ground().setMaxHeight( 10.0);
 
     // Height algorithm
     HeightByNoiseAlgo heightAlgo;
