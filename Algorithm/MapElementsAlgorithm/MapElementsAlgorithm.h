@@ -17,7 +17,7 @@ public:
 
 protected:
     CardinalDirection toCardinal(const cellar::Vec2i& dir);
-    cellar::Vec2ui    getNeighbor(const cellar::Vec2ui& pos, const cellar::Vec2i& dir);
+    cellar::Vec2i    getNeighbor(const cellar::Vec2i& pos, const cellar::Vec2i& dir);
 };
 
 #endif // MAPELEMENTSALGORITHM_H

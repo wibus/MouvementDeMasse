@@ -27,10 +27,9 @@ protected:
     virtual void genWaterTex();    
     virtual void drawWater();
 
-    virtual cellar::Vec3f derivate(const cellar::Vec2ui& pos);
     virtual void computeGroundVertex(int& idx,
                                      cellar::Vec3f* pos, cellar::Vec3f* norm,
-                                     unsigned int i,     unsigned j);
+                                     int i,     int j);
 
     // Ground
     cellar::GLShaderProgram _groundShader;

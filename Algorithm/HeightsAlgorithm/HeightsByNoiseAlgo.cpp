@@ -24,7 +24,7 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
     unsigned char prev=0, next=1;
     float maxHeight = 0.0f;
     float weight = noiseWeight(0);
-    bool usedNoise = inBounds((unsigned int)0, _minNoise, _maxNoise);
+    bool usedNoise = inBounds(0, _minNoise, _maxNoise);
     bool isLastPass = false;
 
     Grid<float> result(_mapSize.x(), _mapSize.y(), 0);
@@ -34,9 +34,9 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
     };
 
 
-    for(unsigned int j=0; j< _mapSize.y(); ++j)
+    for(int j=0; j< _mapSize.y(); ++j)
     {
-        for(unsigned int i=0; i< _mapSize.x(); ++i)
+        for(int i=0; i< _mapSize.x(); ++i)
         {
             float height = random(-1.0, 1.0);
             noises[prev].set(i, j, height);
@@ -44,7 +44,7 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
         }
     }
 
-    for(unsigned int n=1; n<_nbNoises; ++n)
+    for(int n=1; n<_nbNoises; ++n)
     {
         // This is truly an assignation
         if( (usedNoise = inBounds(n, _minNoise, _maxNoise)) )
@@ -53,9 +53,9 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
         isLastPass = (n == _nbNoises-1);
 
 
-        for(unsigned int j=0; j< _mapSize.y(); ++j)
+        for(int j=0; j< _mapSize.y(); ++j)
         {
-            for(unsigned int i=0; i< _mapSize.x(); ++i)
+            for(int i=0; i< _mapSize.x(); ++i)
             {
                 int nb = 0;
                 float moy = 0;
@@ -122,49 +122,41 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
         next ^= 0x1;
     }
 
-    Junction* junction;
     float amplitudeCorection = amplitude / maxHeight;
 
-    for(unsigned int j=0; j< _mapSize.y(); ++j)
-    {
-        for(unsigned int i=0; i< _mapSize.x(); ++i)
-        {
-            // This is truly an assignation
-            if( (junction = _cityMap->junctions().get(i, j)) )
-            {
-                junction->setHeight( result.get(i, j) * amplitudeCorection
-                                     + middleHeight);
-            }
-        }
-    }
+    for(int j=0; j< _mapSize.y(); ++j)
+        for(int i=0; i< _mapSize.x(); ++i)
+            _ground->setHeightAt(i, j,
+                result.get(i, j) * amplitudeCorection + middleHeight
+            );
 }
 
-float HeightByNoiseAlgo::noiseWeight(unsigned int idx)
+float HeightByNoiseAlgo::noiseWeight(int idx)
 {
     return sqrt(idx / static_cast<float>(_nbNoises));
 }
 
-unsigned int HeightByNoiseAlgo::nbNoises() const
+int HeightByNoiseAlgo::nbNoises() const
 {
     return _nbNoises;
 }
 
-unsigned int HeightByNoiseAlgo::minWeightedNoise() const
+int HeightByNoiseAlgo::minWeightedNoise() const
 {
     return _minNoise;
 }
 
-unsigned int HeightByNoiseAlgo::maxWeightedNoise() const
+int HeightByNoiseAlgo::maxWeightedNoise() const
 {
     return _maxNoise;
 }
 
-void HeightByNoiseAlgo::setNbNoises(unsigned int nb)
+void HeightByNoiseAlgo::setNbNoises(int nb)
 {
     _nbNoises = nb;
 }
 
-void HeightByNoiseAlgo::setWeightedNoisesRange(unsigned int min, unsigned int max)
+void HeightByNoiseAlgo::setWeightedNoisesRange(int min, int max)
 {
     _minNoise = min;
     _maxNoise = max;

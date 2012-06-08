@@ -3,6 +3,7 @@
 
 #include <MathsAndPhysics/Vector.h>
 class CityMap;
+class Ground;
 
 
 class Algorithm
@@ -17,7 +18,8 @@ public:
 
 protected:
     CityMap* _cityMap;
-    cellar::Vec2ui _mapSize;
+    Ground*  _ground;
+    cellar::Vec2i _mapSize;
     float _minHeight;
     float _maxHeight;
 };

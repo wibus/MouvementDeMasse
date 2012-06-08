@@ -60,7 +60,8 @@ SOURCES += \
     Algorithm/DrawAlgorithm/DrawSunAndGround.cpp \
     Algorithm/DrawAlgorithm/Sun.cpp \
     Ui/MainWindow.cpp \
-    Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.cpp
+    Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.cpp \
+    Ground.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -80,7 +81,8 @@ HEADERS += \
     Algorithm/DrawAlgorithm/DrawSunAndGround.h \
     Algorithm/DrawAlgorithm/Sun.h \
     Ui/MainWindow.h \
-    Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.h
+    Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.h \
+    Ground.h
 
 OTHER_FILES += \
     resources/shaders/sun.vert \

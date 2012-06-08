@@ -6,6 +6,7 @@
 #include <DataStructures/PGrid.h>
 #include <MathsAndPhysics/Vector.h>
 
+#include "Ground.h"
 #include "Land/Land.h"
 #include "Road/Junction.h"
 #include "Road/Street.h"
@@ -18,7 +19,7 @@ class MapElementsAlgorithm;
 class CityMap
 {
 public:
-    CityMap(uint width, uint height, const cellar::Vec2f& heightsRange);
+    CityMap(int width, int height);
 
     void setDrawAlgorithm(DrawAlgorithm* algorithm);
     void setHeightsAlgorithm(HeightsAlgorithm* algorithm);
@@ -28,9 +29,8 @@ public:
     HeightsAlgorithm& heightsAlgorithm();
     MapElementsAlgorithm& mapElementsAlgorithm();
 
-    cellar::Vec2ui size() const;
-    cellar::Vec2f  heightsRange() const;
-    float          heightAt(const cellar::Vec2f& pos) const;
+    cellar::Vec2i  size() const;
+    Ground& ground();
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
 
@@ -43,8 +43,8 @@ protected:
     void resetJunctions();
 
 private:
-    cellar::Vec2ui _size;
-    cellar::Vec2f  _heightsRange;
+    cellar::Vec2i _size;
+    Ground _ground;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;
 
@@ -56,14 +56,14 @@ private:
 
 
 // Implementation //
-inline cellar::Vec2ui CityMap::size() const
+inline cellar::Vec2i CityMap::size() const
 {
     return _size;
 }
 
-inline cellar::Vec2f  CityMap::heightsRange() const
+inline Ground& CityMap::ground()
 {
-    return _heightsRange;
+    return _ground;
 }
 
 inline cellar::PGrid<Land>& CityMap::lands()

@@ -26,11 +26,11 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
 
     const float waterHeight = 0.0f;
 
-    Vec2ui currentPoint(_mapSize / 2);
+    Vec2i currentPoint(_mapSize / 2);
 
-    while (_cityMap->junctions().get(currentPoint)->height() < 0)
+    while (_ground->heightAt( currentPoint ) < waterHeight)
     {
-        currentPoint += Vec2ui(1, 1);
+        currentPoint += Vec2i(1, 1);
         if (currentPoint.x() > _mapSize.x())
         {
             currentPoint(random(0, (int)_mapSize.x()), random(0, (int)_mapSize.y()));
@@ -41,7 +41,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
 
     while (!_junctionsStack.empty())
     {
-        Vec2ui currPos = _junctionsStack.top();
+        Vec2i currPos = _junctionsStack.top();
         Junction* currJunc = _cityMap->junctions().get(currPos);
         currJunc->setType(Junction::ASPHALT);
 
@@ -50,12 +50,15 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
 
         Vec2i direction(1, 0);
 
-        for (unsigned int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             direction.rotateQuarterCCW();
-            Vec2ui neighPos = getNeighbor(currPos, direction);
-            if (neighPos.x() >= (_mapSize.x() - 2) || neighPos.y() >= (_mapSize.y() - 2) ||
-                _cityMap->junctions().get(neighPos)->height() < waterHeight )
+            Vec2i neighPos = getNeighbor(currPos, direction);
+            if (neighPos.x() >= _mapSize.x() ||
+                neighPos.y() >= _mapSize.y() ||
+                neighPos.x() < 0 ||
+                neighPos.y() < 0 ||
+                _ground->heightAt( neighPos ) < waterHeight )
                 continue;
 
             if (_cityMap->junctions().get(neighPos)->type() != Junction::GROUND)
@@ -72,13 +75,16 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         {
             if (random(2.0) > 1)
             {
-                for (unsigned int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++)
                 {
 
                     direction.rotateQuarterCCW();
-                    Vec2ui neighPos = getNeighbor(currPos, direction);
-                    if (neighPos.x() >= (_mapSize.x() - 2) || neighPos.y() >= (_mapSize.y() - 2) ||
-                        _cityMap->junctions().get(neighPos)->height() < waterHeight )
+                    Vec2i neighPos = getNeighbor(currPos, direction);
+                    if (neighPos.x() >= _mapSize.x() ||
+                        neighPos.y() >= _mapSize.y() ||
+                        neighPos.x() < 0 ||
+                        neighPos.y() < 0 ||
+                        _ground->heightAt( neighPos ) < waterHeight )
                         continue;
 
 

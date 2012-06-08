@@ -116,7 +116,7 @@ void DrawSunAndGround::setupSpotLights()
     _spots.cutoff = cos(PI/ 16);
 
 
-    _spots.position(0, 0, _cityMap->heightsRange()[1] * 2);
+    _spots.position(0, 0, _ground->maxHeight() * 2);
 
     _groundShader.pushThisProgram();
     _groundShader.setVec3f("spots.attCoefs", _spots.attenuationCoefs);
@@ -149,19 +149,19 @@ void DrawSunAndGround::setupGround()
     /// <-
     /// nbElems = ((width + 1) * 2) * (height - 1)
 
-    unsigned int gNbRows = (_mapSize.y() - 1);
-    unsigned int gElemByRow = (_mapSize.x() + 1) * 2;
+    int gNbRows = (_mapSize.y() - 1);
+    int gElemByRow = (_mapSize.x() + 1) * 2;
     _groundNbElems = gElemByRow * gNbRows;
     Vec3f* gnormals   = new Vec3f[_groundNbElems];
     Vec3f* gpositions = new Vec3f[_groundNbElems];
 
 
     int idx = -1;
-    for(unsigned int j=0; j < gNbRows; ++j)
+    for(int j=0; j < gNbRows; ++j)
     {
         computeGroundVertex(idx, gpositions, gnormals, 0, j);
 
-        for(unsigned int i=0; i < _mapSize.x(); ++i)
+        for(int i=0; i < _mapSize.x(); ++i)
         {
             computeGroundVertex(idx, gpositions, gnormals, i, j);
             computeGroundVertex(idx, gpositions, gnormals, i, j+1);
@@ -208,50 +208,11 @@ void DrawSunAndGround::setupGround()
     _groundShader.popProgram();
 }
 
-void DrawSunAndGround::computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, unsigned int i, unsigned j)
+void DrawSunAndGround::computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, int i, int j)
 {
     ++idx;
-    norm[idx]   = derivate(Vec2ui(i, j));
-    pos[idx] = Vec3f(i, j, _cityMap->junctions().get(i, j)->height());
-}
-
-cellar::Vec3f DrawSunAndGround::derivate(const cellar::Vec2ui& pos)
-{
-    Vec3f derivate(0, 0, -1);
-    float currentHeight =_cityMap->junctions().get(pos.x(), pos.y())->height();
-
-    if (pos.x() == 0)
-    {
-        derivate.setX(_cityMap->junctions().get(1, pos.y())->height() - currentHeight);
-    }
-    else if (pos.x() == _mapSize.x() - 1)
-    {
-        derivate.setX(currentHeight - _cityMap->junctions().get(_mapSize.x() - 2, pos.y())->height());
-    }
-    else
-    {
-        float prev = currentHeight - _cityMap->junctions().get(pos.x() - 1, pos.y())->height();
-        float next = _cityMap->junctions().get(pos.x() + 1, pos.y())->height() - currentHeight;
-
-        derivate.setX((prev + next) / 2);
-    }
-    if (pos.y() == 0)
-    {
-        derivate.setY(_cityMap->junctions().get(pos.x(), 1)->height() - currentHeight);
-    }
-    else if (pos.y() == _mapSize.y() - 1)
-    {
-        derivate.setY(currentHeight - _cityMap->junctions().get(pos.x(), _mapSize.y() - 2)->height());
-    }
-    else
-    {
-        float prev = currentHeight - _cityMap->junctions().get(pos.x(), pos.y() - 1)->height();
-        float next = _cityMap->junctions().get(pos.x(), pos.y() + 1)->height() - currentHeight;
-
-        derivate.setY((prev + next) / 2);
-    }
-
-    return -derivate;
+    norm[idx] = _ground->normalAt(i, j);
+    pos[idx]  = Vec3f(i, j, _ground->heightAt(i, j));
 }
 
 void DrawSunAndGround::setupWater()

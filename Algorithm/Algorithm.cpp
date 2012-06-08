@@ -16,8 +16,9 @@ Algorithm::~Algorithm()
 void Algorithm::setup(CityMap &cityMap)
 {
     _cityMap = &cityMap;
+    _ground  = &(cityMap.ground());
     _mapSize(_cityMap->junctions().width(),
              _cityMap->junctions().height());
-    _minHeight = cityMap.heightsRange().x();
-    _maxHeight = cityMap.heightsRange().y();
+    _minHeight = _ground->minHeight();
+    _maxHeight = _ground->maxHeight();
 }

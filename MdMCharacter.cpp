@@ -19,14 +19,14 @@ using namespace scaena;
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
-    _cityMap( new CityMap(100, 100, Vec2f(-20.0, 20.0))),
+    _cityMap( new CityMap(100, 100)),
     _drawAlgorithm(),
     _camMan( stage.camera() ),
     _fpsText()
 {
     _fpsText.setPosition(5, 5);
 
-    stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->heightsRange()[1]),
+    stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->ground().maxHeight()),
                              Vec3f(_cityMap->size().x() / 2, _cityMap->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
@@ -133,6 +133,8 @@ void MdMCharacter::setCityMap(CityMap* map)
 void MdMCharacter::setAlgorithms()
 {
     _cityMap->reset();
+    _cityMap->ground().setMinHeight(-20.0);
+    _cityMap->ground().setMaxHeight( 20.0);
 
     // Height algorithm
     HeightByNoiseAlgo heightAlgo;
@@ -140,65 +142,8 @@ void MdMCharacter::setAlgorithms()
     heightAlgo.setWeightedNoisesRange(1, heightAlgo.nbNoises());
     heightAlgo.setup( *_cityMap );
 
-
-
     MapElementsDepthFirst mapElemAlgo;
     mapElemAlgo.setup(*_cityMap);
-    /*
-    // Draw algorithm
-    Vec2ui pos(_cityMap->size() / 2);
-    Vec2ui next;
-    Vec2i  dir(0, 0);
-    while(pos.x() != 1 &&
-          pos.x() != _cityMap->size().x()-1 &&
-          pos.y() != 1 &&
-          pos.y() != _cityMap->size().y()-1 )
-    {
-        _cityMap->junctions().get( pos )->setType(Junction::ASPHALT);
-
-        dir(0, 0);
-        if(rand() % 2)
-        {
-            if(rand() % 2)
-                dir.setX(-1);
-            else
-                dir.setX(1);
-        }
-        else
-        {
-            if(rand() % 2)
-                dir.setY(-1);
-            else
-                dir.setY(1);
-        }
-
-        next( pos.x() + dir.x(), pos.y() + dir.y());
-        shared_ptr<Street> street( new Street(pos, next) );
-
-        if(dir == Vec2i(-1, 0))
-        {
-            _cityMap->junctions().get(pos)->attach(street, WEST);
-            _cityMap->junctions().get(next)->attach(street, EAST);
-        }
-        else if(dir == Vec2i(1, 0))
-        {
-            _cityMap->junctions().get(pos)->attach(street, EAST);
-            _cityMap->junctions().get(next)->attach(street, WEST);
-        }
-        else if(dir == Vec2i(0, -1))
-        {
-            _cityMap->junctions().get(pos)->attach(street, SOUTH);
-            _cityMap->junctions().get(next)->attach(street, NORTH);
-        }
-        else if(dir == Vec2i(0, 1))
-        {
-            _cityMap->junctions().get(pos)->attach(street, NORTH);
-            _cityMap->junctions().get(next)->attach(street, SOUTH);
-        }
-
-
-        pos = next;
-    }*/
 
     _drawAlgorithm.setup( *_cityMap );
 

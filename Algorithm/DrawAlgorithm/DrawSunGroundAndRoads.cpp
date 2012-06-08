@@ -97,8 +97,8 @@ void DrawSunGroundAndRoads::setupJunctions()
 {
     // Compute number of junction vertices
     _junctionsNbElems = 0;
-    for(unsigned int j=0; j<_mapSize.y(); ++j)
-        for(unsigned int i=0; i<_mapSize.x(); ++i)
+    for(int j=0; j<_mapSize.y(); ++j)
+        for(int i=0; i<_mapSize.x(); ++i)
             if(_cityMap->junctions().get(i , j)->type() != Junction::GROUND)
                 _junctionsNbElems += 4;
 
@@ -107,9 +107,9 @@ void DrawSunGroundAndRoads::setupJunctions()
     Vec2f* junctionsTex = new Vec2f[_junctionsNbElems];
     int idx = -1;
 
-    for(unsigned int j=0; j<_mapSize.y(); ++j)
+    for(int j=0; j<_mapSize.y(); ++j)
     {
-        for(unsigned int i=0; i<_mapSize.x(); ++i)
+        for(int i=0; i<_mapSize.x(); ++i)
         {
             if(_cityMap->junctions().get(i , j)->type() != Junction::GROUND)
             {
@@ -164,9 +164,9 @@ void DrawSunGroundAndRoads::setupStreets()
 {
     // Compute number of street vertices
     _streetsNbElems = 0;
-    for(unsigned int j=0; j<_mapSize.y(); ++j)
+    for(int j=0; j<_mapSize.y(); ++j)
     {
-        for(unsigned int i=0; i<_mapSize.x(); ++i)
+        for(int i=0; i<_mapSize.x(); ++i)
         {
             if(_cityMap->junctions().get(i , j)->getStreet(EAST)!= 0x0)
                 _streetsNbElems += 4;
@@ -180,9 +180,9 @@ void DrawSunGroundAndRoads::setupStreets()
     Vec2f* streetsTex = new Vec2f[_streetsNbElems];
     int idx = -1;
 
-    for(unsigned int j=0; j<_mapSize.y(); ++j)
+    for(int j=0; j<_mapSize.y(); ++j)
     {
-        for(unsigned int i=0; i<_mapSize.x(); ++i)
+        for(int i=0; i<_mapSize.x(); ++i)
         {
             if(_cityMap->junctions().get(i , j)->getStreet(EAST)!= 0x0)
             {
@@ -247,11 +247,11 @@ void DrawSunGroundAndRoads::setupStreets()
     _streetsTex = GLToolkit::genTextureId( getImageBank().getImage("resources/textures/street.bmp", false) );
 }
 
-float DrawSunGroundAndRoads::junctionHeight(unsigned int x, unsigned int y)
+float DrawSunGroundAndRoads::junctionHeight(int x, int y)
 {
-    return cellar::max(_cityMap->heightAt(Vec2f(x,              y)),             cellar::max(
-                       _cityMap->heightAt(Vec2f(x - _roadWidth, y - _roadWidth)),cellar::max(
-                       _cityMap->heightAt(Vec2f(x + _roadWidth, y - _roadWidth)),cellar::max(
-                       _cityMap->heightAt(Vec2f(x + _roadWidth, y + _roadWidth)),
-                       _cityMap->heightAt(Vec2f(x - _roadWidth, y + _roadWidth))))));
+    return cellar::max(_ground->heightAt(Vec2f(x,              y)),             cellar::max(
+                       _ground->heightAt(Vec2f(x - _roadWidth, y - _roadWidth)),cellar::max(
+                       _ground->heightAt(Vec2f(x + _roadWidth, y - _roadWidth)),cellar::max(
+                       _ground->heightAt(Vec2f(x + _roadWidth, y + _roadWidth)),
+                       _ground->heightAt(Vec2f(x - _roadWidth, y + _roadWidth))))));
 }

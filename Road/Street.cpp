@@ -3,7 +3,7 @@
 using namespace cellar;
 
 
-Street::Street(const Vec2ui &posA, const Vec2ui &posB)
+Street::Street(const Vec2i &posA, const Vec2i &posB)
 {
     _junctions[0] = posA;
     _junctions[1] = posB;

@@ -23,7 +23,7 @@ protected:
     virtual void setupStreets();
     virtual void drawStreets();
 
-    virtual float junctionHeight(unsigned int x, unsigned int y);
+    virtual float junctionHeight(int x, int y);
 
 
     // Attributes
