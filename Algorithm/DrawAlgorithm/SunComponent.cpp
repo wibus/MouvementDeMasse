@@ -6,21 +6,16 @@ using namespace cellar;
 
 SunComponent::SunComponent(DrawCityCommonData &common) :
     _common(common),
-    _sunShader(),
     _sunVao(0),
     _sunNbElems(4)
 {
-    GLInOutProgramLocation locations;
-    locations.setInput(0, "relPos_att");
-     _sunShader.setInAndOutLocations(locations);
-     _sunShader.loadShadersFromFile("resources/shaders/sun.vert",
-                                    "resources/shaders/sun.frag");
-     _sunShader.pushThisProgram();
-     _sunShader.setVec4f("Color", _common.sunColor);
-     _sunShader.setFloat("Radius", _common.sunRadius);
+     _common.sunShader.pushThisProgram();
+     _common.sunShader.setVec4f("Color", _common.sunColor);
+     _common.sunShader.setFloat("Radius", _common.sunRadius);
+     _common.sunShader.popProgram();
+
      glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
      glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
-     _sunShader.popProgram();
 }
 
 void SunComponent::setup()
@@ -40,7 +35,7 @@ void SunComponent::setup()
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2f) * _sunNbElems, relPos, GL_STATIC_DRAW);
 
-    int relPos_loc = _sunShader.getAttributeLocation("relPos_att");
+    int relPos_loc = _common.sunShader.getAttributeLocation("relPos_att");
     glEnableVertexAttribArray(relPos_loc);
     glVertexAttribPointer(relPos_loc, 2, GL_FLOAT, 0, 0, 0);
 
@@ -52,7 +47,7 @@ void SunComponent::setup()
 
 void SunComponent::draw()
 {
-    _sunShader.pushThisProgram();
+    _common.sunShader.pushThisProgram();
 
     glEnable(GL_BLEND);
     glDepthMask(false);
@@ -61,26 +56,26 @@ void SunComponent::draw()
     glDepthMask(true);
     glDisable(GL_BLEND);
 
-    _sunShader.popProgram();
+    _common.sunShader.popProgram();
 }
 
 void SunComponent::update()
 {
-    _sunShader.pushThisProgram();
-    _sunShader.setVec4f("SunDirection", _common.sunLight.direction);
-    _sunShader.popProgram();
+    _common.sunShader.pushThisProgram();
+    _common.sunShader.setVec4f("SunDirection", _common.sunLight.direction);
+    _common.sunShader.popProgram();
 }
 
 void SunComponent::updateProjectionMatrix()
 {
-    _sunShader.pushThisProgram();
-    _sunShader.setMatrix4x4("Projection", _common.projMat);
-    _sunShader.popProgram();
+    _common.sunShader.pushThisProgram();
+    _common.sunShader.setMatrix4x4("Projection", _common.projMat);
+    _common.sunShader.popProgram();
 }
 
 void SunComponent::updateModelViewMatrix()
 {
-    _sunShader.pushThisProgram();
-    _sunShader.setMatrix3x3("Rotation",  _common.normalMat);
-    _sunShader.popProgram();
+    _common.sunShader.pushThisProgram();
+    _common.sunShader.setMatrix3x3("Rotation",  _common.normalMat);
+    _common.sunShader.popProgram();
 }

@@ -68,7 +68,8 @@ SOURCES += \
     Algorithm/DrawAlgorithm/SkyComponent.cpp \
     Algorithm/DrawAlgorithm/WaterComponent.cpp \
     Algorithm/DrawAlgorithm/GroundComponent.cpp \
-    Algorithm/DrawAlgorithm/JunctionsComponent.cpp
+    Algorithm/DrawAlgorithm/JunctionsComponent.cpp \
+    Algorithm/DrawAlgorithm/StreetsComponent.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -96,7 +97,8 @@ HEADERS += \
     Algorithm/DrawAlgorithm/SkyComponent.h \
     Algorithm/DrawAlgorithm/WaterComponent.h \
     Algorithm/DrawAlgorithm/GroundComponent.h \
-    Algorithm/DrawAlgorithm/JunctionsComponent.h
+    Algorithm/DrawAlgorithm/JunctionsComponent.h \
+    Algorithm/DrawAlgorithm/StreetsComponent.h
 
 OTHER_FILES += \
     resources/shaders/sun.vert \

@@ -11,21 +11,13 @@ using namespace cellar;
 
 JunctionsComponent::JunctionsComponent(DrawCityCommonData& common) :
     _common(common),
-    _junctionsShader(),
     _junctionsVao(0),
     _junctionsTex(0),
     _junctionsNbElems(0)
 {
-    GLInOutProgramLocation locations;
-    locations.setInput(0, "position_att");
-    locations.setInput(1, "normal_att");
-    locations.setInput(2, "texCoord_att");
-    _junctionsShader.setInAndOutLocations(locations);
-    _junctionsShader.loadShadersFromFile("resources/shaders/roads.vert",
-                                    "resources/shaders/roads.frag");
-    _junctionsShader.pushThisProgram();
-    _junctionsShader.setInt("TextureUnit", 0);
-    _junctionsShader.popProgram();
+    _common.roadsShader.pushThisProgram();
+    _common.roadsShader.setInt("TextureUnit", 0);
+    _common.roadsShader.popProgram();
 }
 
 void JunctionsComponent::setup()
@@ -63,8 +55,8 @@ void JunctionsComponent::setup()
 
 
     // Setup Vao
-    int position_loc = _junctionsShader.getAttributeLocation("position_att");
-    int texCoord_loc = _junctionsShader.getAttributeLocation("texCoord_att");
+    int position_loc = _common.roadsShader.getAttributeLocation("position_att");
+    int texCoord_loc = _common.roadsShader.getAttributeLocation("texCoord_att");
 
     glGenVertexArrays(1, &_junctionsVao);
     glBindVertexArray( _junctionsVao );
@@ -93,41 +85,43 @@ void JunctionsComponent::setup()
 
 
     // Texture
-    _junctionsTex = GLToolkit::genTextureId( getImageBank().getImage("resources/textures/junction.bmp", false) );
+    _junctionsTex = GLToolkit::genTextureId(
+        getImageBank().getImage("resources/textures/junction.bmp", false)
+    );
 }
 
 void JunctionsComponent::draw()
 {
-    _junctionsShader.pushThisProgram();
-    glVertexAttrib3f(_junctionsShader.getAttributeLocation("normal_att"), 0, 1, 1);
+    _common.roadsShader.pushThisProgram();
+    glVertexAttrib3f(_common.roadsShader.getAttributeLocation("normal_att"), 0, 1, 1);
 
     glBindVertexArray(_junctionsVao);
     glBindTexture(GL_TEXTURE_2D, _junctionsTex);
     glDrawArrays(GL_QUADS, 0, _junctionsNbElems);
 
-    _junctionsShader.popProgram();
+    _common.roadsShader.popProgram();
 }
 
 void JunctionsComponent::update()
 {
-    _junctionsShader.pushThisProgram();
-    _junctionsShader.setVec4f("sun.direction",   _common.viewedSunDirection);
-    _junctionsShader.popProgram();
+    _common.roadsShader.pushThisProgram();
+    _common.roadsShader.setVec4f("sun.direction",   _common.viewedSunDirection);
+    _common.roadsShader.popProgram();
 }
 
 void JunctionsComponent::updateProjectionMatrix()
 {
-    _junctionsShader.pushThisProgram();
-    _junctionsShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
-    _junctionsShader.popProgram();
+    _common.roadsShader.pushThisProgram();
+    _common.roadsShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
+    _common.roadsShader.popProgram();
 }
 
 void JunctionsComponent::updateModelViewMatrix()
 {
-    _junctionsShader.pushThisProgram();
-    _junctionsShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
-    _junctionsShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
-    _junctionsShader.popProgram();
+    _common.roadsShader.pushThisProgram();
+    _common.roadsShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
+    _common.roadsShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
+    _common.roadsShader.popProgram();
 }
 
 float JunctionsComponent::junctionHeight(int x, int y)

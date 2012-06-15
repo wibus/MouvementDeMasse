@@ -1,8 +1,7 @@
-#ifndef GROUNDCOMPONENENT_H
-#define GROUNDCOMPONENENT_H
+#ifndef GROUNDCOMPONENT_H
+#define GROUNDCOMPONENT_H
 
-#include "Graphics/GL/GLShaderProgram.h"
-
+#include <MathsAndPhysics/Vector.h>
 struct DrawCityCommonData;
 
 
@@ -24,10 +23,9 @@ protected:
 
 
     DrawCityCommonData& _common;
-    cellar::GLShaderProgram _groundShader;
     unsigned int _groundVao;
     unsigned int _groundTex;
     int _groundNbElems;
 };
 
-#endif // GROUNDCOMPONENENT_H
+#endif // GROUNDCOMPONENT_H

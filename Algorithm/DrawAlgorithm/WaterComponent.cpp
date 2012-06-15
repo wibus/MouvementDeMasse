@@ -9,23 +9,17 @@ using namespace cellar;
 
 WaterComponent::WaterComponent(DrawCityCommonData& common) :
     _common(common),
-    _waterShader(),
     _waterVao(0),
     _waterNbElems(4)
 {
-    GLInOutProgramLocation waterLocations;
-    waterLocations.setInput(0, "position_att");
-    _waterShader.setInAndOutLocations(waterLocations);
-    _waterShader.loadShadersFromFile("resources/shaders/water.vert",
-                                     "resources/shaders/water.frag");
-    _waterShader.pushThisProgram();
-    _waterShader.setVec4f("sun.direction", _common.sunLight.direction);
-    _waterShader.setVec3f("sun.ambient",   _common.sunLight.ambient);
-    _waterShader.setVec3f("sun.diffuse",   _common.sunLight.diffuse);
-    _waterShader.setVec3f("sun.specular",  _common.sunLight.specular);
-    _waterShader.setFloat("Shininess",     _common.waterShininess);
-    _waterShader.setVec4f("WaterColor",    _common.waterColor);
-    _waterShader.popProgram();
+    _common.waterShader.pushThisProgram();
+    _common.waterShader.setVec4f("sun.direction", _common.sunLight.direction);
+    _common.waterShader.setVec3f("sun.ambient",   _common.sunLight.ambient);
+    _common.waterShader.setVec3f("sun.diffuse",   _common.sunLight.diffuse);
+    _common.waterShader.setVec3f("sun.specular",  _common.sunLight.specular);
+    _common.waterShader.setFloat("Shininess",     _common.waterShininess);
+    _common.waterShader.setVec4f("WaterColor",    _common.waterColor);
+    _common.waterShader.popProgram();
 }
 
 void WaterComponent::setup()
@@ -48,7 +42,7 @@ void WaterComponent::setup()
     glBindBuffer(GL_ARRAY_BUFFER, wBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*wpositions) * _waterNbElems, wpositions, GL_STATIC_DRAW);
 
-    int position_loc = _waterShader.getAttributeLocation("position_att");
+    int position_loc = _common.waterShader.getAttributeLocation("position_att");
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
@@ -63,34 +57,34 @@ void WaterComponent::setup()
 
 void WaterComponent::draw()
 {
-    _waterShader.pushThisProgram();
+    _common.waterShader.pushThisProgram();
 
     glBindVertexArray(_waterVao);
     glEnable(GL_BLEND);
     glDrawArrays(GL_TRIANGLE_FAN, 0, _waterNbElems);
     glDisable(GL_BLEND);
 
-    _waterShader.popProgram();
+    _common.waterShader.popProgram();
 }
 
 void WaterComponent::update()
 {
-    _waterShader.pushThisProgram();
-    _waterShader.setVec4f("sun.direction",   _common.viewedSunDirection);
-    _waterShader.popProgram();
+    _common.waterShader.pushThisProgram();
+    _common.waterShader.setVec4f("sun.direction",   _common.viewedSunDirection);
+    _common.waterShader.popProgram();
 }
 
 void WaterComponent::updateProjectionMatrix()
 {
-    _waterShader.pushThisProgram();
-    _waterShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
-    _waterShader.popProgram();
+    _common.waterShader.pushThisProgram();
+    _common.waterShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
+    _common.waterShader.popProgram();
 }
 
 void WaterComponent::updateModelViewMatrix()
 {
-    _waterShader.pushThisProgram();
-    _waterShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
-    _waterShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
-    _waterShader.popProgram();
+    _common.waterShader.pushThisProgram();
+    _common.waterShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
+    _common.waterShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
+    _common.waterShader.popProgram();
 }

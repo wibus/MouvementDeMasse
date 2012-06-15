@@ -2,12 +2,14 @@
 #define DRAWCITYMODULE_H
 
 #include <Graphics/Light/Light3D.h>
+#include <Graphics/GL/GLShaderProgram.h>
 
 #include "City/CityMap.h"
 #include "SkyComponent.h"
 #include "SunComponent.h"
 #include "GroundComponent.h"
 #include "JunctionsComponent.h"
+#include "StreetsComponent.h"
 #include "WaterComponent.h"
 
 
@@ -24,6 +26,12 @@ struct DrawCityCommonData
     cellar::Matrix4x4<float> projMat;
     cellar::Matrix4x4<float> viewMat;
     cellar::Matrix3x3<float> normalMat;
+
+    // Shaders
+    cellar::GLShaderProgram sunShader;
+    cellar::GLShaderProgram groundShader;
+    cellar::GLShaderProgram roadsShader;
+    cellar::GLShaderProgram waterShader;
 
     // Sun
     float sunRadius;
@@ -66,6 +74,7 @@ protected:
     SkyComponent _skyComponent;
     GroundComponent _groundComponent;
     JunctionsComponent _junctionComponent;
+    StreetsComponent _streetsComponent;
     WaterComponent _waterComponent;
 };
 

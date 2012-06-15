@@ -1,8 +1,6 @@
 #ifndef JUNCTIONSCOMPONENT_H
 #define JUNCTIONSCOMPONENT_H
 
-#include <Graphics/GL/GLShaderProgram.h>
-
 struct DrawCityCommonData;
 
 
@@ -22,7 +20,6 @@ protected:
     float junctionHeight(int x, int y);
 
     DrawCityCommonData& _common;
-    cellar::GLShaderProgram _junctionsShader;
     unsigned int _junctionsVao;
     unsigned int _junctionsTex;
     int          _junctionsNbElems;

@@ -22,6 +22,38 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     sunLight.ambient( 0.08, 0.09, 0.12);
     sunLight.diffuse( 0.62, 0.62, 0.60);
     sunLight.specular(0.65, 0.50, 0.30);
+
+
+    // Sun
+    GLInOutProgramLocation sunLocations;
+    sunLocations.setInput(0, "relPos_att");
+    sunShader.setInAndOutLocations(sunLocations);
+    sunShader.loadShadersFromFile("resources/shaders/sun.vert",
+                                  "resources/shaders/sun.frag");
+
+    // Ground
+    GLInOutProgramLocation groundLocations;
+    groundLocations.setInput(0, "position_att");
+    groundLocations.setInput(1, "normal_att");
+    groundShader.setInAndOutLocations(groundLocations);
+    groundShader.loadShadersFromFile("resources/shaders/ground.vert",
+                                     "resources/shaders/ground.frag");
+
+    // Roads
+    GLInOutProgramLocation junctionsLocations;
+    junctionsLocations.setInput(0, "position_att");
+    junctionsLocations.setInput(1, "normal_att");
+    junctionsLocations.setInput(2, "texCoord_att");
+    roadsShader.setInAndOutLocations(junctionsLocations);
+    roadsShader.loadShadersFromFile("resources/shaders/roads.vert",
+                                        "resources/shaders/roads.frag");
+
+    // Water
+    GLInOutProgramLocation waterLocations;
+    waterLocations.setInput(0, "position_att");
+    waterShader.setInAndOutLocations(waterLocations);
+    waterShader.loadShadersFromFile("resources/shaders/water.vert",
+                                    "resources/shaders/water.frag");
 }
 
 DrawCityModule::DrawCityModule(CityMap &cityMap) :
@@ -30,6 +62,7 @@ DrawCityModule::DrawCityModule(CityMap &cityMap) :
     _skyComponent(_commonData),
     _groundComponent(_commonData),
     _junctionComponent(_commonData),
+    _streetsComponent(_commonData),
     _waterComponent(_commonData)
 {
 }
@@ -40,6 +73,7 @@ void DrawCityModule::setup()
     _skyComponent.setup();
     _groundComponent.setup();
     _junctionComponent.setup();
+    _streetsComponent.setup();
     _waterComponent.setup();
 }
 
@@ -49,6 +83,7 @@ void DrawCityModule::draw()
     _skyComponent.draw();
     _groundComponent.draw();
     _junctionComponent.draw();
+    _streetsComponent.draw();
     _waterComponent.draw();
 }
 
@@ -62,6 +97,7 @@ void DrawCityModule::update()
     _skyComponent.update();
     _groundComponent.update();
     _junctionComponent.update();
+    _streetsComponent.update();
     _waterComponent.update();
 }
 
@@ -73,6 +109,7 @@ void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
     _skyComponent.updateProjectionMatrix();
     _groundComponent.updateProjectionMatrix();
     _junctionComponent.updateProjectionMatrix();
+    _streetsComponent.updateProjectionMatrix();
     _waterComponent.updateProjectionMatrix();
 }
 
@@ -85,6 +122,7 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
     _skyComponent.updateModelViewMatrix();
     _groundComponent.updateModelViewMatrix();
     _junctionComponent.updateModelViewMatrix();
+    _streetsComponent.updateModelViewMatrix();
     _waterComponent.updateModelViewMatrix();
 }
 

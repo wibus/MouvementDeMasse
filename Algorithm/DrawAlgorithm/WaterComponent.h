@@ -1,8 +1,6 @@
 #ifndef WATERCOMPONENT_H
 #define WATERCOMPONENT_H
 
-#include "Graphics/GL/GLShaderProgram.h"
-
 struct DrawCityCommonData;
 
 
@@ -20,9 +18,9 @@ public:
 
 protected:
     DrawCityCommonData& _common;
-    cellar::GLShaderProgram _waterShader;
     unsigned int _waterVao;
     const int _waterNbElems;
 };
 
 #endif // WATERCOMPONENT_H
+
