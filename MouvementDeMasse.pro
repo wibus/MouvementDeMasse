@@ -46,7 +46,7 @@ SOURCES += \
     main.cpp \
     MdMPlay.cpp \
     MdMCharacter.cpp \
-    CityMap.cpp \
+    City/CityMap.cpp \
     Algorithm/Algorithm.cpp \
     Road/Junction.cpp \
     Land/Land.cpp \
@@ -58,16 +58,22 @@ SOURCES += \
     Road/Street.cpp \
     Algorithm/DrawAlgorithm/DrawSun.cpp \
     Algorithm/DrawAlgorithm/DrawSunAndGround.cpp \
-    Algorithm/DrawAlgorithm/Sun.cpp \
+    City/Sun.cpp \
     Ui/MainWindow.cpp \
     Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.cpp \
-    Ground.cpp \
-    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.cpp
+    City/Ground.cpp \
+    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.cpp \
+    Algorithm/DrawAlgorithm/DrawCityModule.cpp \
+    Algorithm/DrawAlgorithm/SunComponent.cpp \
+    Algorithm/DrawAlgorithm/SkyComponent.cpp \
+    Algorithm/DrawAlgorithm/WaterComponent.cpp \
+    Algorithm/DrawAlgorithm/GroundComponent.cpp \
+    Algorithm/DrawAlgorithm/JunctionsComponent.cpp
 
 HEADERS += \
     MdMPlay.h \
     MdMCharacter.h \
-    CityMap.h \
+    City/CityMap.h \
     Algorithm/Algorithm.h \
     Road/Junction.h \
     MdMTypes.h \
@@ -80,11 +86,17 @@ HEADERS += \
     Road/Street.h \
     Algorithm/DrawAlgorithm/DrawSun.h \
     Algorithm/DrawAlgorithm/DrawSunAndGround.h \
-    Algorithm/DrawAlgorithm/Sun.h \
+    City/Sun.h \
     Ui/MainWindow.h \
     Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.h \
-    Ground.h \
-    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h
+    City/Ground.h \
+    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h \
+    Algorithm/DrawAlgorithm/DrawCityModule.h \
+    Algorithm/DrawAlgorithm/SunComponent.h \
+    Algorithm/DrawAlgorithm/SkyComponent.h \
+    Algorithm/DrawAlgorithm/WaterComponent.h \
+    Algorithm/DrawAlgorithm/GroundComponent.h \
+    Algorithm/DrawAlgorithm/JunctionsComponent.h
 
 OTHER_FILES += \
     resources/shaders/sun.vert \
@@ -94,7 +106,9 @@ OTHER_FILES += \
     resources/shaders/roads.vert \
     resources/shaders/roads.frag \
     resources/shaders/highPrecGround.vert \
-    resources/shaders/highPrecGround.frag
+    resources/shaders/highPrecGround.frag \
+    resources/shaders/water.vert \
+    resources/shaders/water.frag
 
 
 

@@ -11,15 +11,15 @@ using namespace cellar;
 using namespace scaena;
 
 #include "MdMCharacter.h"
-#include "CityMap.h"
+#include "City/CityMap.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
     _cityMap( new CityMap(100, 100)),
+    _drawCityAlgorithm(*_cityMap),
     _drawAlgorithm(),
     _camMan( stage.camera() ),
     _fpsText()
@@ -48,17 +48,17 @@ void MdMCharacter::beginStep(const StageTime &time)
 {
     updateCalendar();
     updateCamera( time.elapsedTime() );
+    _drawCityAlgorithm.update();
 }
 
 void MdMCharacter::updateCalendar()
 {
     _calendar.tic();
 
-    _dateText.setPosition(10, stage().height() - 20);
     _dateText.setText(_calendar.date().toString(true, true));
 
-    _sun.setTime(_calendar.date().hour, _calendar.date().minute);
-    _drawAlgorithm.updateSunDirection( _sun.direction() );
+    _cityMap->sun().setTime(_calendar.date().hour, _calendar.date().minute);
+    _drawAlgorithm.updateSunDirection( _cityMap->sun().direction() );
 }
 
 void MdMCharacter::updateCamera(float elapsedtime)
@@ -97,7 +97,8 @@ void MdMCharacter::endStep(const StageTime &)
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
     //_cityMap->drawAlgorithm().draw();
-    _drawAlgorithm.draw();
+    //_drawAlgorithm.draw();
+    _drawCityAlgorithm.draw();
     _dateText.draw();
     _fpsText.setText( toString(1.0f / time.elapsedTime()) );
     _fpsText.draw();
@@ -110,13 +111,17 @@ void MdMCharacter::exitStage()
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)
 {
+    _dateText.setPosition(10, stage().height() - 20);
+
     if(msg.change == CameraMsg::PROJECTION)
     {
         _drawAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
+        _drawCityAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
     }
     else if(msg.change == CameraMsg::VIEW)
     {
         _drawAlgorithm.updateViewMatrix( msg.camera.viewMatrix() );
+        _drawCityAlgorithm.updateModelViewMatrix( msg.camera.viewMatrix() );
     }
 }
 
@@ -147,4 +152,5 @@ void MdMCharacter::setAlgorithms()
     mapElemAlgo.setup(*_cityMap);
 
     _drawAlgorithm.setup( *_cityMap );
+    _drawCityAlgorithm.setup();
 }

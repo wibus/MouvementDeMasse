@@ -1,5 +1,5 @@
 #include "DrawSunGroundAndRoads.h"
-#include "CityMap.h"
+#include "City/CityMap.h"
 
 #include <GL/glew.h>
 
@@ -217,7 +217,6 @@ void DrawSunGroundAndRoads::setupStreets()
         }
     }
 
-
     // Setup Vao
     glGenVertexArrays(1, &_streetsVao);
     glBindVertexArray( _streetsVao );
@@ -263,5 +262,5 @@ float DrawSunGroundAndRoads::junctionHeight(int x, int y)
                                   _ground->heightAt(Vec2f(x + _roadWidth, y + _roadWidth)),
                                   _ground->heightAt(Vec2f(x - _roadWidth, y + _roadWidth)))));
 
-    return cellar::max(_ground->heightAt(Vec2f(x, y)), cellar::max(maxSide, maxCorner));
+    return cellar::max(_ground->heightAt(Vec2i(x, y)), cellar::max(maxSide, maxCorner));
 }

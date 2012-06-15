@@ -3,6 +3,7 @@
 
 #include <MathsAndPhysics/Vector.h>
 #include <DataStructures/Grid.h>
+#include <Misc/CellarUtils.h>
 
 
 class Ground
@@ -86,12 +87,14 @@ inline void Ground::setWaterHeight(float height)
 
 inline float Ground::heightAt(int x, int y) const
 {
-    return _heights.get(x, y);
+    return _heights.get(cellar::clip(x, 0, _width-1),
+                        cellar::clip(y, 0, _height-1));
 }
 
 inline float Ground::heightAt(const cellar::Vec2i& pos) const
 {
-    return _heights.get(pos);
+    return _heights.get(cellar::clip(pos.x(), 0, _width-1),
+                        cellar::clip(pos.y(), 0, _height-1));
 }
 
 inline float Ground::heightAt(const cellar::Vec2f& pos) const
@@ -111,7 +114,7 @@ inline void Ground::setHeightAt(const cellar::Vec2i &pos, float height)
 
 inline cellar::Vec3f Ground::normalAt(float x, float y) const
 {
-    return cellar::Vec3f(-dzdx(x, y), -dzdy(x, y), 1).normalize();
+    return cellar::Vec3f(-dzdx(x, y), -dzdy(x, y), 1.0f).normalize();
 }
 
 const float ds = 0.25;

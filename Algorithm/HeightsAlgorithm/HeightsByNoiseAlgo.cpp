@@ -5,7 +5,7 @@ using namespace std;
 
 #include <Misc/CellarUtils.h>
 
-#include "CityMap.h"
+#include "City/CityMap.h"
 #include "Road/Junction.h"
 
 using namespace cellar;

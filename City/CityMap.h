@@ -6,6 +6,7 @@
 #include <DataStructures/PGrid.h>
 #include <MathsAndPhysics/Vector.h>
 
+#include "Sun.h"
 #include "Ground.h"
 #include "Land/Land.h"
 #include "Road/Junction.h"
@@ -22,6 +23,7 @@ public:
     CityMap(int width, int height);
 
     cellar::Vec2i  size() const;
+    Sun& sun();
     Ground& ground();
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
@@ -36,6 +38,7 @@ protected:
 
 private:
     cellar::Vec2i _size;
+    Sun _sun;
     Ground _ground;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;
@@ -47,6 +50,11 @@ private:
 inline cellar::Vec2i CityMap::size() const
 {
     return _size;
+}
+
+inline Sun& CityMap::sun()
+{
+    return _sun;
 }
 
 inline Ground& CityMap::ground()

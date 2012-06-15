@@ -1,5 +1,5 @@
 #include "DrawSunAndGround.h"
-#include "CityMap.h"
+#include "City/CityMap.h"
 
 #include <GL/glew.h>
 

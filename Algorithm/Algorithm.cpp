@@ -1,5 +1,5 @@
 #include "Algorithm.h"
-#include "CityMap.h"
+#include "City/CityMap.h"
 
 Algorithm::Algorithm():
     _cityMap(0x0),

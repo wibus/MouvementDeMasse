@@ -4,7 +4,7 @@
 #include <Misc/CellarUtils.h>
 #include "Road/Junction.h"
 #include "Road/Street.h"
-#include "CityMap.h"
+#include "City/CityMap.h"
 
 using namespace cellar;
 

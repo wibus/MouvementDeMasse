@@ -1,5 +1,5 @@
 #include "DrawHighPrecisionGround.h"
-#include <CityMap.h>
+#include "City/CityMap.h"
 
 #include <GL/glew.h>
 
@@ -69,8 +69,9 @@ void DrawHighPrecisionGround::draw()
 
     _highPrecShader.pushThisProgram();
 
+    glPointSize(1.0f);
     glBindVertexArray(_highPrecvao);
-    glDrawArrays(GL_LINE_STRIP, 0, _highPrecNbElems);
+    glDrawArrays(GL_POINTS, 0, _highPrecNbElems);
 
     _highPrecShader.popProgram();
 

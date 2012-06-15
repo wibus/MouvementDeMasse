@@ -18,13 +18,11 @@ struct DirectionnalLight
 
 uniform DirectionnalLight sun;
 uniform float Shininess;
-uniform float WaterHeight;
 uniform vec4  WaterColor;
-uniform vec4  GrassColor;
 
-varying vec4  eyeVec;
-varying vec3  normal;
-varying float height;
+varying vec4 eyeVec;
+varying vec3 normal;
+
 
 vec4 NormalizedBlinnPhong(in vec3 N, in vec3 L, in vec3 V,
                           in Material mat, in vec4 lightDiff, in vec4 lightSpec)
@@ -36,11 +34,7 @@ vec4 NormalizedBlinnPhong(in vec3 N, in vec3 L, in vec3 V,
 
 void main(void)
 {
-    vec4 color;
-    if(height <= WaterHeight) color = WaterColor;
-    else                      color = GrassColor;
-
-    Material mat = Material(color, vec4(1), Shininess, 0.05);
+    Material mat = Material(WaterColor, vec4(1), Shininess, 0.05);
 
     vec3 V = normalize(-eyeVec.xyz);
     vec3 L = normalize(-sun.direction.xyz);
@@ -49,8 +43,8 @@ void main(void)
     vec4 finalColor = vec4(0, 0, 0, 0);
 
     // Sun
-    finalColor += vec4(sun.ambient,1) * color;
+    finalColor += vec4(sun.ambient,1) * WaterColor;
     finalColor += NormalizedBlinnPhong(N, L, V, mat, vec4(sun.diffuse,1), vec4(sun.specular,1));
 
-    gl_FragColor = vec4(finalColor.rgb, max(color.a, finalColor.a));
+    gl_FragColor = vec4(finalColor.rgb, max(WaterColor.a, finalColor.a));
 }
