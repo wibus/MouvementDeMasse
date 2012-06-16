@@ -1,4 +1,5 @@
 #include "DrawHighPrecisionGround.h"
+/*
 #include "City/CityMap.h"
 
 #include <GL/glew.h>
@@ -95,3 +96,4 @@ void DrawHighPrecisionGround::updateProjectionMatrix(const cellar::Matrix4x4<flo
     _highPrecShader.setMatrix4x4("ProjectionMatrix", _projMat);
     _highPrecShader.popProgram();
 }
+*/

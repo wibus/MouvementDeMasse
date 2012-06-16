@@ -66,7 +66,8 @@ SOURCES += \
     Algorithm/DrawAlgorithm/WaterComponent.cpp \
     Algorithm/DrawAlgorithm/GroundComponent.cpp \
     Algorithm/DrawAlgorithm/JunctionsComponent.cpp \
-    Algorithm/DrawAlgorithm/StreetsComponent.cpp
+    Algorithm/DrawAlgorithm/StreetsComponent.cpp \
+    MdMTypes.cpp
 
 HEADERS += \
     MdMPlay.h \

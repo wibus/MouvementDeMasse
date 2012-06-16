@@ -1,5 +1,6 @@
 #include "GroundComponent.h"
 #include "DrawCityModule.h"
+#include "Land/Land.h"
 
 #include <GL/glew.h>
 using namespace std;
@@ -10,7 +11,13 @@ using namespace cellar;
 GroundComponent::GroundComponent(DrawCityCommonData& common) :
     _common(common),
     _groundVao(0),
-    _groundNbElems(0)
+    _groundNbElems(0),
+    _landsVao(0),
+    _landsNbElems(0),
+    _roadsVao(0),
+    _roadsNbElems(0),
+    _trianglesVao(0),
+    _trianglesNbElems(0)
 {
     _common.groundShader.pushThisProgram();
     _common.groundShader.setVec4f("sun.direction", _common.sunLight.direction);
@@ -108,6 +115,24 @@ void GroundComponent::computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::
     ++idx;
     norm[idx] = _common.ground.normalAt(i, j);
     pos[idx]  = Vec3f(i, j, _common.ground.heightAt(i, j));
+}
+
+void GroundComponent::setupLands()
+{
+    /*
+    _landsNbElems = 0;
+    for(int j=0; j<_common.cityMap.size().y(); ++j)
+        for(int i=0; i<_common.cityMap.size().x(); ++i)
+            if(_common.cityMap.lands().get(i, j)->type() == )
+            */
+}
+
+void GroundComponent::setupRoads()
+{
+}
+
+void GroundComponent::setupTriangles()
+{
 }
 
 void GroundComponent::draw()

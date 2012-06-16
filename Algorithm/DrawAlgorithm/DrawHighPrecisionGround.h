@@ -1,6 +1,7 @@
 #ifndef DRAWHIGHPRECISIONGROUND_H
 #define DRAWHIGHPRECISIONGROUND_H
 
+/*
 #include "DrawSunAndGround.h"
 
 class DrawHighPrecisionGround : public DrawSunAndGround
@@ -19,5 +20,6 @@ private:
     unsigned int _highPrecvao;
     unsigned int _highPrecNbElems;
 };
+*/
 
 #endif // DRAWHIGHPRECISIONGROUND_H
