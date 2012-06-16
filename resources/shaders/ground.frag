@@ -10,9 +10,9 @@ struct Material
 
 struct DirectionnalLight
 {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
     vec4 direction;
 };
 
@@ -49,8 +49,8 @@ void main(void)
     vec4 finalColor = vec4(0, 0, 0, 0);
 
     // Sun
-    finalColor += vec4(sun.ambient,1) * color;
-    finalColor += NormalizedBlinnPhong(N, L, V, mat, vec4(sun.diffuse,1), vec4(sun.specular,1));
+    finalColor += sun.ambient * color;
+    finalColor += NormalizedBlinnPhong(N, L, V, mat, sun.diffuse, sun.specular);
 
     gl_FragColor = vec4(finalColor.rgb, max(color.a, finalColor.a));
 }

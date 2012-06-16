@@ -20,7 +20,6 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
     _cityMap( new CityMap(100, 100)),
     _drawCityAlgorithm(*_cityMap),
-    _drawAlgorithm(),
     _camMan( stage.camera() ),
     _fpsText()
 {
@@ -36,12 +35,13 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
 
 void MdMCharacter::enterStage()
 {
-    setAlgorithms();
-    stage().camera().refresh();
-
     _calendar.setClock(Calendar::Clock(Calendar::Clock::MINUTE));
     _calendar.start();
     updateCalendar();
+
+    stage().camera().refresh();
+
+    setAlgorithms();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -58,7 +58,6 @@ void MdMCharacter::updateCalendar()
     _dateText.setText(_calendar.date().toString(true, true));
 
     _cityMap->sun().setTime(_calendar.date().hour, _calendar.date().minute);
-    _drawAlgorithm.updateSunDirection( _cityMap->sun().direction() );
 }
 
 void MdMCharacter::updateCamera(float elapsedtime)
@@ -96,9 +95,8 @@ void MdMCharacter::endStep(const StageTime &)
 
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
-    //_cityMap->drawAlgorithm().draw();
-    //_drawAlgorithm.draw();
     _drawCityAlgorithm.draw();
+
     _dateText.draw();
     _fpsText.setText( toString(1.0f / time.elapsedTime()) );
     _fpsText.draw();
@@ -115,12 +113,10 @@ void MdMCharacter::notify(cellar::CameraMsg &msg)
 
     if(msg.change == CameraMsg::PROJECTION)
     {
-        _drawAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
         _drawCityAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
     }
     else if(msg.change == CameraMsg::VIEW)
     {
-        _drawAlgorithm.updateViewMatrix( msg.camera.viewMatrix() );
         _drawCityAlgorithm.updateModelViewMatrix( msg.camera.viewMatrix() );
     }
 }
@@ -151,6 +147,5 @@ void MdMCharacter::setAlgorithms()
     MapElementsDepthFirst mapElemAlgo;
     mapElemAlgo.setup(*_cityMap);
 
-    _drawAlgorithm.setup( *_cityMap );
     _drawCityAlgorithm.setup();
 }

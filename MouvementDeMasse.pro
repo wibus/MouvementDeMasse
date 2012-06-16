@@ -56,11 +56,8 @@ SOURCES += \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.cpp \
     Road/Street.cpp \
-    Algorithm/DrawAlgorithm/DrawSun.cpp \
-    Algorithm/DrawAlgorithm/DrawSunAndGround.cpp \
     City/Sun.cpp \
     Ui/MainWindow.cpp \
-    Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.cpp \
     City/Ground.cpp \
     Algorithm/DrawAlgorithm/DrawHighPrecisionGround.cpp \
     Algorithm/DrawAlgorithm/DrawCityModule.cpp \
@@ -85,11 +82,8 @@ HEADERS += \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h \
     Road/Street.h \
-    Algorithm/DrawAlgorithm/DrawSun.h \
-    Algorithm/DrawAlgorithm/DrawSunAndGround.h \
     City/Sun.h \
     Ui/MainWindow.h \
-    Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.h \
     City/Ground.h \
     Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h \
     Algorithm/DrawAlgorithm/DrawCityModule.h \

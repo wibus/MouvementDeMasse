@@ -13,7 +13,6 @@
 #include <Characters/AbstractCharacter.h>
 
 #include "Algorithm/DrawAlgorithm/DrawCityModule.h"
-#include "Algorithm/DrawAlgorithm/DrawSunGroundAndRoads.h"
 #include "Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h"
 
 class CityMap;
@@ -46,7 +45,6 @@ private:
 
     std::shared_ptr<CityMap> _cityMap;
     DrawCityModule _drawCityAlgorithm;
-    DrawSunGroundAndRoads _drawAlgorithm;
     cellar::CameraManFree _camMan;
     cellar::Calendar _calendar;
     prop::twoD::Text _dateText;

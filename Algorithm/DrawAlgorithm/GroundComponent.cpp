@@ -14,9 +14,9 @@ GroundComponent::GroundComponent(DrawCityCommonData& common) :
 {
     _common.groundShader.pushThisProgram();
     _common.groundShader.setVec4f("sun.direction", _common.sunLight.direction);
-    _common.groundShader.setVec3f("sun.ambient",   _common.sunLight.ambient);
-    _common.groundShader.setVec3f("sun.diffuse",   _common.sunLight.diffuse);
-    _common.groundShader.setVec3f("sun.specular",  _common.sunLight.specular);
+    _common.groundShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
+    _common.groundShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
+    _common.groundShader.setVec4f("sun.specular",  _common.sunLight.specular);
     _common.groundShader.setFloat("Shininess",     _common.groundShininess);
     _common.groundShader.setFloat("WaterHeight",   _common.ground.waterHeight());
     _common.groundShader.setVec4f("WaterColor",    _common.waterColor);

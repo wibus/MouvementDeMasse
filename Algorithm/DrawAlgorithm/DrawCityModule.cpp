@@ -12,14 +12,14 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     nightSkyColor(0.02, 0.01, 0.05, 1.00),
     daySkyColor(  0.40, 0.60, 0.80, 1.00),
     curSkyColor(  nightSkyColor         ),
-    grassColor(   0.16, 0.94, 0.04, 1.00),
+    grassColor(   0.26, 0.84, 0.14, 1.00),
     waterColor(   0.03, 0.03, 0.30, 0.65),
     groundShininess(20.0f),
     waterShininess(160.0f),
     roadWidth(0.125f)
 {
     sunLight.direction(0, 0, 0.0, 0.0).normalize();
-    sunLight.ambient( 0.08, 0.09, 0.12);
+    sunLight.ambient = curSkyColor;
     sunLight.diffuse( 0.62, 0.62, 0.60);
     sunLight.specular(0.65, 0.50, 0.30);
 
@@ -89,10 +89,22 @@ void DrawCityModule::draw()
 
 void DrawCityModule::update()
 {
+    // Sky color
+    const double skyCoefCorrection = 0.1;
+    Vec4f  nLightDir    = _commonData.sunLight.direction.normalized();
+    double sunIntensity = cellar::max(nLightDir * Vec4f(0, 0, -1, 0) + skyCoefCorrection, 0.0);
+    double skyColorCoef = pow(sunIntensity, 0.75) / (skyCoefCorrection + 1.0);
+    _commonData.curSkyColor = _commonData.nightSkyColor * (1 - skyColorCoef) +
+                              _commonData.daySkyColor   * skyColorCoef;
+
+    // Sun position
     Vec4f sunDir = _commonData.cityMap.sun().direction().normalized();
     _commonData.sunLight.direction = sunDir;
     _commonData.viewedSunDirection = _commonData.viewMat * sunDir;
+    _commonData.sunLight.ambient = _commonData.curSkyColor;
 
+
+    // Components Updates
     _sunComponent.update();
     _skyComponent.update();
     _groundComponent.update();

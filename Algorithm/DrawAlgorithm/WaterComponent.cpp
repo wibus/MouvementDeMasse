@@ -14,9 +14,9 @@ WaterComponent::WaterComponent(DrawCityCommonData& common) :
 {
     _common.waterShader.pushThisProgram();
     _common.waterShader.setVec4f("sun.direction", _common.sunLight.direction);
-    _common.waterShader.setVec3f("sun.ambient",   _common.sunLight.ambient);
-    _common.waterShader.setVec3f("sun.diffuse",   _common.sunLight.diffuse);
-    _common.waterShader.setVec3f("sun.specular",  _common.sunLight.specular);
+    _common.waterShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
+    _common.waterShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
+    _common.waterShader.setVec4f("sun.specular",  _common.sunLight.specular);
     _common.waterShader.setFloat("Shininess",     _common.waterShininess);
     _common.waterShader.setVec4f("WaterColor",    _common.waterColor);
     _common.waterShader.popProgram();
