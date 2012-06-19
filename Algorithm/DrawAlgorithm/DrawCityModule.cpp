@@ -12,8 +12,9 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     nightSkyColor(0.02, 0.01, 0.05, 1.00),
     daySkyColor(  0.40, 0.60, 0.80, 1.00),
     curSkyColor(  nightSkyColor         ),
-    grassColor(   0.14, 0.90, 0.08, 1.00),
-    waterColor(   0.03, 0.03, 0.30, 0.65),
+    grassColor(   0.32, 0.90, 0.08, 1.00),
+    mudColor(     0.20, 0.14, 0.01, 1.00),
+    waterColor(   0.03, 0.03, 0.30, 0.50),
     groundShininess(20.0f),
     waterShininess( 200.0f),
     roadWidth(0.125f)
@@ -35,6 +36,7 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     GLInOutProgramLocation groundLocations;
     groundLocations.setInput(0, "position_att");
     groundLocations.setInput(1, "normal_att");
+    groundLocations.setInput(2, "texCoord_att");
     groundShader.setInAndOutLocations(groundLocations);
     groundShader.loadShadersFromFile("resources/shaders/ground.vert",
                                      "resources/shaders/ground.frag");

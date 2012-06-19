@@ -6,9 +6,11 @@ uniform mat3 NormalMatrix;
 
 attribute vec3 position_att;
 attribute vec3 normal_att;
+attribute vec2 texCoord_att;
 
 varying vec4 eyeVec;
 varying vec3 normal;
+varying vec2 texCoord;
 varying float height;
 
 void main(void)
@@ -18,4 +20,6 @@ void main(void)
 
     normal = NormalMatrix * normal_att;
     height = position_att.z;
+
+    texCoord = texCoord_att;
 }

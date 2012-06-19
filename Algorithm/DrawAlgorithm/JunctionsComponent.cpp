@@ -26,7 +26,7 @@ void JunctionsComponent::setup()
     _junctionsNbElems = 0;
     for(int j=0; j<_common.cityMap.size().y()+1; ++j)
         for(int i=0; i<_common.cityMap.size().x()+1; ++i)
-            if(_common.cityMap.junctions().get(i , j)->type() != Junction::GROUND)
+            if(_common.cityMap.junctions().get(i , j)->type() != Junction::GRASS)
                 _junctionsNbElems += 4;
 
     // Collect junctions to draw
@@ -38,7 +38,7 @@ void JunctionsComponent::setup()
     {
         for(int i=0; i<_common.cityMap.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i , j)->type() != Junction::GROUND)
+            if(_common.cityMap.junctions().get(i , j)->type() != Junction::GRASS)
             {
                 float height = junctionHeight(i, j);
                 junctionsPos[++idx] = Vec3f(i-_common.roadWidth, j-_common.roadWidth, height);

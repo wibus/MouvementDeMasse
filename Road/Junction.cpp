@@ -1,7 +1,7 @@
 #include "Junction.h"
 
 Junction::Junction() :
-    _type(GROUND)
+    _type(GRASS)
 {
 }
 

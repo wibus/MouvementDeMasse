@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
+#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/ImageBank.h>
 using namespace cellar;
 
 
@@ -26,8 +28,9 @@ GroundComponent::GroundComponent(DrawCityCommonData& common) :
     _common.groundShader.setVec4f("sun.specular",  _common.sunLight.specular);
     _common.groundShader.setFloat("Shininess",     _common.groundShininess);
     _common.groundShader.setFloat("WaterHeight",   _common.ground.waterHeight());
-    _common.groundShader.setVec4f("WaterColor",    _common.waterColor);
     _common.groundShader.setVec4f("GrassColor",    _common.grassColor);
+    _common.groundShader.setVec4f("MudColor",      _common.mudColor);
+    _common.groundShader.setVec4f("WaterColor",    _common.waterColor);    
     _common.groundShader.popProgram();
 }
 
@@ -52,6 +55,7 @@ void GroundComponent::setup()
     int gNbRows = _common.cityMap.size().y();
     int gElemByRow = (_common.cityMap.size().x() + 2) * 2;
     _groundNbElems = gElemByRow * gNbRows;
+    Vec2f* gtexCoords = new Vec2f[_groundNbElems];
     Vec3f* gnormals   = new Vec3f[_groundNbElems];
     Vec3f* gpositions = new Vec3f[_groundNbElems];
 
@@ -59,16 +63,16 @@ void GroundComponent::setup()
     int idx = -1;
     for(int j=0; j < gNbRows; ++j)
     {
-        computeGroundVertex(idx, gpositions, gnormals, 0, j);
+        computeGroundVertex(idx, gpositions, gnormals, gtexCoords, 0, j);
 
         for(int i=0; i <= _common.cityMap.size().x(); ++i)
         {
-            computeGroundVertex(idx, gpositions, gnormals, i, j);
-            computeGroundVertex(idx, gpositions, gnormals, i, j+1);
+            computeGroundVertex(idx, gpositions, gnormals, gtexCoords, i, j);
+            computeGroundVertex(idx, gpositions, gnormals, gtexCoords, i, j+1);
         }
 
         int lastx = _common.cityMap.size().x();
-        computeGroundVertex(idx, gpositions, gnormals, lastx, j+1);
+        computeGroundVertex(idx, gpositions, gnormals, gtexCoords, lastx, j+1);
     }
 
 
@@ -76,12 +80,13 @@ void GroundComponent::setup()
     glGenVertexArrays(1, &_groundVao);
     glBindVertexArray(_groundVao);
 
-    const int nbAttributes = 2;
+    const int nbAttributes = 3;
     GLuint gBuffers[nbAttributes];
     glGenBuffers(nbAttributes, gBuffers);
 
     int position_loc = _common.groundShader.getAttributeLocation("position_att");
     int normal_loc = _common.groundShader.getAttributeLocation("normal_att");
+    int texCoord_loc = _common.groundShader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*gnormals) * _groundNbElems, gnormals, GL_STATIC_DRAW);
@@ -89,9 +94,14 @@ void GroundComponent::setup()
     glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*gnormals) * _groundNbElems, gpositions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(*gpositions) * _groundNbElems, gpositions, GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[2]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(*gtexCoords) * _groundNbElems, gtexCoords, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(texCoord_loc);
+    glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
 
 
     // Clearage
@@ -100,21 +110,22 @@ void GroundComponent::setup()
 
 
     // Arrays sweaping
+    delete [] gtexCoords;
     delete [] gnormals;
     delete [] gpositions;
 
-    _common.groundShader.pushThisProgram();
-    float amplitude = cellar::max(abs(_common.ground.minHeight()),
-                                  abs(_common.ground.maxHeight()));
-    _common.groundShader.setFloat("HillsAmplitude", amplitude);
-    _common.groundShader.popProgram();
+    _groundTex = GLToolkit::genTextureId(
+        getImageBank().getImage("resources/textures/grass.bmp", false)
+    );
 }
 
-void GroundComponent::computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, int i, int j)
+void GroundComponent::computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm,
+                                          cellar::Vec2f* tex, int i, int j)
 {
     ++idx;
     norm[idx] = _common.ground.normalAt(i, j);
     pos[idx]  = Vec3f(i, j, _common.ground.heightAt(i, j));
+    tex[idx]  = Vec2f(i, j);
 }
 
 void GroundComponent::setupLands()
@@ -140,6 +151,7 @@ void GroundComponent::draw()
     _common.groundShader.pushThisProgram();
 
     glBindVertexArray(_groundVao);
+    glBindTexture(GL_TEXTURE_2D, _groundTex);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, _groundNbElems);
 
     _common.groundShader.popProgram();

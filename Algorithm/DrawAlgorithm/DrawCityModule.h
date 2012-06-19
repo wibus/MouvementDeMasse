@@ -44,6 +44,7 @@ struct DrawCityCommonData
     cellar::Vec4f daySkyColor;
     cellar::Vec4f curSkyColor;
     cellar::Vec4f grassColor;
+    cellar::Vec4f mudColor;
     cellar::Vec4f waterColor;
 
     // Shininesses

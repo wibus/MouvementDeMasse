@@ -10,7 +10,7 @@ class Street;
 class Junction
 {
 public:
-    enum Type{GROUND, ASPHALT, GRAVEL, NB_TYPES};
+    enum Type{GRASS, ASPHALT, NB_TYPES};
 
     Junction();
     virtual ~Junction();

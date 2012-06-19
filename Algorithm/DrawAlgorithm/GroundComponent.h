@@ -23,11 +23,12 @@ protected:
     void setupTriangles();
 
     void genGroundTex();
-    void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, int i, int j);
+    void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, cellar::Vec2f *tex, int i, int j);
 
 
     DrawCityCommonData& _common;
     unsigned int _groundVao;
+    unsigned int _groundTex;
     int _groundNbElems;
 
     unsigned int _landsVao;
