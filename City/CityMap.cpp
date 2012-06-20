@@ -11,8 +11,9 @@ using namespace cellar;
 
 
 CityMap::CityMap(int width, int height):
-    _size(width, height),    
-    _ground(width+1, height+1),
+    _size(width, height),
+    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
+    _ground(   width+1, height+1),
     _lands(    width,   height),
     _junctions(width+1, height+1)
 {

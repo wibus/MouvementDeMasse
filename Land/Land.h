@@ -4,27 +4,29 @@
 class Land
 {
 public:
+    enum Type {GRASS, RESIDENTIAL, COMMERCIAL, NB_TYPES};
+
     Land();
     virtual ~Land();
 
-    void setHeight(float height);
-    float height() const;
+    void setType(Type type);
+    Type type() const;
 
 private:
-    float _height;
+    Type _type;
 };
 
 
 
 // Implementation //
-inline void Land::setHeight(float height)
+inline void Land::setType(Type type)
 {
-    _height = height;
+    _type = type;
 }
 
-inline float Land::height() const
+inline Land::Type Land::type() const
 {
-    return _height;
+    return _type;
 }
 
 #endif // LAND_H

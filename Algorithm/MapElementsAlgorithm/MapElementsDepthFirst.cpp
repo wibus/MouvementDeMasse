@@ -4,7 +4,7 @@
 #include <Misc/CellarUtils.h>
 #include "Road/Junction.h"
 #include "Road/Street.h"
-#include "CityMap.h"
+#include "City/CityMap.h"
 
 using namespace cellar;
 
@@ -60,7 +60,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
                 _ground->heightAt( neighPos ) < _ground->waterHeight() )
                 continue;
 
-            if (_cityMap->junctions().get(neighPos)->type() != Junction::GROUND)
+            if (_cityMap->junctions().get(neighPos)->type() != Junction::GRASS)
                 continue;
 
             freeSides.push_back(direction);
