@@ -46,8 +46,8 @@ void StreetsComponent::setup()
         {
             if(_common.cityMap.junctions().get(i , j)->getStreet(EAST)!= 0x0)
             {
-                float startHeight = junctionHeight(i, j);
-                float endHeight   = junctionHeight(i+1, j);
+                float startHeight = _common.ground.heightAt(i, j);
+                float endHeight   = _common.ground.heightAt(i+1, j);
                 streetsPos[++idx] = Vec3f(i + _common.roadWidth, j-_common.roadWidth, startHeight);
                 streetsTex[idx] = Vec2f(0, 0);
                 streetsPos[++idx] = Vec3f(i+1-_common.roadWidth, j-_common.roadWidth, endHeight);
@@ -59,8 +59,8 @@ void StreetsComponent::setup()
             }
             if(_common.cityMap.junctions().get(i , j)->getStreet(NORTH)!= 0x0)
             {
-                float startHeight = junctionHeight(i, j);
-                float endHeight = junctionHeight(i, j+1);
+                float startHeight = _common.ground.heightAt(i, j);
+                float endHeight = _common.ground.heightAt(i, j+1);
                 streetsPos[++idx] = Vec3f(i-_common.roadWidth, j + _common.roadWidth, startHeight);
                 streetsTex[idx] = Vec2f(0, 1);
                 streetsPos[++idx] = Vec3f(i+_common.roadWidth, j + _common.roadWidth, startHeight);
@@ -131,19 +131,4 @@ void StreetsComponent::updateProjectionMatrix()
 
 void StreetsComponent::updateModelViewMatrix()
 {
-}
-
-float StreetsComponent::junctionHeight(int x, int y)
-{
-    float maxSide = cellar::max(_common.ground.heightAt(Vec2f(x - _common.roadWidth, y)),cellar::max(
-                                _common.ground.heightAt(Vec2f(x + _common.roadWidth, y)),cellar::max(
-                                _common.ground.heightAt(Vec2f(x,                     y - _common.roadWidth)),
-                                _common.ground.heightAt(Vec2f(x,                     y + _common.roadWidth)))));
-
-    float maxCorner = cellar::max(_common.ground.heightAt(Vec2f(x - _common.roadWidth, y - _common.roadWidth)),cellar::max(
-                                  _common.ground.heightAt(Vec2f(x + _common.roadWidth, y - _common.roadWidth)),cellar::max(
-                                  _common.ground.heightAt(Vec2f(x + _common.roadWidth, y + _common.roadWidth)),
-                                  _common.ground.heightAt(Vec2f(x - _common.roadWidth, y + _common.roadWidth)))));
-
-    return cellar::max(_common.ground.heightAt(Vec2i(x, y)), cellar::max(maxSide, maxCorner));
 }

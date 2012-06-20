@@ -96,7 +96,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
 
 
                     std::shared_ptr<Street> newStreet(new Street(currPos, neighPos));
-                    currJunc->attach(newStreet, toCardinal(direction));
+                    currJunc->attach(newStreet, toDirection(direction));
 
                 }
             }
@@ -110,7 +110,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
             Vec2i nextDirection = freeSides[pos];
 
             std::shared_ptr<Street> newStreet(new Street(currPos, getNeighbor(currPos, nextDirection)));
-            currJunc->attach(newStreet, toCardinal(direction));
+            currJunc->attach(newStreet, toDirection(direction));
 
             _junctionsStack.push(getNeighbor(currPos, nextDirection));
         }

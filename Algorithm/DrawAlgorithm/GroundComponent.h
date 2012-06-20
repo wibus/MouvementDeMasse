@@ -22,8 +22,7 @@ protected:
     void setupRoads();
     void setupTriangles();
 
-    void genGroundTex();
-    void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, cellar::Vec2f *tex, int i, int j);
+    //void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, cellar::Vec2f *tex, int i, int j);
 
 
     DrawCityCommonData& _common;

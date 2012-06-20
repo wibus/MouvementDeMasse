@@ -40,7 +40,7 @@ void JunctionsComponent::setup()
         {
             if(_common.cityMap.junctions().get(i , j)->type() != Junction::GRASS)
             {
-                float height = junctionHeight(i, j);
+                float height = _common.ground.heightAt(i, j);
                 junctionsPos[++idx] = Vec3f(i-_common.roadWidth, j-_common.roadWidth, height);
                 junctionsTex[idx] = Vec2f(0, 0);
                 junctionsPos[++idx] = Vec3f(i+_common.roadWidth, j-_common.roadWidth, height);
@@ -122,19 +122,4 @@ void JunctionsComponent::updateModelViewMatrix()
     _common.roadsShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
     _common.roadsShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
     _common.roadsShader.popProgram();
-}
-
-float JunctionsComponent::junctionHeight(int x, int y)
-{
-    float maxSide = cellar::max(_common.ground.heightAt(Vec2f(x - _common.roadWidth, y)),cellar::max(
-                                _common.ground.heightAt(Vec2f(x + _common.roadWidth, y)),cellar::max(
-                                _common.ground.heightAt(Vec2f(x,                     y - _common.roadWidth)),
-                                _common.ground.heightAt(Vec2f(x,                     y + _common.roadWidth)))));
-
-    float maxCorner = cellar::max(_common.ground.heightAt(Vec2f(x - _common.roadWidth, y - _common.roadWidth)),cellar::max(
-                                  _common.ground.heightAt(Vec2f(x + _common.roadWidth, y - _common.roadWidth)),cellar::max(
-                                  _common.ground.heightAt(Vec2f(x + _common.roadWidth, y + _common.roadWidth)),
-                                  _common.ground.heightAt(Vec2f(x - _common.roadWidth, y + _common.roadWidth)))));
-
-    return cellar::max(_common.ground.heightAt(Vec2i(x, y)), cellar::max(maxSide, maxCorner));
 }

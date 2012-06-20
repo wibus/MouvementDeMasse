@@ -35,6 +35,7 @@ public:
 
 protected:
     void resetJunctions();
+    void resetLands();
 
 private:
     cellar::Vec2i _size;
