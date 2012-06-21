@@ -44,7 +44,7 @@ void StreetsComponent::setup()
     {
         for(int i=0; i<_common.cityMap.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i , j)->getStreet(EAST)!= 0x0)
+            if(_common.cityMap.junctions().get(i , j)->getStreet(EAST) != 0x0)
             {
                 float startHeight = _common.ground.heightAt(i, j);
                 float endHeight   = _common.ground.heightAt(i+1, j);
@@ -57,7 +57,7 @@ void StreetsComponent::setup()
                 streetsPos[++idx] = Vec3f(i + _common.roadWidth, j+_common.roadWidth, startHeight);
                 streetsTex[idx] = Vec2f(0, 1);
             }
-            if(_common.cityMap.junctions().get(i , j)->getStreet(NORTH)!= 0x0)
+            if(_common.cityMap.junctions().get(i , j)->getStreet(NORTH) != 0x0)
             {
                 float startHeight = _common.ground.heightAt(i, j);
                 float endHeight = _common.ground.heightAt(i, j+1);

@@ -241,14 +241,10 @@ void GroundComponent::setupRoads()
     {
         for(int i=0; i<_common.cityMap.size().x(); ++i)
         {
-            if(_common.cityMap.junctions().get(i,  j)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i+1,j)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i,  j)->getStreet(EAST) == 0x0)
+            if( isGrassRoad(i, j, EAST) )
                 _roadsNbElems += 4;
 
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i, j+1)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i, j)->getStreet(NORTH) == 0x0)
+            if( isGrassRoad(i, j, NORTH) )
                 _roadsNbElems += 4;
         }
     }
@@ -262,9 +258,7 @@ void GroundComponent::setupRoads()
     {
         for(int i=0; i<_common.cityMap.size().x(); ++i)
         {
-            if(_common.cityMap.junctions().get(i,  j)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i+1,j)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i,  j)->getStreet(EAST) == 0x0)
+            if( isGrassRoad(i, j, EAST) )
             {
                 positions[idx](i-_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i, j));
                 positions[idx+1](i+_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i, j));
@@ -276,17 +270,15 @@ void GroundComponent::setupRoads()
                 texCoords[idx+2] = Vec2f(1, 1);
                 texCoords[idx+3] = Vec2f(0, 1);
 
-                (normals[idx]   = _common.ground.normalAt(i,   j)).setX(0);
-                (normals[idx+1] = _common.ground.normalAt(i+1, j)).setX(0);
-                (normals[idx+2] = _common.ground.normalAt(i+1, j+1)).setX(0);
-                (normals[idx+3] = _common.ground.normalAt(i,   j+1)).setX(0);
+                (normals[idx]   = _common.ground.normalAt(i,   j)).setY(0);
+                (normals[idx+1] = _common.ground.normalAt(i+1, j)).setY(0);
+                (normals[idx+2] = _common.ground.normalAt(i+1, j+1)).setY(0);
+                (normals[idx+3] = _common.ground.normalAt(i,   j+1)).setY(0);
 
                 idx += 4;
             }
 
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i, j+1)->type() != Junction::GRASS &&
-               _common.cityMap.junctions().get(i, j)->getStreet(NORTH) == 0x0)
+            if( isGrassRoad(i, j, NORTH) )
             {
                 positions[idx]  (i+_common.roadWidth,   j-_common.roadWidth, _common.ground.heightAt(i, j));
                 positions[idx+1](i+1-_common.roadWidth, j-_common.roadWidth, _common.ground.heightAt(i+1, j));
@@ -307,9 +299,6 @@ void GroundComponent::setupRoads()
             }
         }
     }
-
-    for(int i=0; i<_roadsNbElems; ++i)
-        positions[i] += Vec3f(0, 0, 0.2);
 
     // Ground VAO setup
     glGenVertexArrays(1, &_roadsVao);
@@ -347,6 +336,16 @@ void GroundComponent::setupRoads()
     delete [] texCoords;
     delete [] normals;
     delete [] positions;
+}
+
+bool GroundComponent::isGrassRoad(int i, int j, CardinalDirection dir)
+{
+    if(_common.cityMap.junctions().get(i,  j)->type() != Junction::GRASS &&
+       _common.cityMap.junctions().get(i+1,j)->type() != Junction::GRASS &&
+       _common.cityMap.junctions().get(i,  j)->getStreet(dir) != 0x0)
+        return true;
+
+    return false;
 }
 
 void GroundComponent::setupTriangles()

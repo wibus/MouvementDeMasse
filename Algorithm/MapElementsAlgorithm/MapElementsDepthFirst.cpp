@@ -30,10 +30,10 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         currentPoint += Vec2i(1, 1);
         if (currentPoint.x() >= _mapSize.x())
         {
-            currentPoint(random(0, (int)_mapSize.x()), random(0, (int)_mapSize.y()));
+            currentPoint(random(0, _mapSize.x()), random(0, _mapSize.y()));
         }
     }
-    cityMap.junctions().get(currentPoint)->setType(Junction::ASPHALT);
+
     _junctionsStack.push(currentPoint);
 
 
@@ -52,7 +52,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         for (int i = 0; i < 4; i++)
         {
             direction.rotateQuarterCCW();
-            Vec2i neighPos = getNeighbor(currPos, direction);
+            Vec2i neighPos = currPos + direction;
             if (neighPos.x() >= _mapSize.x() ||
                 neighPos.y() >= _mapSize.y() ||
                 neighPos.x() < 0 ||
@@ -71,14 +71,14 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         //      link with a road or not
         //      get back to last free junction in the stack
         if (freeSides.empty())
-        {
+        {/*
             if (random(2.0) > 1)
             {
                 for (int i = 0; i < 4; i++)
                 {
 
                     direction.rotateQuarterCCW();
-                    Vec2i neighPos = getNeighbor(currPos, direction);
+                    Vec2i neighPos = currPos + direction;
                     if (neighPos.x() >= _mapSize.x() ||
                         neighPos.y() >= _mapSize.y() ||
                         neighPos.x() < 0 ||
@@ -98,9 +98,9 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
                     std::shared_ptr<Street> newStreet(new Street(currPos, neighPos));
 
                     currJunc->attach(newStreet, toDirection(direction));
-                    _cityMap->junctions().get(neighPos)->attach(newStreet, toDirection(direction));
+                    _cityMap->junctions().get(neighPos)->attach(newStreet, toDirection(-direction));
                 }
-            }
+            }*/
             _junctionsStack.pop();
         }
         else
@@ -109,15 +109,14 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
             int nbElements = freeSides.size();
             int pos = cellar::random(0, nbElements);
             Vec2i nextDirection = freeSides[pos];
+            Vec2i nextPos = currPos + nextDirection;
 
-            std::shared_ptr<Street> newStreet(new Street(currPos, getNeighbor(currPos, nextDirection)));
+            std::shared_ptr<Street> newStreet(new Street(currPos, nextPos));
 
-            currJunc->attach(newStreet, toDirection(direction));
-            _cityMap->junctions().get(nextDirection+currPos)->attach(newStreet, toDirection(direction));
+            currJunc->attach(newStreet, toDirection(nextDirection));
+            _cityMap->junctions().get(nextDirection+currPos)->attach(newStreet, toDirection(-nextDirection));
 
-            _junctionsStack.push(getNeighbor(currPos, nextDirection));
+            _junctionsStack.push( nextPos );
         }
-
-        // Add the curent junction in the stack
     }
 }
