@@ -12,8 +12,8 @@
 
 #include <Characters/AbstractCharacter.h>
 
-#include "Algorithm/DrawAlgorithm/Sun.h"
-#include "Algorithm/DrawAlgorithm/DrawSunAndGround.h"
+#include "Algorithm/DrawAlgorithm/DrawCityModule.h"
+#include "Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h"
 
 class CityMap;
 
@@ -43,9 +43,8 @@ private:
     void updateCalendar();
     void updateCamera(float elapsedtime);
 
-    Sun _sun;
     std::shared_ptr<CityMap> _cityMap;
-    DrawSunAndGround _drawAlgorithm;
+    DrawCityModule _drawCityAlgorithm;
     cellar::CameraManFree _camMan;
     cellar::Calendar _calendar;
     prop::twoD::Text _dateText;

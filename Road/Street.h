@@ -7,30 +7,30 @@
 class Street
 {
 public:
-    Street(const cellar::Vec2ui& posA, const cellar::Vec2ui& posB);
+    Street(const cellar::Vec2i& posA, const cellar::Vec2i& posB);
 
-    cellar::Vec2ui junctionA() const;
-    cellar::Vec2ui junctionB() const;
-    cellar::Vec2ui oppositeJunction(const cellar::Vec2ui& junction);
+    cellar::Vec2i junctionA() const;
+    cellar::Vec2i junctionB() const;
+    cellar::Vec2i oppositeJunction(const cellar::Vec2i& junction);
 
 private:
-    cellar::Vec2ui _junctions[2];
+    cellar::Vec2i _junctions[2];
 };
 
 
 
 // IMPLEMENTATION //
-inline cellar::Vec2ui Street::junctionA() const
+inline cellar::Vec2i Street::junctionA() const
 {
     return _junctions[0];
 }
 
-inline cellar::Vec2ui Street::junctionB() const
+inline cellar::Vec2i Street::junctionB() const
 {
     return _junctions[1];
 }
 
-inline cellar::Vec2ui Street::oppositeJunction(const cellar::Vec2ui& junction)
+inline cellar::Vec2i Street::oppositeJunction(const cellar::Vec2i& junction)
 {
     if (junction != _junctions[0])
     {

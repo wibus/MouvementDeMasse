@@ -11,21 +11,21 @@ using namespace cellar;
 using namespace scaena;
 
 #include "MdMCharacter.h"
-#include "CityMap.h"
+#include "City/CityMap.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
+#include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
-    _cityMap( new CityMap(100, 100, Vec2f(-20.0, 20.0))),
-    _drawAlgorithm(),
+    _cityMap( new CityMap(100, 100)),
+    _drawCityAlgorithm(*_cityMap),
     _camMan( stage.camera() ),
     _fpsText()
 {
     _fpsText.setPosition(5, 5);
 
-    stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->heightsRange()[1]),
+    stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->ground().maxHeight()),
                              Vec3f(_cityMap->size().x() / 2, _cityMap->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
@@ -35,29 +35,29 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
 
 void MdMCharacter::enterStage()
 {
-    setAlgorithms();
-    stage().camera().refresh();
-
     _calendar.setClock(Calendar::Clock(Calendar::Clock::MINUTE));
     _calendar.start();
     updateCalendar();
+
+    stage().camera().refresh();
+
+    setAlgorithms();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
 {
     updateCalendar();
     updateCamera( time.elapsedTime() );
+    _drawCityAlgorithm.update();
 }
 
 void MdMCharacter::updateCalendar()
 {
     _calendar.tic();
 
-    _dateText.setPosition(10, stage().height() - 20);
     _dateText.setText(_calendar.date().toString(true, true));
 
-    _sun.setTime(_calendar.date().hour, _calendar.date().minute);
-    _drawAlgorithm.updateSunDirection( _sun.direction() );
+    _cityMap->sun().setTime(_calendar.date().hour, _calendar.date().minute);
 }
 
 void MdMCharacter::updateCamera(float elapsedtime)
@@ -95,8 +95,8 @@ void MdMCharacter::endStep(const StageTime &)
 
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
-    //_cityMap->drawAlgorithm().draw();
-    _drawAlgorithm.draw();
+    _drawCityAlgorithm.draw();
+
     _dateText.draw();
     _fpsText.setText( toString(1.0f / time.elapsedTime()) );
     _fpsText.draw();
@@ -109,13 +109,15 @@ void MdMCharacter::exitStage()
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)
 {
+    _dateText.setPosition(10, stage().height() - 20);
+
     if(msg.change == CameraMsg::PROJECTION)
     {
-        _drawAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
+        _drawCityAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
     }
     else if(msg.change == CameraMsg::VIEW)
     {
-        _drawAlgorithm.updateViewMatrix( msg.camera.viewMatrix() );
+        _drawCityAlgorithm.updateModelViewMatrix( msg.camera.viewMatrix() );
     }
 }
 
@@ -132,6 +134,9 @@ void MdMCharacter::setCityMap(CityMap* map)
 void MdMCharacter::setAlgorithms()
 {
     _cityMap->reset();
+    _cityMap->ground().setMinHeight(-10.0f);
+    _cityMap->ground().setMaxHeight( 10.0f);
+    _cityMap->ground().setWaterHeight(0.0f);
 
     // Height algorithm
     HeightByNoiseAlgo heightAlgo;
@@ -139,8 +144,8 @@ void MdMCharacter::setAlgorithms()
     heightAlgo.setWeightedNoisesRange(1, heightAlgo.nbNoises());
     heightAlgo.setup( *_cityMap );
 
-    // Draw algorithm
-    _drawAlgorithm.setup( *_cityMap );
+    MapElementsDepthFirst mapElemAlgo;
+    mapElemAlgo.setup(*_cityMap);
 
-    _cityMap->setup();
+    _drawCityAlgorithm.setup();
 }

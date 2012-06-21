@@ -10,19 +10,19 @@ public:
 
     virtual void setup(CityMap& cityMap);
 
-    unsigned int nbNoises() const;
-    unsigned int minWeightedNoise() const;
-    unsigned int maxWeightedNoise() const;
+    int nbNoises() const;
+    int minWeightedNoise() const;
+    int maxWeightedNoise() const;
 
-    void setNbNoises(unsigned int nb);
-    void setWeightedNoisesRange(unsigned int min, unsigned int max);
+    void setNbNoises(int nb);
+    void setWeightedNoisesRange(int min, int max);
 
 private:
-    float noiseWeight(unsigned int idx);
+    float noiseWeight(int idx);
 
-    unsigned int _nbNoises;
-    unsigned int _minNoise;
-    unsigned int _maxNoise;
+    int _nbNoises;
+    int _minNoise;
+    int _maxNoise;
 };
 
 #endif // HEIGHTSBYNOISEALGO_H

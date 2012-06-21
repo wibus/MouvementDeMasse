@@ -15,7 +15,7 @@ public:
     virtual void setup(CityMap& cityMap);
 
 protected:
-    std::stack<cellar::Vec2ui> _junctionsStack;
+    std::stack<cellar::Vec2i> _junctionsStack;
 };
 
 #endif // MAPELEMENTSDEPTHFIRST_H

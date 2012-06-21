@@ -11,15 +11,12 @@ attribute vec2 texCoord_att;
 varying vec4 eyeVec;
 varying vec3 normal;
 varying vec2 texCoord;
-varying float height;
 
 void main(void)
 {
-    eyeVec = ModelViewMatrix * vec4(position_att, 1.0);
+    eyeVec = ModelViewMatrix * vec4(position_att, 1);
     gl_Position = ProjectionMatrix * eyeVec;
 
     normal = NormalMatrix * normal_att;
-    height = position_att.z;
-
     texCoord = texCoord_att;
 }
