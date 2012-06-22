@@ -12,8 +12,12 @@ public:
     void setType(Type type);
     Type type() const;
 
+    void setNbStories(int stories);
+    int nbStories() const;
+
 private:
     Type _type;
+    int _nbStories;
 };
 
 
@@ -27,6 +31,16 @@ inline void Land::setType(Type type)
 inline Land::Type Land::type() const
 {
     return _type;
+}
+
+inline void Land::setNbStories(int stories)
+{
+    _nbStories = stories;
+}
+
+inline int Land::nbStories() const
+{
+    return _nbStories;
 }
 
 #endif // LAND_H

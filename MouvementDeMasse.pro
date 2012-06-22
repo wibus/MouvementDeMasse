@@ -67,7 +67,8 @@ SOURCES += \
     Algorithm/DrawAlgorithm/GroundComponent.cpp \
     Algorithm/DrawAlgorithm/JunctionsComponent.cpp \
     Algorithm/DrawAlgorithm/StreetsComponent.cpp \
-    MdMTypes.cpp
+    MdMTypes.cpp \
+    Algorithm/MapElementsAlgorithm/MapElementsByIsland.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -93,7 +94,8 @@ HEADERS += \
     Algorithm/DrawAlgorithm/WaterComponent.h \
     Algorithm/DrawAlgorithm/GroundComponent.h \
     Algorithm/DrawAlgorithm/JunctionsComponent.h \
-    Algorithm/DrawAlgorithm/StreetsComponent.h
+    Algorithm/DrawAlgorithm/StreetsComponent.h \
+    Algorithm/MapElementsAlgorithm/MapElementsByIsland.h
 
 OTHER_FILES += \
     resources/shaders/sun.vert \
@@ -106,6 +108,8 @@ OTHER_FILES += \
     resources/shaders/highPrecGround.frag \
     resources/shaders/water.vert \
     resources/shaders/water.frag
+
+
 
 
 

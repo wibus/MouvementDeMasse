@@ -119,4 +119,20 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
 
         // Add the curent junction in the stack
     }
+
+
+    // Add some lands.
+    PGrid<Land>* lands = _cityMap->lands();
+    for (int j = 0; j < lands.height(); j++)
+    {
+        for (int i = 0; i < lands.width(); j++)
+        {
+            if (_cityMap->ground().heightAt(i, j) > 0)
+            {
+                int landType = random(0, Land::NB_TYPES);
+
+                lands->get(i, j)->setType((Land::Type) landType);
+            }
+        }
+    }
 }
