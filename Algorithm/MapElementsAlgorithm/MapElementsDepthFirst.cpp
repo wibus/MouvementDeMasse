@@ -117,14 +117,14 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
 
 
     // Add some lands.
-    PGrid<Land>* lands = _cityMap->lands();
-    for (int j = 0; j < lands.height(); j++)
+    PGrid<Land>* lands = &_cityMap->lands();
+    for (int j = 0; j < lands->height(); ++j)
     {
-        for (int i = 0; i < lands.width(); j++)
+        for (int i = 0; i < lands->width(); ++i)
         {
             if (_cityMap->ground().heightAt(i, j) > 0)
             {
-                int landType = random(0, Land::NB_TYPES);
+                int landType = random(0, (int) Land::NB_TYPES);
 
                 lands->get(i, j)->setType((Land::Type) landType);
             }
