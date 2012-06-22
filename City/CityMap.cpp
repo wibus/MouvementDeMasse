@@ -22,6 +22,7 @@ CityMap::CityMap(int width, int height):
 void CityMap::reset()
 {
     resetJunctions();
+    resetLands();
 }
 
 bool CityMap::load(const string &)
@@ -44,6 +45,20 @@ void CityMap::resetJunctions()
             if(junc != 0x0)
                 delete junc;
             _junctions.set(i, j, new Junction());
+        }
+    }
+}
+
+void CityMap::resetLands()
+{
+    for(int j=0; j<_lands.height(); ++j)
+    {
+        for(int i=0; i<_lands.width(); ++i)
+        {
+            Land* land = _lands.get(i, j);
+            if(land != 0x0)
+                delete land;
+            _lands.set(i, j, new Land());
         }
     }
 }

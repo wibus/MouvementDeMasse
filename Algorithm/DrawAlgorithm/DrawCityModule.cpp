@@ -15,7 +15,7 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     grassColor(   0.32, 0.90, 0.08, 1.00),
     mudColor(     0.20, 0.14, 0.01, 1.00),
     waterColor(   0.03, 0.03, 0.30, 0.50),
-    groundShininess(20.0f),
+    groundShininess(4.0f),
     waterShininess( 200.0f),
     roadWidth(0.125f)
 {
@@ -103,7 +103,7 @@ void DrawCityModule::update()
     Vec4f sunDir = _commonData.cityMap.sun().direction().normalized();
     _commonData.sunLight.direction = sunDir;
     _commonData.viewedSunDirection = _commonData.viewMat * sunDir;
-    _commonData.sunLight.ambient = _commonData.curSkyColor;
+    _commonData.sunLight.ambient = _commonData.curSkyColor * 0.5f;
 
 
     // Components Updates

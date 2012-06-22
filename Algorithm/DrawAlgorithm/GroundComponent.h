@@ -2,6 +2,8 @@
 #define GROUNDCOMPONENT_H
 
 #include <MathsAndPhysics/Vector.h>
+
+#include "MdMTypes.h"
 struct DrawCityCommonData;
 
 
@@ -22,8 +24,9 @@ protected:
     void setupRoads();
     void setupTriangles();
 
-    void genGroundTex();
-    void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, cellar::Vec2f *tex, int i, int j);
+    bool isGrassRoad(int i, int j, CardinalDirection dir);
+
+    //void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, cellar::Vec2f *tex, int i, int j);
 
 
     DrawCityCommonData& _common;

@@ -17,8 +17,6 @@ public:
     void updateModelViewMatrix();
 
 protected:
-    float junctionHeight(int x, int y);
-
     DrawCityCommonData& _common;
     unsigned int _junctionsVao;
     unsigned int _junctionsTex;

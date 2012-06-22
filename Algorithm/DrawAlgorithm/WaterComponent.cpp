@@ -70,7 +70,8 @@ void WaterComponent::draw()
 void WaterComponent::update()
 {
     _common.waterShader.pushThisProgram();
-    _common.waterShader.setVec4f("sun.direction",   _common.viewedSunDirection);
+    _common.waterShader.setVec4f("sun.direction", _common.viewedSunDirection);
+    _common.waterShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
     _common.waterShader.popProgram();
 }
 
