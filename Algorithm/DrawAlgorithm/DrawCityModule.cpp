@@ -65,6 +65,7 @@ DrawCityModule::DrawCityModule(CityMap &cityMap) :
     _groundComponent(_commonData),
     _junctionComponent(_commonData),
     _streetsComponent(_commonData),
+    _residentialComponent(_commonData),
     _waterComponent(_commonData)
 {
 }
@@ -76,6 +77,7 @@ void DrawCityModule::setup()
     _groundComponent.setup();
     _junctionComponent.setup();
     _streetsComponent.setup();
+    _residentialComponent.setup();
     _waterComponent.setup();
 }
 
@@ -86,6 +88,7 @@ void DrawCityModule::draw()
     _groundComponent.draw();
     _junctionComponent.draw();
     _streetsComponent.draw();
+    _residentialComponent.draw();
     _waterComponent.draw();
 }
 
@@ -112,6 +115,7 @@ void DrawCityModule::update()
     _groundComponent.update();
     _junctionComponent.update();
     _streetsComponent.update();
+    _residentialComponent.update();
     _waterComponent.update();
 }
 
@@ -124,6 +128,7 @@ void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
     _groundComponent.updateProjectionMatrix();
     _junctionComponent.updateProjectionMatrix();
     _streetsComponent.updateProjectionMatrix();
+    _residentialComponent.updateProjectionMatrix();
     _waterComponent.updateProjectionMatrix();
 }
 
@@ -137,6 +142,7 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
     _groundComponent.updateModelViewMatrix();
     _junctionComponent.updateModelViewMatrix();
     _streetsComponent.updateModelViewMatrix();
+    _residentialComponent.updateModelViewMatrix();
     _waterComponent.updateModelViewMatrix();
 }
 
