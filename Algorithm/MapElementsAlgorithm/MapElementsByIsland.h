@@ -22,7 +22,8 @@ private:
     void findAndMapIslands();
     void mapOneIsland(cellar::Vec2i postion, cellar::Vec2i direction);
     bool isInBounds(cellar::Vec2i position);
-    bool isAboveWater(cellar::Vec2i position);
+    bool isJunctionAboveWater(cellar::Vec2i position);
+    bool isLandAboveWater(cellar::Vec2i position);
 
 };
 

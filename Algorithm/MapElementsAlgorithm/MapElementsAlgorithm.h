@@ -4,6 +4,8 @@
 #include "MdMTypes.h"
 #include "Algorithm/Algorithm.h"
 
+#include "Land/Land.h"
+
 
 class MapElementsAlgorithm : public Algorithm
 {
@@ -16,6 +18,8 @@ public:
     virtual void setup(CityMap& cityMap);
 
 protected:
+    Land::Type _typesOfLand[Land::NB_TYPES];
+
     CardinalDirection toCardinal(const cellar::Vec2i& dir);
     cellar::Vec2i    getNeighbor(const cellar::Vec2i& pos, const cellar::Vec2i& dir);
 };

@@ -14,7 +14,7 @@ using namespace scaena;
 #include "City/CityMap.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
-
+#include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
@@ -144,7 +144,11 @@ void MdMCharacter::setAlgorithms()
     heightAlgo.setWeightedNoisesRange(1, heightAlgo.nbNoises());
     heightAlgo.setup( *_cityMap );
 
+    /*
     MapElementsDepthFirst mapElemAlgo;
+    mapElemAlgo.setup(*_cityMap);*/
+
+    MapElementsByIsland mapElemAlgo;
     mapElemAlgo.setup(*_cityMap);
 
     _drawCityAlgorithm.setup();

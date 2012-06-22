@@ -7,6 +7,9 @@ using namespace cellar;
 
 MapElementsAlgorithm::MapElementsAlgorithm()
 {
+    _typesOfLand[0] = Land::GRASS;
+    _typesOfLand[1] = Land::RESIDENTIAL;
+    _typesOfLand[2] = Land::COMMERCIAL;
 }
 
 MapElementsAlgorithm::~MapElementsAlgorithm()
