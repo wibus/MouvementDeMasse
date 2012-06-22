@@ -10,6 +10,7 @@
 #include "GroundComponent.h"
 #include "JunctionsComponent.h"
 #include "StreetsComponent.h"
+#include "ResidentialComponent.h"
 #include "WaterComponent.h"
 
 
@@ -76,6 +77,7 @@ protected:
     GroundComponent _groundComponent;
     JunctionsComponent _junctionComponent;
     StreetsComponent _streetsComponent;
+    ResidentialComponent _residentialComponent;
     WaterComponent _waterComponent;
 };
 

@@ -44,101 +44,7 @@ void GroundComponent::setup()
     _groundTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/grass.bmp", false)
     );
-
-    /*
-
-    /// Algorithm (pseudo code)
-    /// ->
-    /// idx = -1
-    /// for j=0 to height-1
-    /// {
-    ///     vertex[++idx] = get(0, j)
-    ///     for i=0 to width
-    ///     {
-    ///         vertex[++idx] = get(i, j)
-    ///         vertex[++idx] = get(i, j+1)
-    ///     }
-    ///     vertex[++idx] = get(i, j+1)
-    /// }
-    /// <-
-    /// nbElems = ((width + 1) * 2) * (height - 1)
-
-    int gNbRows = _common.cityMap.size().y();
-    int gElemByRow = (_common.cityMap.size().x() + 2) * 2;
-    _groundNbElems = gElemByRow * gNbRows;
-    Vec2f* gtexCoords = new Vec2f[_groundNbElems];
-    Vec3f* gnormals   = new Vec3f[_groundNbElems];
-    Vec3f* gpositions = new Vec3f[_groundNbElems];
-
-
-    int idx = -1;
-    for(int j=0; j < gNbRows; ++j)
-    {
-        computeGroundVertex(idx, gpositions, gnormals, gtexCoords, 0, j);
-
-        for(int i=0; i <= _common.cityMap.size().x(); ++i)
-        {
-            computeGroundVertex(idx, gpositions, gnormals, gtexCoords, i, j);
-            computeGroundVertex(idx, gpositions, gnormals, gtexCoords, i, j+1);
-        }
-
-        int lastx = _common.cityMap.size().x();
-        computeGroundVertex(idx, gpositions, gnormals, gtexCoords, lastx, j+1);
-    }
-
-
-    // Ground VAO setup
-    glGenVertexArrays(1, &_groundVao);
-    glBindVertexArray(_groundVao);
-
-    const int nbAttributes = 3;
-    GLuint gBuffers[nbAttributes];
-    glGenBuffers(nbAttributes, gBuffers);
-
-    int position_loc = _common.groundShader.getAttributeLocation("position_att");
-    int normal_loc = _common.groundShader.getAttributeLocation("normal_att");
-    int texCoord_loc = _common.groundShader.getAttributeLocation("texCoord_att");
-
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*gnormals) * _groundNbElems, gnormals, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(normal_loc);
-    glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*gpositions) * _groundNbElems, gpositions, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(position_loc);
-    glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*gtexCoords) * _groundNbElems, gtexCoords, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(texCoord_loc);
-    glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
-
-
-    // Clearage
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray( 0 );
-
-
-    // Arrays sweaping
-    delete [] gtexCoords;
-    delete [] gnormals;
-    delete [] gpositions;
-
-
-    */
 }
-
-/*
-void GroundComponent::computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm,
-                                          cellar::Vec2f* tex, int i, int j)
-{
-    ++idx;
-    norm[idx] = _common.ground.normalAt(i, j);
-    pos[idx]  = Vec3f(i, j, _common.ground.heightAt(i, j));
-    tex[idx]  = Vec2f(i, j);
-}
-*/
 
 void GroundComponent::setupLands()
 {
@@ -374,9 +280,9 @@ void GroundComponent::setupTriangles()
         }
     }
 
-    Vec2f* texCoords = new Vec2f[_roadsNbElems];
-    Vec3f* normals   = new Vec3f[_roadsNbElems];
-    Vec3f* positions = new Vec3f[_roadsNbElems];
+    Vec2f* texCoords = new Vec2f[_trianglesNbElems];
+    Vec3f* normals   = new Vec3f[_trianglesNbElems];
+    Vec3f* positions = new Vec3f[_trianglesNbElems];
 
     int idx = 0;
     for(int j=1; j<_common.cityMap.size().y(); ++j)
