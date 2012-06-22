@@ -40,11 +40,8 @@ void main(void)
     vec3 L = normalize(-sun.direction.xyz);
     vec3 N = normalize(normal);
 
-    vec4 finalColor = vec4(0, 0, 0, 0);
-
-    // Sun
-    finalColor += sun.ambient * WaterColor;
-    finalColor += NormalizedBlinnPhong(N, L, V, mat, sun.diffuse, sun.specular);
+    vec4 finalColor = sun.ambient * WaterColor +
+            NormalizedBlinnPhong(N, L, V, mat, sun.diffuse, sun.specular);
 
     gl_FragColor = vec4(finalColor.rgb, max(WaterColor.a, finalColor.a));
 }

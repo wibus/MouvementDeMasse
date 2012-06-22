@@ -22,6 +22,7 @@ void StreetsComponent::setup()
 {
     // Compute number of street vertices
     _streetsNbElems = 0;
+
     for(int j=0; j<_common.cityMap.size().y()+1; ++j)
     {
         for(int i=0; i<_common.cityMap.size().x()+1; ++i)
