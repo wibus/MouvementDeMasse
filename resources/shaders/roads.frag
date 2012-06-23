@@ -2,8 +2,6 @@
 
 uniform sampler2D TextureUnit;
 
-varying vec4 eyeVec;
-varying vec3 normal;
 varying vec2 texCoord;
 
 void main(void)

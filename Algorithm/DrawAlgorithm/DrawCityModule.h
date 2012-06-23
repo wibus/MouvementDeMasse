@@ -5,14 +5,14 @@
 #include <Graphics/GL/GLShaderProgram.h>
 
 #include "City/CityMap.h"
-#include "SkyComponent.h"
-#include "SunComponent.h"
-#include "GroundComponent.h"
-#include "JunctionsComponent.h"
-#include "StreetsComponent.h"
-#include "ResidentialComponent.h"
-#include "WaterComponent.h"
 
+class SkyComponent;
+class SunComponent;
+class GroundComponent;
+class JunctionsComponent;
+class StreetsComponent;
+class ResidentialComponent;
+class WaterComponent;
 
 
 struct DrawCityCommonData
@@ -32,6 +32,7 @@ struct DrawCityCommonData
     cellar::GLShaderProgram sunShader;
     cellar::GLShaderProgram groundShader;
     cellar::GLShaderProgram roadsShader;
+    cellar::GLShaderProgram buildingShader;
     cellar::GLShaderProgram waterShader;
 
     // Sun
@@ -72,13 +73,13 @@ public:
 
 protected:
     DrawCityCommonData _commonData;
-    SunComponent _sunComponent;
-    SkyComponent _skyComponent;
-    GroundComponent _groundComponent;
-    JunctionsComponent _junctionComponent;
-    StreetsComponent _streetsComponent;
-    ResidentialComponent _residentialComponent;
-    WaterComponent _waterComponent;
+    SunComponent* _sunComponent;
+    SkyComponent* _skyComponent;
+    GroundComponent* _groundComponent;
+    JunctionsComponent* _junctionsComponent;
+    StreetsComponent* _streetsComponent;
+    ResidentialComponent* _residentialComponent;
+    WaterComponent* _waterComponent;
 };
 
 
