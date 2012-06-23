@@ -68,12 +68,12 @@ void MapElementsByIsland::findAndMapIslands()
                 if (prevIsLand == true)
                 {
                     position = Vec2i(i - 1, j);
-                    direction = Vec2i(-1, 0);
+                    direction = Vec2i(0, 1);
                 }
                 else  // prevIsLand == false
                 {
                     position = Vec2i(i, j);
-                    direction = Vec2i(1, 0);
+                    direction = Vec2i(0, -1);
                 }
                 mapOneIsland(position, direction);
             }
@@ -106,7 +106,8 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
     {
         // We are gonna look at three different cases.
 
-        Vec2i newDirection = currDirection.rotateQuarterCCW();
+        Vec2i newDirection = currDirection;
+        newDirection.rotateQuarterCCW();
         Vec2i newPosition = currPosition + newDirection;
         // The block at the left is land. We turn left.
         if (isInBounds(newPosition) && isJunctionAboveWater(newPosition))
@@ -130,7 +131,8 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
         }
 
         // If not. The block in right is land. We turn right.
-        newDirection = currDirection.rotateQuarterCW();
+        newDirection = currDirection;
+        newDirection.rotateQuarterCW();
         newPosition = currPosition + newDirection;
         // If not. The block in front is land. We continue.
         if (isInBounds(newPosition) && isJunctionAboveWater(newPosition))
@@ -144,16 +146,13 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
 
         // If not. Peninsula. We turn around.
         currDirection = -currDirection;
-        // We should go ahead, but we would need to check if it's a valid junction
-        // By doing this, the check will be made during the next iteration
-        // But we will have that position in double. Which is not so bad.
 
         diffClockwise += 2;
         // We when have to go back, we have to turn either two times CW or CCW.
         // Since we always keep the "land" to our right, we have to turn CW and not CCW.
         // Else we wouldn't have the "land" to our right.
     }
-    while (startPosition != currPosition &&  startDirection != currDirection);
+    while (!(startPosition == currPosition /*&& startDirection == currDirection*/));
 
     // We have an Island and not a Lake
     if (diffClockwise > 0)
@@ -162,7 +161,7 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
         while (!positions.empty())
         {
             Vec2i position = positions.back();
-            _islandIdentifiers[position.x()][position.y()] = _nbIslands;
+            _islandIdentifiers[position.y()][position.x()] = _nbIslands;
 
             // LET'S TEST SOME ISLAND!!!!!
             Vec2i endA = positions.back();
@@ -170,6 +169,7 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
             // END OF THE TEST
 
             positions.pop_back();
+
 
             // TEST MOAR
             if (!positions.empty())
@@ -185,8 +185,19 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
                 juncB->attach(newStreet, toCardinal(endA - endB));
                 // END OF TEST MOAR
             }
+
+            ++_nbIslands;
         }
-        ++_nbIslands;
+    }
+    else
+    {
+        while (!positions.empty())
+        {
+            Vec2i position = positions.back();
+            _islandIdentifiers[position.y()][position.x()] = -2;
+
+            positions.pop_back();
+        }
     }
 }
 
