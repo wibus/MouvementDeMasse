@@ -1,4 +1,4 @@
-#include "ResidentialComponent.h"
+#include "BuildingsComponent.h"
 #include "DrawCityModule.h"
 
 #include <GL/glew.h>
@@ -8,7 +8,7 @@ using namespace std;
 #include <Graphics/ImageBank.h>
 using namespace cellar;
 
-ResidentialComponent::ResidentialComponent(DrawCityCommonData& common) :
+BuildingsComponent::BuildingsComponent(DrawCityCommonData& common) :
     _common(common),
     _buildingWallsVao(0),
     _buildingNbElems(0),
@@ -18,12 +18,14 @@ ResidentialComponent::ResidentialComponent(DrawCityCommonData& common) :
     _roofPos(),
     _apartmentTex(0),
     _apartmentsPos(),
+    _apartmentTexScaleCoeff(),
     _commercesTex(0),
-    _commercesPos()
+    _commercesPos(),
+    _commercesTexScaleCoeff()
 {
 }
 
-void ResidentialComponent::setup()
+void BuildingsComponent::setup()
 {
     _roofTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/roof.bmp", false)
@@ -42,10 +44,11 @@ void ResidentialComponent::setup()
     setupRoofTop();
 }
 
-void ResidentialComponent::setupPositions()
+void BuildingsComponent::setupPositions()
 {
     _roofPos.clear();
     _apartmentsPos.clear();
+    _commercesPos.clear();
 
 
     for(int j=0; j<_common.cityMap.size().y(); ++j)
@@ -58,18 +61,24 @@ void ResidentialComponent::setupPositions()
             Vec3f pos = Vec3f(i, j, landHeight(i, j));
             float height = _common.cityMap.lands().get(i,j)->nbStories() * 0.25f;
 
-            _roofPos.push_back(Vec4f(pos.x(), pos.y(), pos.z() + height));
+            _roofPos.push_back(Vec3f(pos.x(), pos.y(), pos.z() + height));
 
             if(_common.cityMap.lands().get(i,j)->type() == Land::RESIDENTIAL)
-                _apartmentsPos.push_back(vec4(pos, height));
+            {
+                _apartmentsPos.push_back( pos );
+                _apartmentTexScaleCoeff.push_back( height );
+            }
 
             if(_common.cityMap.lands().get(i,j)->type() == Land::COMMERCIAL)
-                _commercesPos.push_back(vec4(pos, height));
+            {
+                _commercesPos.push_back( pos );
+                _commercesTexScaleCoeff.push_back( height );
+            }
         }
     }
 }
 
-void ResidentialComponent::setupBuidlindSides()
+void BuildingsComponent::setupBuidlindSides()
 {
     _buildingNbElems = 10;
 
@@ -98,8 +107,8 @@ void ResidentialComponent::setupBuidlindSides()
     GLuint gBuffers[nbAttributes];
     glGenBuffers(nbAttributes, gBuffers);
 
-    int position_loc = _common.buildingShader.getAttributeLocation("position_att");
-    int texCoord_loc = _common.buildingShader.getAttributeLocation("texCoord_att");
+    int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
+    int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _buildingNbElems, positions, GL_STATIC_DRAW);
@@ -116,7 +125,7 @@ void ResidentialComponent::setupBuidlindSides()
     glBindVertexArray( 0 );
 }
 
-void ResidentialComponent::setupRoofTop()
+void BuildingsComponent::setupRoofTop()
 {
     _roofNbElems = 4;
 
@@ -145,8 +154,8 @@ void ResidentialComponent::setupRoofTop()
     GLuint gBuffers[nbAttributes];
     glGenBuffers(nbAttributes, gBuffers);
 
-    int position_loc = _common.buildingShader.getAttributeLocation("position_att");
-    int texCoord_loc = _common.buildingShader.getAttributeLocation("texCoord_att");
+    int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
+    int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _roofNbElems, positions, GL_STATIC_DRAW);
@@ -163,7 +172,7 @@ void ResidentialComponent::setupRoofTop()
     glBindVertexArray( 0 );
 }
 
-float ResidentialComponent::landHeight(int i, int j)
+float BuildingsComponent::landHeight(int i, int j)
 {
     return cellar::min(cellar::min(cellar::min(
         _common.ground.heightAt(i,   j),
@@ -173,16 +182,17 @@ float ResidentialComponent::landHeight(int i, int j)
     );
 }
 
-void ResidentialComponent::draw()
+void BuildingsComponent::draw()
 {
-    _common.buildingShader.pushThisProgram();
+    _common.infrastructShader.pushThisProgram();
 
     // Roof tops
     glBindVertexArray(_roofVao);
     glBindTexture(GL_TEXTURE_2D, _roofTex);
+    _common.infrastructShader.setFloat("StructureHeight", 1.0f);
     for(size_t i=0; i<_roofPos.size(); ++i)
     {
-        _common.buildingShader.setVec4f("Translation", _roofPos[i] );
+        _common.infrastructShader.setVec3f("Translation", _roofPos[i] );
         glDrawArrays(GL_TRIANGLE_FAN , 0, _roofNbElems);
     }
 
@@ -191,7 +201,8 @@ void ResidentialComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _apartmentTex);
     for(size_t i=0; i<_apartmentsPos.size(); ++i)
     {
-        _common.buildingShader.setVec4f("Translation", _apartmentsPos[i] );
+        _common.infrastructShader.setVec3f("Translation", _apartmentsPos[i]);
+        _common.infrastructShader.setFloat("StructureHeight", _apartmentTexScaleCoeff[i]);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, _buildingNbElems);
     }
 
@@ -200,27 +211,22 @@ void ResidentialComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _commercesTex);
     for(size_t i=0; i<_commercesPos.size(); ++i)
     {
-        _common.buildingShader.setVec4f("Translation", _commercesPos[i] );
+        _common.infrastructShader.setVec3f("Translation", _commercesPos[i]);
+        _common.infrastructShader.setFloat("StructureHeight", _commercesTexScaleCoeff[i]);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, _buildingNbElems);
     }
 
-    _common.buildingShader.popProgram();
+    _common.infrastructShader.popProgram();
 }
 
-void ResidentialComponent::update()
+void BuildingsComponent::update()
 {
 }
 
-void ResidentialComponent::updateProjectionMatrix()
+void BuildingsComponent::updateProjectionMatrix()
 {
-    _common.buildingShader.pushThisProgram();
-    _common.buildingShader.setMatrix4x4("ProjectionViewMatrix", _common.projMat * _common.viewMat);
-    _common.buildingShader.popProgram();
 }
 
-void ResidentialComponent::updateModelViewMatrix()
+void BuildingsComponent::updateModelViewMatrix()
 {
-    _common.buildingShader.pushThisProgram();
-    _common.buildingShader.setMatrix4x4("ProjectionViewMatrix", _common.projMat * _common.viewMat);
-    _common.buildingShader.popProgram();
 }

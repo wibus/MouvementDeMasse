@@ -15,9 +15,14 @@ JunctionsComponent::JunctionsComponent(DrawCityCommonData& common) :
     _junctionsTex(0),
     _junctionsNbElems(0)
 {
-    _common.roadsShader.pushThisProgram();
-    _common.roadsShader.setInt("TextureUnit", 0);
-    _common.roadsShader.popProgram();
+    _common.infrastructShader.pushThisProgram();
+    _common.infrastructShader.setVec4f("sun.direction", _common.sunLight.direction);
+    _common.infrastructShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
+    _common.infrastructShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
+    _common.infrastructShader.setVec4f("sun.specular",  _common.sunLight.specular);
+    _common.infrastructShader.setFloat("Shininess",     30.0f);
+    _common.infrastructShader.setInt("TexUnit", 0);
+    _common.infrastructShader.popProgram();
 }
 
 void JunctionsComponent::setup()
@@ -60,8 +65,8 @@ void JunctionsComponent::setup()
 
 
     // Setup Vao
-    int position_loc = _common.roadsShader.getAttributeLocation("position_att");
-    int texCoord_loc = _common.roadsShader.getAttributeLocation("texCoord_att");
+    int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
+    int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
 
     glGenVertexArrays(1, &_junctionsVao);
     glBindVertexArray( _junctionsVao );
@@ -91,29 +96,38 @@ void JunctionsComponent::setup()
 
 void JunctionsComponent::draw()
 {
-    _common.roadsShader.pushThisProgram();
+    _common.infrastructShader.pushThisProgram();
+    _common.infrastructShader.setVec3f("Translation", Vec3f());
+    _common.infrastructShader.setFloat("StructureHeight", 1.0f);
+    glVertexAttrib3fv(_common.infrastructShader.getAttributeLocation("normal_att"),
+        Vec3f(0,0,1).asArray());
 
     glBindVertexArray(_junctionsVao);
     glBindTexture(GL_TEXTURE_2D, _junctionsTex);
     glDrawArrays(GL_QUADS, 0, _junctionsNbElems);
 
-    _common.roadsShader.popProgram();
+    _common.infrastructShader.popProgram();
 }
 
 void JunctionsComponent::update()
 {
+    _common.infrastructShader.pushThisProgram();
+    _common.infrastructShader.setVec4f("sun.direction", _common.viewedSunDirection);
+    _common.infrastructShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
+    _common.infrastructShader.popProgram();
 }
 
 void JunctionsComponent::updateProjectionMatrix()
 {
-    _common.roadsShader.pushThisProgram();
-    _common.roadsShader.setMatrix4x4("ProjectionViewMatrix", _common.projMat * _common.viewMat);
-    _common.roadsShader.popProgram();
+    _common.infrastructShader.pushThisProgram();
+    _common.infrastructShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
+    _common.infrastructShader.popProgram();
 }
 
 void JunctionsComponent::updateModelViewMatrix()
 {
-    _common.roadsShader.pushThisProgram();
-    _common.roadsShader.setMatrix4x4("ProjectionViewMatrix", _common.projMat * _common.viewMat);
-    _common.roadsShader.popProgram();
+    _common.infrastructShader.pushThisProgram();
+    _common.infrastructShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
+    _common.infrastructShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
+    _common.infrastructShader.popProgram();
 }

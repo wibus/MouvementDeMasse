@@ -11,7 +11,7 @@ class SunComponent;
 class GroundComponent;
 class JunctionsComponent;
 class StreetsComponent;
-class ResidentialComponent;
+class BuildingsComponent;
 class WaterComponent;
 
 
@@ -31,8 +31,7 @@ struct DrawCityCommonData
     // Shaders
     cellar::GLShaderProgram sunShader;
     cellar::GLShaderProgram groundShader;
-    cellar::GLShaderProgram roadsShader;
-    cellar::GLShaderProgram buildingShader;
+    cellar::GLShaderProgram infrastructShader;
     cellar::GLShaderProgram waterShader;
 
     // Sun
@@ -73,13 +72,13 @@ public:
 
 protected:
     DrawCityCommonData _commonData;
-    SunComponent* _sunComponent;
-    SkyComponent* _skyComponent;
-    GroundComponent* _groundComponent;
+    SunComponent*       _sunComponent;
+    SkyComponent*       _skyComponent;
+    GroundComponent*    _groundComponent;
     JunctionsComponent* _junctionsComponent;
-    StreetsComponent* _streetsComponent;
-    ResidentialComponent* _residentialComponent;
-    WaterComponent* _waterComponent;
+    StreetsComponent*   _streetsComponent;
+    BuildingsComponent* _buildingsComponent;
+    WaterComponent*     _waterComponent;
 };
 
 

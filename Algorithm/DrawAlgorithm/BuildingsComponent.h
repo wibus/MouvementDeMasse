@@ -1,15 +1,15 @@
-#ifndef RESIDENTIALCOMPONENT_H
-#define RESIDENTIALCOMPONENT_H
+#ifndef BUILDINGSCOMPONENT_H
+#define BUILDINGSCOMPONENT_H
 
 #include <vector>
 #include <MathsAndPhysics/Vector.h>
 struct DrawCityCommonData;
 
 
-class ResidentialComponent
+class BuildingsComponent
 {
 public:
-    ResidentialComponent(DrawCityCommonData& common);
+    BuildingsComponent(DrawCityCommonData& common);
 
     void setup();
     void draw();
@@ -31,13 +31,15 @@ protected:
     unsigned int _roofVao;
     int          _roofNbElems;
     unsigned int _roofTex;
-    std::vector< cellar::Vec4f > _roofPos;
+    std::vector< cellar::Vec3f > _roofPos;
 
     unsigned int _apartmentTex;
-    std::vector< cellar::Vec4f > _apartmentsPos;
+    std::vector< cellar::Vec3f > _apartmentsPos;
+    std::vector< float > _apartmentTexScaleCoeff;
 
     unsigned int _commercesTex;
-    std::vector< cellar::Vec4f > _commercesPos;
+    std::vector< cellar::Vec3f > _commercesPos;
+    std::vector< float > _commercesTexScaleCoeff;
 };
 
-#endif // RESIDENTIALCOMPONENT_H
+#endif // BUILDINGSCOMPONENT_H

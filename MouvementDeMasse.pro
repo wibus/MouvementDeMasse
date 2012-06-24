@@ -69,7 +69,7 @@ SOURCES += \
     Algorithm/DrawAlgorithm/StreetsComponent.cpp \
     MdMTypes.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.cpp \
-    Algorithm/DrawAlgorithm/ResidentialComponent.cpp
+    Algorithm/DrawAlgorithm/BuildingsComponent.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -97,21 +97,19 @@ HEADERS += \
     Algorithm/DrawAlgorithm/JunctionsComponent.h \
     Algorithm/DrawAlgorithm/StreetsComponent.h \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.h \
-    Algorithm/DrawAlgorithm/ResidentialComponent.h
+    Algorithm/DrawAlgorithm/BuildingsComponent.h
 
 OTHER_FILES += \
     resources/shaders/sun.vert \
     resources/shaders/sun.frag \
     resources/shaders/ground.vert \
     resources/shaders/ground.frag \
-    resources/shaders/roads.vert \
-    resources/shaders/roads.frag \
     resources/shaders/highPrecGround.vert \
     resources/shaders/highPrecGround.frag \
     resources/shaders/water.vert \
     resources/shaders/water.frag \
-    resources/shaders/building.vert \
-    resources/shaders/building.frag
+    resources/shaders/infrastruct.frag \
+    resources/shaders/infrastruct.vert
 
 
 

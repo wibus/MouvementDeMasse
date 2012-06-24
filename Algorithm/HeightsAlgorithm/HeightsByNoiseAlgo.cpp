@@ -57,9 +57,35 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
         {
             for(int i=0; i< _mapSize.x(); ++i)
             {
-                int nb = 0;
+                const int nb = 8;
                 float moy = 0;
 
+                Vec2i sides[nb] = {
+                    Vec2i(i-1, j-1),
+                    Vec2i(i,   j-1),
+                    Vec2i(i+1, j-1),
+                    Vec2i(i+1, j),
+                    Vec2i(i+1, j+1),
+                    Vec2i(i,   j+1),
+                    Vec2i(i-1, j+1),
+                    Vec2i(i-1, j),
+                };
+
+                for(int k=0; k<nb; ++k)
+                {
+                    sides[k][Vec2i::AXIS_X] %= _mapSize.x();
+                    if(sides[k].x() < 0)
+                        sides[k][Vec2i::AXIS_X] += _mapSize.x();
+
+                    sides[k][Vec2i::AXIS_Y] %= _mapSize.y();
+                    if(sides[k].y() < 0)
+                        sides[k][Vec2i::AXIS_Y] += _mapSize.y();
+
+                    moy += noises[prev].get( sides[k] );
+                }
+
+
+                /*
                 if(i > 0)
                 {
                     ++nb;
@@ -105,6 +131,7 @@ void HeightByNoiseAlgo::setup(CityMap &cityMap)
                     ++nb;
                     moy += noises[prev].get(i, j+1);
                 }
+                */
 
                 float h = moy / nb;
                 noises[next].set(i, j, h);

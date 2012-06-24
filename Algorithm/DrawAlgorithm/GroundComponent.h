@@ -26,9 +26,6 @@ protected:
 
     bool isGrassRoad(int i, int j, CardinalDirection dir);
 
-    //void computeGroundVertex(int& idx, cellar::Vec3f* pos, cellar::Vec3f* norm, cellar::Vec2f *tex, int i, int j);
-
-
     DrawCityCommonData& _common;
     unsigned int _groundVao;
     unsigned int _groundTex;
