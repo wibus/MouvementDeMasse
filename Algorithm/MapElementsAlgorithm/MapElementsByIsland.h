@@ -1,6 +1,7 @@
 #ifndef MAPELEMENTSBYISLAND_H
 #define MAPELEMENTSBYISLAND_H
 
+#include <DataStructures/Grid.h>
 #include <MathsAndPhysics/Vector.h>
 #include <stack>
 
@@ -16,12 +17,12 @@ public:
 protected:
     std::stack<cellar::Vec2i> _junctionsStack;
     int _nbIslands;
-    int** _islandIdentifiers;
+    cellar::Grid<int> _islandIdentifiers;
 
 private:
     void findAndMapIslands();
     void mapOneIsland(cellar::Vec2i postion, cellar::Vec2i direction);
-    bool isInBounds(cellar::Vec2i position);
+    bool isJunctionInBounds(cellar::Vec2i position);
     bool isJunctionAboveWater(cellar::Vec2i position);
     bool isLandAboveWater(cellar::Vec2i position);
 

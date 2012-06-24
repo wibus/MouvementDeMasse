@@ -18,7 +18,7 @@ using namespace scaena;
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _cityMap( new CityMap(50, 50)),
+    _cityMap( new CityMap(64, 48)),
     _drawCityAlgorithm(*_cityMap),
     _camMan( stage.camera() ),
     _fpsText()
