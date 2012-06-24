@@ -20,6 +20,12 @@ StreetsComponent::StreetsComponent(DrawCityCommonData& common) :
 
 void StreetsComponent::setup()
 {
+    // Texture
+    _streetsTex = GLToolkit::genTextureId(
+        getImageBank().getImage("resources/textures/street.bmp", false)
+    );
+
+
     // Compute number of street vertices
     _streetsNbElems = 0;
 
@@ -102,18 +108,11 @@ void StreetsComponent::setup()
     // Arrays sweaping
     delete [] streetsPos;
     delete [] streetsTex;
-
-
-    // Texture
-    _streetsTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/street.bmp", false)
-    );
 }
 
 void StreetsComponent::draw()
 {
     _common.roadsShader.pushThisProgram();
-    glVertexAttrib3f(_common.roadsShader.getAttributeLocation("normal_att"), 1, 0, 0);
 
     glBindVertexArray(_streetsVao);
     glBindTexture(GL_TEXTURE_2D, _streetsTex);

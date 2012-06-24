@@ -144,11 +144,8 @@ void MdMCharacter::setAlgorithms()
     heightAlgo.setWeightedNoisesRange(1, heightAlgo.nbNoises());
     heightAlgo.setup( *_cityMap );
 
-    /*
     MapElementsDepthFirst mapElemAlgo;
-    mapElemAlgo.setup(*_cityMap);*/
-
-    MapElementsByIsland mapElemAlgo;
+    //MapElementsByIsland mapElemAlgo;
     mapElemAlgo.setup(*_cityMap);
 
     _drawCityAlgorithm.setup();

@@ -109,7 +109,9 @@ OTHER_FILES += \
     resources/shaders/highPrecGround.vert \
     resources/shaders/highPrecGround.frag \
     resources/shaders/water.vert \
-    resources/shaders/water.frag
+    resources/shaders/water.frag \
+    resources/shaders/building.vert \
+    resources/shaders/building.frag
 
 
 

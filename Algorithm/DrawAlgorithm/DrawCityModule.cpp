@@ -1,5 +1,14 @@
 #include "DrawCityModule.h"
 
+#include "City/CityMap.h"
+#include "SkyComponent.h"
+#include "SunComponent.h"
+#include "GroundComponent.h"
+#include "JunctionsComponent.h"
+#include "StreetsComponent.h"
+#include "ResidentialComponent.h"
+#include "WaterComponent.h"
+
 using namespace cellar;
 
 
@@ -50,6 +59,15 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     roadsShader.loadShadersFromFile("resources/shaders/roads.vert",
                                         "resources/shaders/roads.frag");
 
+    // Buildings
+    GLInOutProgramLocation buildingsLocations;
+    buildingsLocations.setInput(0, "position_att");
+    buildingsLocations.setInput(1, "normal_att");
+    buildingsLocations.setInput(2, "texCoord_att");
+    buildingShader.setInAndOutLocations(buildingsLocations);
+    buildingShader.loadShadersFromFile("resources/shaders/building.vert",
+                                        "resources/shaders/building.frag");
+
     // Water
     GLInOutProgramLocation waterLocations;
     waterLocations.setInput(0, "position_att");
@@ -60,36 +78,36 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
 
 DrawCityModule::DrawCityModule(CityMap &cityMap) :
     _commonData(cityMap),
-    _sunComponent(_commonData),
-    _skyComponent(_commonData),
-    _groundComponent(_commonData),
-    _junctionComponent(_commonData),
-    _streetsComponent(_commonData),
-    _residentialComponent(_commonData),
-    _waterComponent(_commonData)
+    _sunComponent(new SunComponent(_commonData)),
+    _skyComponent(new SkyComponent(_commonData)),
+    _groundComponent(new GroundComponent(_commonData)),
+    _junctionsComponent(new JunctionsComponent(_commonData)),
+    _streetsComponent(new StreetsComponent(_commonData)),
+    _residentialComponent(new ResidentialComponent(_commonData)),
+    _waterComponent(new WaterComponent(_commonData))
 {
 }
 
 void DrawCityModule::setup()
 {
-    _sunComponent.setup();
-    _skyComponent.setup();
-    _groundComponent.setup();
-    _junctionComponent.setup();
-    _streetsComponent.setup();
-    _residentialComponent.setup();
-    _waterComponent.setup();
+    _sunComponent->setup();
+    _skyComponent->setup();
+    _groundComponent->setup();
+    _junctionsComponent->setup();
+    _streetsComponent->setup();
+    _residentialComponent->setup();
+    _waterComponent->setup();
 }
 
 void DrawCityModule::draw()
 {
-    _sunComponent.draw();
-    _skyComponent.draw();
-    _groundComponent.draw();
-    _junctionComponent.draw();
-    _streetsComponent.draw();
-    _residentialComponent.draw();
-    _waterComponent.draw();
+    _sunComponent->draw();
+    _skyComponent->draw();
+    _groundComponent->draw();
+    _junctionsComponent->draw();
+    _streetsComponent->draw();
+    _residentialComponent->draw();
+    _waterComponent->draw();
 }
 
 void DrawCityModule::update()
@@ -110,26 +128,26 @@ void DrawCityModule::update()
 
 
     // Components Updates
-    _sunComponent.update();
-    _skyComponent.update();
-    _groundComponent.update();
-    _junctionComponent.update();
-    _streetsComponent.update();
-    _residentialComponent.update();
-    _waterComponent.update();
+    _sunComponent->update();
+    _skyComponent->update();
+    _groundComponent->update();
+    _junctionsComponent->update();
+    _streetsComponent->update();
+    _residentialComponent->update();
+    _waterComponent->update();
 }
 
 void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
 {
     _commonData.projMat = proj;
 
-    _sunComponent.updateProjectionMatrix();
-    _skyComponent.updateProjectionMatrix();
-    _groundComponent.updateProjectionMatrix();
-    _junctionComponent.updateProjectionMatrix();
-    _streetsComponent.updateProjectionMatrix();
-    _residentialComponent.updateProjectionMatrix();
-    _waterComponent.updateProjectionMatrix();
+    _sunComponent->updateProjectionMatrix();
+    _skyComponent->updateProjectionMatrix();
+    _groundComponent->updateProjectionMatrix();
+    _junctionsComponent->updateProjectionMatrix();
+    _streetsComponent->updateProjectionMatrix();
+    _residentialComponent->updateProjectionMatrix();
+    _waterComponent->updateProjectionMatrix();
 }
 
 void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
@@ -137,13 +155,13 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
     _commonData.viewMat = view;
     _commonData.normalMat = view.subMat3();
 
-    _sunComponent.updateModelViewMatrix();
-    _skyComponent.updateModelViewMatrix();
-    _groundComponent.updateModelViewMatrix();
-    _junctionComponent.updateModelViewMatrix();
-    _streetsComponent.updateModelViewMatrix();
-    _residentialComponent.updateModelViewMatrix();
-    _waterComponent.updateModelViewMatrix();
+    _sunComponent->updateModelViewMatrix();
+    _skyComponent->updateModelViewMatrix();
+    _groundComponent->updateModelViewMatrix();
+    _junctionsComponent->updateModelViewMatrix();
+    _streetsComponent->updateModelViewMatrix();
+    _residentialComponent->updateModelViewMatrix();
+    _waterComponent->updateModelViewMatrix();
 }
 
 DrawCityCommonData& DrawCityModule::commonData()

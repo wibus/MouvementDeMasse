@@ -22,6 +22,11 @@ JunctionsComponent::JunctionsComponent(DrawCityCommonData& common) :
 
 void JunctionsComponent::setup()
 {
+    // Texture
+    _junctionsTex = GLToolkit::genTextureId(
+        getImageBank().getImage("resources/textures/junction.bmp", false)
+    );
+
     // Compute number of junction vertices
     _junctionsNbElems = 0;
     for(int j=0; j<_common.cityMap.size().y()+1; ++j)
@@ -82,18 +87,11 @@ void JunctionsComponent::setup()
     // Arrays sweaping
     delete [] junctionsPos;
     delete [] junctionsTex;
-
-
-    // Texture
-    _junctionsTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/junction.bmp", false)
-    );
 }
 
 void JunctionsComponent::draw()
 {
     _common.roadsShader.pushThisProgram();
-    glVertexAttrib3f(_common.roadsShader.getAttributeLocation("normal_att"), 0, 1, 1);
 
     glBindVertexArray(_junctionsVao);
     glBindTexture(GL_TEXTURE_2D, _junctionsTex);
@@ -104,22 +102,18 @@ void JunctionsComponent::draw()
 
 void JunctionsComponent::update()
 {
-    _common.roadsShader.pushThisProgram();
-    _common.roadsShader.setVec4f("sun.direction",   _common.viewedSunDirection);
-    _common.roadsShader.popProgram();
 }
 
 void JunctionsComponent::updateProjectionMatrix()
 {
     _common.roadsShader.pushThisProgram();
-    _common.roadsShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
+    _common.roadsShader.setMatrix4x4("ProjectionViewMatrix", _common.projMat * _common.viewMat);
     _common.roadsShader.popProgram();
 }
 
 void JunctionsComponent::updateModelViewMatrix()
 {
     _common.roadsShader.pushThisProgram();
-    _common.roadsShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
-    _common.roadsShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
+    _common.roadsShader.setMatrix4x4("ProjectionViewMatrix", _common.projMat * _common.viewMat);
     _common.roadsShader.popProgram();
 }

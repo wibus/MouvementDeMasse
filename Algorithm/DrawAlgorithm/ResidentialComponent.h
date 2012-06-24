@@ -20,19 +20,24 @@ public:
 
 protected:
     float landHeight(int i, int j);
-    void setupApartSides();
-    void setupApartTop();
+    void setupPositions();
+    void setupBuidlindSides();
+    void setupRoofTop();
 
     DrawCityCommonData& _common;
-    unsigned int _apartSidesVao;
-    unsigned int _apartSidesTex;
-    int          _apartSidesNbElems;
+    unsigned int _buildingWallsVao;
+    int          _buildingNbElems;
 
-    unsigned int _apartTopVao;
-    unsigned int _apartTopTex;
-    int          _apartTopNbElems;
+    unsigned int _roofVao;
+    int          _roofNbElems;
+    unsigned int _roofTex;
+    std::vector< cellar::Vec4f > _roofPos;
 
-    std::vector<cellar::Vec3f> _apartmentPos;
+    unsigned int _apartmentTex;
+    std::vector< cellar::Vec4f > _apartmentsPos;
+
+    unsigned int _commercesTex;
+    std::vector< cellar::Vec4f > _commercesPos;
 };
 
 #endif // RESIDENTIALCOMPONENT_H
