@@ -3,6 +3,7 @@
 #include "Land/Land.h"
 
 #include <iostream>
+#include <vector>
 #include <GL/glew.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
@@ -47,19 +48,10 @@ void GroundComponent::setup()
 
 void GroundComponent::setupLands()
 {
+    vector<Vec3f> lpositions;
+    vector<Vec3f> lnormals;
+    vector<Vec2f> ltexCoords;
 
-    _landsNbElems = 0;
-    for(int j=0; j<_common.cityMap.size().y(); ++j)
-        for(int i=0; i<_common.cityMap.size().x(); ++i)
-            if(_common.cityMap.lands().get(i, j)->type() == Land::GRASS)
-                _landsNbElems += 4;
-
-    Vec2f* texCoords = new Vec2f[_landsNbElems];
-    Vec3f* normals   = new Vec3f[_landsNbElems];
-    Vec3f* positions = new Vec3f[_landsNbElems];
-
-
-    int idx = 0;
     for(int j=0; j<_common.cityMap.size().y(); ++j)
     {
         for(int i=0; i<_common.cityMap.size().x(); ++i)
@@ -68,38 +60,39 @@ void GroundComponent::setupLands()
                 continue;
 
             if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
-                positions[idx](i+_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i, j));
+                lpositions.push_back(Vec3f(i+_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i, j)));
             else
-                positions[idx](i, j, _common.ground.heightAt(i, j));
+                lpositions.push_back(Vec3f(i, j, _common.ground.heightAt(i, j)));
 
             if(_common.cityMap.junctions().get(i+1, j)->type() != Junction::GRASS)
-                positions[idx+1](i+1-_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i+1, j));
+                lpositions.push_back(Vec3f(i+1-_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i+1, j)));
             else
-                positions[idx+1](i+1, j, _common.ground.heightAt(i+1, j));
+                lpositions.push_back(Vec3f(i+1, j, _common.ground.heightAt(i+1, j)));
 
             if(_common.cityMap.junctions().get(i+1, j+1)->type() != Junction::GRASS)
-                positions[idx+2](i+1-_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i+1, j+1));
+                lpositions.push_back(Vec3f(i+1-_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i+1, j+1)));
             else
-                positions[idx+2](i+1, j+1, _common.ground.heightAt(i+1, j+1));
+                lpositions.push_back(Vec3f(i+1, j+1, _common.ground.heightAt(i+1, j+1)));
 
             if(_common.cityMap.junctions().get(i, j+1)->type() != Junction::GRASS)
-                positions[idx+3](i+_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i, j+1));
+                lpositions.push_back(Vec3f(i+_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i, j+1)));
             else
-                positions[idx+3](i, j+1, _common.ground.heightAt(i, j+1));
+                lpositions.push_back(Vec3f(i, j+1, _common.ground.heightAt(i, j+1)));
 
-            texCoords[idx] = Vec2f(0, 0);
-            texCoords[idx+1] = Vec2f(1, 0);
-            texCoords[idx+2] = Vec2f(1, 1);
-            texCoords[idx+3] = Vec2f(0, 1);
+            ltexCoords.push_back(Vec2f(0, 0));
+            ltexCoords.push_back(Vec2f(1, 0));
+            ltexCoords.push_back(Vec2f(1, 1));
+            ltexCoords.push_back(Vec2f(0, 1));
 
-            normals[idx] = _common.ground.normalAt(i,   j);
-            normals[idx+1] = _common.ground.normalAt(i+1, j);
-            normals[idx+2] = _common.ground.normalAt(i+1, j+1);
-            normals[idx+3] = _common.ground.normalAt(i,   j+1);
-
-            idx += 4;
+            lnormals.push_back(_common.ground.normalAt(i,   j));
+            lnormals.push_back(_common.ground.normalAt(i+1, j));
+            lnormals.push_back(_common.ground.normalAt(i+1, j+1));
+            lnormals.push_back(_common.ground.normalAt(i,   j+1));
         }
     }
+
+    _landsNbElems = lpositions.size();
+
 
     // Ground VAO setup
     glGenVertexArrays(1, &_landsVao);
@@ -110,101 +103,83 @@ void GroundComponent::setupLands()
     glGenBuffers(nbAttributes, gBuffers);
 
     int position_loc = _common.groundShader.getAttributeLocation("position_att");
-    int normal_loc = _common.groundShader.getAttributeLocation("normal_att");
+    int normal_loc   = _common.groundShader.getAttributeLocation("normal_att");
     int texCoord_loc = _common.groundShader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _landsNbElems, positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(lpositions[0]) * lpositions.size(), lpositions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*texCoords) * _landsNbElems, texCoords, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(ltexCoords[0]) * ltexCoords.size(), ltexCoords.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(texCoord_loc);
     glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*normals) * _landsNbElems, normals, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(lnormals[0]) * lnormals.size(), lnormals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(normal_loc);
     glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
 
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
-
-
-    // Release resources
-    delete [] texCoords;
-    delete [] normals;
-    delete [] positions;
 }
 
 void GroundComponent::setupRoads()
 {
-    _roadsNbElems = 0;
-
-    for(int j=0; j<_common.cityMap.size().y(); ++j)
-    {
-        for(int i=0; i<_common.cityMap.size().x(); ++i)
-        {
-            if( isGrassRoad(i, j, EAST) )
-                _roadsNbElems += 4;
-
-            if( isGrassRoad(i, j, NORTH) )
-                _roadsNbElems += 4;
-        }
-    }
-
-    Vec2f* texCoords = new Vec2f[_roadsNbElems];
-    Vec3f* normals   = new Vec3f[_roadsNbElems];
-    Vec3f* positions = new Vec3f[_roadsNbElems];
-
+    vector<Vec3f> rpositions;
+    vector<Vec3f> rnormals;
+    vector<Vec2f> rtexCoords;
     int idx = 0;
+
     for(int j=0; j<_common.cityMap.size().y(); ++j)
     {
         for(int i=0; i<_common.cityMap.size().x(); ++i)
         {
             if( isGrassRoad(i, j, EAST) )
             {
-                positions[idx]  (i+_common.roadWidth,   j-_common.roadWidth, _common.ground.heightAt(i,   j));
-                positions[idx+1](i+1-_common.roadWidth, j-_common.roadWidth, _common.ground.heightAt(i+1, j));
-                positions[idx+2](i+1-_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i+1, j));
-                positions[idx+3](i+_common.roadWidth,   j+_common.roadWidth, _common.ground.heightAt(i,   j));
+                rpositions.push_back(Vec3f(i+_common.roadWidth,   j-_common.roadWidth, _common.ground.heightAt(i,   j)));
+                rpositions.push_back(Vec3f(i+1-_common.roadWidth, j-_common.roadWidth, _common.ground.heightAt(i+1, j)));
+                rpositions.push_back(Vec3f(i+1-_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i+1, j)));
+                rpositions.push_back(Vec3f(i+_common.roadWidth,   j+_common.roadWidth, _common.ground.heightAt(i,   j)));
 
-                texCoords[idx]   = Vec2f(0, -_common.roadWidth);
-                texCoords[idx+1] = Vec2f(1, -_common.roadWidth);
-                texCoords[idx+2] = Vec2f(1, _common.roadWidth);
-                texCoords[idx+3] = Vec2f(0, _common.roadWidth);
+                rtexCoords.push_back(Vec2f(0, -_common.roadWidth));
+                rtexCoords.push_back(Vec2f(1, -_common.roadWidth));
+                rtexCoords.push_back(Vec2f(1, _common.roadWidth));
+                rtexCoords.push_back(Vec2f(0, _common.roadWidth));
 
-                normals[idx]   = _common.ground.normalAt(i,   j);
-                normals[idx+1] = _common.ground.normalAt(i+1, j);
-                normals[idx+2] = _common.ground.normalAt(i+1, j);
-                normals[idx+3] = _common.ground.normalAt(i,   j);
+                rnormals.push_back(_common.ground.normalAt(i,   j));
+                rnormals.push_back(_common.ground.normalAt(i+1, j));
+                rnormals.push_back(_common.ground.normalAt(i+1, j));
+                rnormals.push_back(_common.ground.normalAt(i,   j));
 
                 idx += 4;
             }
 
             if( isGrassRoad(i, j, NORTH) )
             {
-                positions[idx]  (i-_common.roadWidth, j+_common.roadWidth,   _common.ground.heightAt(i, j));
-                positions[idx+1](i+_common.roadWidth, j+_common.roadWidth,   _common.ground.heightAt(i, j));
-                positions[idx+2](i+_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i, j+1));
-                positions[idx+3](i-_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i, j+1));
+                rpositions.push_back(Vec3f(i-_common.roadWidth, j+_common.roadWidth,   _common.ground.heightAt(i, j)));
+                rpositions.push_back(Vec3f(i+_common.roadWidth, j+_common.roadWidth,   _common.ground.heightAt(i, j)));
+                rpositions.push_back(Vec3f(i+_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i, j+1)));
+                rpositions.push_back(Vec3f(i-_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i, j+1)));
 
-                texCoords[idx]   = Vec2f(-_common.roadWidth, 0);
-                texCoords[idx+1] = Vec2f(_common.roadWidth,  0);
-                texCoords[idx+2] = Vec2f(_common.roadWidth,  1);
-                texCoords[idx+3] = Vec2f(-_common.roadWidth, 1);
+                rtexCoords.push_back(Vec2f(-_common.roadWidth, 0));
+                rtexCoords.push_back(Vec2f(_common.roadWidth,  0));
+                rtexCoords.push_back(Vec2f(_common.roadWidth,  1));
+                rtexCoords.push_back(Vec2f(-_common.roadWidth, 1));
 
-                normals[idx]   = _common.ground.normalAt(i, j);
-                normals[idx+1] = _common.ground.normalAt(i, j);
-                normals[idx+2] = _common.ground.normalAt(i, j+1);
-                normals[idx+3] = _common.ground.normalAt(i, j+1);
+                rnormals.push_back(_common.ground.normalAt(i, j));
+                rnormals.push_back(_common.ground.normalAt(i, j));
+                rnormals.push_back(_common.ground.normalAt(i, j+1));
+                rnormals.push_back(_common.ground.normalAt(i, j+1));
 
                 idx += 4;
             }
         }
     }
+
+    _roadsNbElems = rpositions.size();
 
 
     // Ground VAO setup
@@ -216,33 +191,27 @@ void GroundComponent::setupRoads()
     glGenBuffers(nbAttributes, gBuffers);
 
     int position_loc = _common.groundShader.getAttributeLocation("position_att");
-    int normal_loc = _common.groundShader.getAttributeLocation("normal_att");
+    int normal_loc   = _common.groundShader.getAttributeLocation("normal_att");
     int texCoord_loc = _common.groundShader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _roadsNbElems, positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(rpositions[0]) * rpositions.size(), rpositions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*texCoords) * _roadsNbElems, texCoords, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(rtexCoords[0]) * rtexCoords.size(), rtexCoords.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(texCoord_loc);
     glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*normals) * _roadsNbElems, normals, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(rnormals[0]) * rnormals.size(), rnormals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(normal_loc);
     glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
 
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
-
-
-    // Release resources
-    delete [] texCoords;
-    delete [] normals;
-    delete [] positions;
 }
 
 bool GroundComponent::isGrassRoad(int i, int j, CardinalDirection dir)
@@ -259,107 +228,111 @@ bool GroundComponent::isGrassRoad(int i, int j, CardinalDirection dir)
 
 void GroundComponent::setupTriangles()
 {
-    _trianglesNbElems = 0;
+    vector<Vec3f> tpositions;
+    vector<Vec3f> tnormals;
+    vector<Vec2f> ttexCoords;
 
-    for(int j=1; j<_common.cityMap.size().y(); ++j)
+    // East
+    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
     {
-        for(int i=1; i<_common.cityMap.size().x(); ++i)
+        for(int i=0; i<_common.cityMap.size().x(); ++i)
         {
             if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
-            {
-                if(_common.cityMap.junctions().get(i+1, j)->type() == Junction::GRASS)
-                    _trianglesNbElems += 3;
-                if(_common.cityMap.junctions().get(i, j+1)->type() == Junction::GRASS)
-                    _trianglesNbElems += 3;
-                if(_common.cityMap.junctions().get(i-1, j)->type() == Junction::GRASS)
-                    _trianglesNbElems += 3;
-                if(_common.cityMap.junctions().get(i, j-1)->type() == Junction::GRASS)
-                    _trianglesNbElems += 3;
-            }
-        }
-    }
-
-    Vec2f* texCoords = new Vec2f[_trianglesNbElems];
-    Vec3f* normals   = new Vec3f[_trianglesNbElems];
-    Vec3f* positions = new Vec3f[_trianglesNbElems];
-
-    int idx = 0;
-    for(int j=1; j<_common.cityMap.size().y(); ++j)
-    {
-        for(int i=1; i<_common.cityMap.size().x(); ++i)
-        {
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.cityMap.junctions().get(i+1, j)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _common.ground.heightAt(i, j);
 
-                if(_common.cityMap.junctions().get(i+1, j)->type() == Junction::GRASS)
-                {
-                    positions[idx]   = Vec3f(i+_common.roadWidth, j+_common.roadWidth, curJuncHeight);
-                    positions[idx+1] = Vec3f(i+_common.roadWidth, j-_common.roadWidth, curJuncHeight);
-                    positions[idx+2] = Vec3f(i+1, j, _common.ground.heightAt(i+1, j));
+                tpositions.push_back(Vec3f(i+_common.roadWidth, j+_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i+_common.roadWidth, j-_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i+1, j, _common.ground.heightAt(i+1, j)));
 
-                    texCoords[idx]   = Vec2f(0, -_common.roadWidth);
-                    texCoords[idx+1] = Vec2f(0, +_common.roadWidth);
-                    texCoords[idx+2] = Vec2f(1 - _common.roadWidth, 0);
+                ttexCoords.push_back(Vec2f(0, -_common.roadWidth));
+                ttexCoords.push_back(Vec2f(0, +_common.roadWidth));
+                ttexCoords.push_back(Vec2f(1 - _common.roadWidth, 0));
 
-                    normals[idx]   = _common.ground.normalAt(i,   j);
-                    normals[idx+1] = _common.ground.normalAt(i,   j);
-                    normals[idx+2] = _common.ground.normalAt(i+1, j);
-
-                    idx += 3;
-                }
-                if(_common.cityMap.junctions().get(i, j+1)->type() == Junction::GRASS)
-                {
-                    positions[idx]   = Vec3f(i-_common.roadWidth, j+_common.roadWidth, curJuncHeight);
-                    positions[idx+1] = Vec3f(i+_common.roadWidth, j+_common.roadWidth, curJuncHeight);
-                    positions[idx+2] = Vec3f(i, j+1, _common.ground.heightAt(i, j+1));
-
-                    texCoords[idx]   = Vec2f(0, -_common.roadWidth);
-                    texCoords[idx+1] = Vec2f(0, +_common.roadWidth);
-                    texCoords[idx+2] = Vec2f(1 - _common.roadWidth, 0);
-
-                    normals[idx]   = _common.ground.normalAt(i, j);
-                    normals[idx+1] = _common.ground.normalAt(i, j);
-                    normals[idx+2] = _common.ground.normalAt(i, j+1);
-
-                    idx += 3;
-                }
-                if(_common.cityMap.junctions().get(i-1, j)->type() == Junction::GRASS)
-                {
-                    positions[idx]   = Vec3f(i-_common.roadWidth, j-_common.roadWidth, curJuncHeight);
-                    positions[idx+1] = Vec3f(i-_common.roadWidth, j+_common.roadWidth, curJuncHeight);
-                    positions[idx+2] = Vec3f(i-1, j, _common.ground.heightAt(i-1, j));
-
-                    texCoords[idx]   = Vec2f(0, -_common.roadWidth);
-                    texCoords[idx+1] = Vec2f(0, +_common.roadWidth);
-                    texCoords[idx+2] = Vec2f(1 - _common.roadWidth, 0);
-
-                    normals[idx]   = _common.ground.normalAt(i,   j);
-                    normals[idx+1] = _common.ground.normalAt(i,   j);
-                    normals[idx+2] = _common.ground.normalAt(i-1, j);
-
-                    idx += 3;
-                }
-                if(_common.cityMap.junctions().get(i, j-1)->type() == Junction::GRASS)
-                {
-                    positions[idx]   = Vec3f(i+_common.roadWidth, j-_common.roadWidth, curJuncHeight);
-                    positions[idx+1] = Vec3f(i-_common.roadWidth, j-_common.roadWidth, curJuncHeight);
-                    positions[idx+2] = Vec3f(i, j-1, _common.ground.heightAt(i, j-1));
-
-                    texCoords[idx]   = Vec2f(0, -_common.roadWidth);
-                    texCoords[idx+1] = Vec2f(0, +_common.roadWidth);
-                    texCoords[idx+2] = Vec2f(1 - _common.roadWidth, 0);
-
-                    normals[idx]   = _common.ground.normalAt(i, j);
-                    normals[idx+1] = _common.ground.normalAt(i, j);
-                    normals[idx+2] = _common.ground.normalAt(i, j-1);
-
-                    idx += 3;
-                }
+                tnormals.push_back(_common.ground.normalAt(i,   j));
+                tnormals.push_back(_common.ground.normalAt(i,   j));
+                tnormals.push_back(_common.ground.normalAt(i+1, j));
             }
         }
     }
 
+    // North
+    for(int j=0; j<_common.cityMap.size().y(); ++j)
+    {
+        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
+        {
+            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.cityMap.junctions().get(i, j+1)->type() == Junction::GRASS)
+            {
+                float curJuncHeight = _common.ground.heightAt(i, j);
+
+                tpositions.push_back(Vec3f(i-_common.roadWidth, j+_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i+_common.roadWidth, j+_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i, j+1, _common.ground.heightAt(i, j+1)));
+
+                ttexCoords.push_back(Vec2f(0, -_common.roadWidth));
+                ttexCoords.push_back(Vec2f(0, +_common.roadWidth));
+                ttexCoords.push_back(Vec2f(1 - _common.roadWidth, 0));
+
+                tnormals.push_back(_common.ground.normalAt(i, j));
+                tnormals.push_back(_common.ground.normalAt(i, j));
+                tnormals.push_back(_common.ground.normalAt(i, j+1));
+            }
+        }
+    }
+
+    // West
+    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
+    {
+        for(int i=1; i<_common.cityMap.size().x()+1; ++i)
+        {
+            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.cityMap.junctions().get(i-1, j)->type() == Junction::GRASS)
+            {
+                float curJuncHeight = _common.ground.heightAt(i, j);
+
+                tpositions.push_back(Vec3f(i-_common.roadWidth, j-_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i-_common.roadWidth, j+_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i-1, j, _common.ground.heightAt(i-1, j)));
+
+                ttexCoords.push_back(Vec2f(0, -_common.roadWidth));
+                ttexCoords.push_back(Vec2f(0, +_common.roadWidth));
+                ttexCoords.push_back(Vec2f(1 - _common.roadWidth, 0));
+
+                tnormals.push_back(_common.ground.normalAt(i,   j));
+                tnormals.push_back(_common.ground.normalAt(i,   j));
+                tnormals.push_back(_common.ground.normalAt(i-1, j));
+            }
+        }
+    }
+
+    // South
+    for(int j=1; j<_common.cityMap.size().y()+1; ++j)
+    {
+        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
+        {
+            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.cityMap.junctions().get(i, j-1)->type() == Junction::GRASS)
+            {
+                float curJuncHeight = _common.ground.heightAt(i, j);
+
+                tpositions.push_back(Vec3f(i+_common.roadWidth, j-_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i-_common.roadWidth, j-_common.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i, j-1, _common.ground.heightAt(i, j-1)));
+
+                ttexCoords.push_back(Vec2f(0, -_common.roadWidth));
+                ttexCoords.push_back(Vec2f(0, +_common.roadWidth));
+                ttexCoords.push_back(Vec2f(1 - _common.roadWidth, 0));
+
+                tnormals.push_back(_common.ground.normalAt(i, j));
+                tnormals.push_back(_common.ground.normalAt(i, j));
+                tnormals.push_back(_common.ground.normalAt(i, j-1));
+            }
+        }
+    }
+
+    _trianglesNbElems = tpositions.size();
 
     // Ground VAO setup
     glGenVertexArrays(1, &_trianglesVao);
@@ -374,29 +347,23 @@ void GroundComponent::setupTriangles()
     int texCoord_loc = _common.groundShader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _trianglesNbElems, positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(tpositions[0]) * tpositions.size(), tpositions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*texCoords) * _trianglesNbElems, texCoords, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(ttexCoords[0]) * ttexCoords.size(), ttexCoords.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(texCoord_loc);
     glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*normals) * _trianglesNbElems, normals, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(tnormals[0]) * tnormals.size(), tnormals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(normal_loc);
     glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
 
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
-
-
-    // Release resources
-    delete [] texCoords;
-    delete [] normals;
-    delete [] positions;
 }
 
 void GroundComponent::draw()

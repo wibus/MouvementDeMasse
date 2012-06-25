@@ -32,7 +32,7 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
 
-    _calendar.setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 0, 0));
+    _calendar.setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
 }
 
 void MdMCharacter::enterStage()
@@ -67,7 +67,7 @@ void MdMCharacter::updateCalendar()
 void MdMCharacter::updateCamera(float elapsedtime)
 {
     float velocity  = 10.0f * elapsedtime;
-    float turnSpeed = 0.07f * elapsedtime;
+    float turnSpeed = 0.004;
 
     if(stage().synchronousKeyboard().isAsciiPressed('w'))
     {
