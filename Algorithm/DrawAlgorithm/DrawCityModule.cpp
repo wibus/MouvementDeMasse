@@ -23,15 +23,14 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     curSkyColor(  nightSkyColor         ),
     grassColor(   0.32, 0.90, 0.08, 1.00),
     mudColor(     0.20, 0.14, 0.01, 1.00),
-    waterColor(   0.03, 0.03, 0.30, 0.50),
-    groundShininess(4.0f),
+    waterColor(   0.03, 0.03, 0.30, 0.42),
     waterShininess( 200.0f),
     roadWidth(0.125f)
 {
     sunLight.direction(0, 0, 0.0, 0.0).normalize();
     sunLight.ambient = curSkyColor;
-    sunLight.diffuse( 0.62, 0.62, 0.60);
-    sunLight.specular(0.65, 0.50, 0.30);
+    sunLight.diffuse( 0.76, 0.74, 0.72);
+    sunLight.specular(0.65, 0.58, 0.46);
 
 
     // Sun
@@ -116,8 +115,8 @@ void DrawCityModule::update()
     _commonData.sunLight.direction = sunDir;
     _commonData.viewedSunDirection = _commonData.viewMat * sunDir;
 
-    const float AMBIENT_EFF_FACT = 0.65;
-    const float BASE_INTENSITY = 0.04;
+    const float AMBIENT_EFF_FACT = 0.50;
+    const float BASE_INTENSITY = 0.03;
     const Vec4f BASE_LIGHT = Vec4f(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
     _commonData.sunLight.ambient = BASE_LIGHT + _commonData.curSkyColor * AMBIENT_EFF_FACT;
 

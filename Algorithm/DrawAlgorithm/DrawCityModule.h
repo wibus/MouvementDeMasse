@@ -49,7 +49,6 @@ struct DrawCityCommonData
     cellar::Vec4f waterColor;
 
     // Shininesses
-    float groundShininess;
     float waterShininess;
 
     // Roads

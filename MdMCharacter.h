@@ -49,6 +49,7 @@ private:
     cellar::Calendar _calendar;
     prop::twoD::Text _dateText;
     prop::twoD::Text _fpsText;
+    prop::twoD::Text _UpsText;
 };
 
 #endif // MDMCHARACTER_H

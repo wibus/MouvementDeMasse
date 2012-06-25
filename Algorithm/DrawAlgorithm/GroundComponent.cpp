@@ -27,12 +27,15 @@ GroundComponent::GroundComponent(DrawCityCommonData& common) :
     _common.groundShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
     _common.groundShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
     _common.groundShader.setVec4f("sun.specular",  _common.sunLight.specular);
-    _common.groundShader.setFloat("Shininess",     _common.groundShininess);
     _common.groundShader.setFloat("WaterHeight",   _common.ground.waterHeight());
     _common.groundShader.setVec4f("GrassColor",    _common.grassColor);
     _common.groundShader.setVec4f("MudColor",      _common.mudColor);
     _common.groundShader.setVec4f("WaterColor",    _common.waterColor);    
     _common.groundShader.popProgram();
+
+    _groundTex = GLToolkit::genTextureId(
+        getImageBank().getImage("resources/textures/grass.bmp", false)
+    );
 }
 
 void GroundComponent::setup()
@@ -40,10 +43,6 @@ void GroundComponent::setup()
     setupLands();
     setupRoads();
     setupTriangles();
-
-    _groundTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/grass.bmp", false)
-    );
 }
 
 void GroundComponent::setupLands()

@@ -19,6 +19,7 @@ struct DirectionnalLight
 uniform DirectionnalLight sun;
 uniform float Shininess;
 uniform sampler2D TexUnit;
+uniform sampler2D SpecUnit;
 
 varying vec4 eyeVec;
 varying vec3 normal;
@@ -28,15 +29,19 @@ varying vec2 texCoord;
 vec4 NormalizedBlinnPhong(in vec3 N, in vec3 L, in vec3 V,
                           in Material mat, in vec4 lightDiff, in vec4 lightSpec)
 {
-    vec3  H = normalize(L + V);
     float specInt = mat.shininess * mat.fresnel * pow(max(dot(reflect(-L,N), V), 0.0), mat.shininess);
     return (lightDiff * mat.diffuse + lightSpec * mat.specular*specInt) * max(dot(N, L), 0.0) / 3.1416;
 }
 
 void main(void)
 {
-    vec4 color = texture2D(TexUnit, texCoord);
-    Material mat = Material(color, vec4(1), Shininess, 0.05);
+    vec2 tex = vec2(texCoord.s, texCoord.t - floor(texCoord.t));
+    if(texCoord.t > 1.0 && tex.t < 0.5)
+        tex.t += 0.5;
+
+    vec4 color = texture2D(TexUnit, tex);
+    vec4 specular = texture2D(SpecUnit, tex);
+    Material mat = Material(color, specular, Shininess, 0.05);
 
     vec3 V = normalize(-eyeVec.xyz);
     vec3 L = normalize(-sun.direction.xyz);

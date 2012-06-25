@@ -20,18 +20,19 @@ JunctionsComponent::JunctionsComponent(DrawCityCommonData& common) :
     _common.infrastructShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
     _common.infrastructShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
     _common.infrastructShader.setVec4f("sun.specular",  _common.sunLight.specular);
-    _common.infrastructShader.setFloat("Shininess",     30.0f);
-    _common.infrastructShader.setInt("TexUnit", 0);
+    _common.infrastructShader.setFloat("Shininess",     128.0f);
+    _common.infrastructShader.setInt("TexUnit",  0);
+    _common.infrastructShader.setInt("SpecUnit", 1);
     _common.infrastructShader.popProgram();
-}
 
-void JunctionsComponent::setup()
-{
     // Texture
     _junctionsTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/junction.bmp", false)
     );
+}
 
+void JunctionsComponent::setup()
+{
     // Compute number of junction vertices
     _junctionsNbElems = 0;
     for(int j=0; j<_common.cityMap.size().y()+1; ++j)
@@ -99,11 +100,14 @@ void JunctionsComponent::draw()
     _common.infrastructShader.pushThisProgram();
     _common.infrastructShader.setVec3f("Translation", Vec3f());
     _common.infrastructShader.setFloat("StructureHeight", 1.0f);
-    glVertexAttrib3fv(_common.infrastructShader.getAttributeLocation("normal_att"),
-        Vec3f(0,0,1).asArray());
+    glVertexAttrib3f(_common.infrastructShader.getAttributeLocation("normal_att"), 0,0,1);
 
-    glBindVertexArray(_junctionsVao);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _junctionsTex);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _junctionsTex);
+
+    glBindVertexArray(_junctionsVao);    
     glDrawArrays(GL_QUADS, 0, _junctionsNbElems);
 
     _common.infrastructShader.popProgram();

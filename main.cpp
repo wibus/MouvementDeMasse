@@ -18,10 +18,14 @@ int main(int argc, char** argv) try
     getApplication().addCustomStage(stage);
     getApplication().chooseStage(stage->id());
 
+    stage->setDrawSynch( false );
+    stage->setDrawInterval( 30 );
+    stage->setUpdateInterval( 40 );
+
     MainWindow window(stage);
     window.show();
 
-    return getApplication().execute();
+    return getApplication().execute();    
 }
 catch(exception& e)
 {

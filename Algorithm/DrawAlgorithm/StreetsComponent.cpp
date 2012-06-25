@@ -15,17 +15,14 @@ StreetsComponent::StreetsComponent(DrawCityCommonData& common) :
     _streetsTex(0),
     _streetsNbElems(0)
 {
-
-}
-
-void StreetsComponent::setup()
-{
     // Texture
     _streetsTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/street.bmp", false)
     );
+}
 
-
+void StreetsComponent::setup()
+{
     // Compute number of street vertices
     _streetsNbElems = 0;
 
@@ -142,8 +139,12 @@ void StreetsComponent::draw()
     _common.infrastructShader.setVec3f("Translation", Vec3f());
     _common.infrastructShader.setFloat("StructureHeight", 1.0f);
 
-    glBindVertexArray(_streetsVao);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _streetsTex);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _streetsTex);
+
+    glBindVertexArray(_streetsVao);
     glDrawArrays(GL_QUADS, 0, _streetsNbElems);
 
     _common.infrastructShader.popProgram();

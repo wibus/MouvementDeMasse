@@ -21,9 +21,11 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _cityMap( new CityMap(64, 48)),
     _drawCityAlgorithm(*_cityMap),
     _camMan( stage.camera() ),
-    _fpsText()
+    _fpsText(),
+    _UpsText()
 {
     _fpsText.setPosition(5, 5);
+    _UpsText.setPosition(5, 25);
 
     stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->ground().maxHeight()),
                              Vec3f(_cityMap->size().x() / 2, _cityMap->size().y() / 2, 0),
@@ -46,9 +48,11 @@ void MdMCharacter::enterStage()
 
 void MdMCharacter::beginStep(const StageTime &time)
 {
+    _UpsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
+
     updateCalendar();
     updateCamera( time.elapsedTime() );
-    _drawCityAlgorithm.update();
+    _drawCityAlgorithm.update();    
 }
 
 void MdMCharacter::updateCalendar()
@@ -62,30 +66,31 @@ void MdMCharacter::updateCalendar()
 
 void MdMCharacter::updateCamera(float elapsedtime)
 {
-    const float speed = 10.0f;
+    float velocity  = 10.0f * elapsedtime;
+    float turnSpeed = 0.07f * elapsedtime;
 
     if(stage().synchronousKeyboard().isAsciiPressed('w'))
     {
-        _camMan.forward(elapsedtime * speed);
+        _camMan.forward(velocity);
     }
     if(stage().synchronousKeyboard().isAsciiPressed('s'))
     {
-        _camMan.forward(-elapsedtime * speed);
+        _camMan.forward(-velocity);
     }
     if(stage().synchronousKeyboard().isAsciiPressed('a'))
     {
-        _camMan.sideward(-elapsedtime * speed);
+        _camMan.sideward(-velocity);
     }
     if(stage().synchronousKeyboard().isAsciiPressed('d'))
     {
-        _camMan.sideward(elapsedtime * speed);
+        _camMan.sideward(velocity);
     }
 
     if(stage().synchronousMouse().displacement() != Vec2i(0, 0) &&
        stage().synchronousMouse().buttonIsPressed(Mouse::LEFT))
     {
-        _camMan.turnHorizontaly(stage().synchronousMouse().displacement().x() * 0.004f);
-        _camMan.turnVerticaly(stage().synchronousMouse().displacement().y() * 0.004f);
+        _camMan.turnHorizontaly(stage().synchronousMouse().displacement().x() * turnSpeed);
+        _camMan.turnVerticaly(  stage().synchronousMouse().displacement().y() * turnSpeed);
     }
 }
 
@@ -95,11 +100,12 @@ void MdMCharacter::endStep(const StageTime &)
 
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
-    _drawCityAlgorithm.draw();
+    _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 
-    _dateText.draw();
-    _fpsText.setText( toString(1.0f / time.elapsedTime()) );
+    _drawCityAlgorithm.draw();    
     _fpsText.draw();
+    _UpsText.draw();
+    _dateText.draw();
 }
 
 void MdMCharacter::exitStage()

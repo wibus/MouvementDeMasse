@@ -9,7 +9,6 @@ struct DirectionnalLight
 };
 
 uniform DirectionnalLight sun;
-uniform float Shininess;
 uniform float WaterHeight;
 uniform vec4  GrassColor;
 uniform vec4  MudColor;
@@ -24,7 +23,8 @@ varying float height;
 
 void main(void)
 {
-    float grassIntensity = clamp(height+1.0, 0.0, 1.0);
+    const float GrassTolerance = 0.3f;
+    float grassIntensity = clamp(height+GrassTolerance, 0.0, GrassTolerance) / GrassTolerance;
     vec4 color = grassIntensity * texture2D(GrassTexUnit, texCoord) + (1 - grassIntensity) * MudColor;
 
     float grassColCoef = 1.0 / (max(1.0 - height * 0.35, 1.0));
