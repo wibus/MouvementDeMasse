@@ -29,7 +29,8 @@ varying vec2 texCoord;
 vec4 NormalizedBlinnPhong(in vec3 N, in vec3 L, in vec3 V,
                           in Material mat, in vec4 lightDiff, in vec4 lightSpec)
 {
-    float specInt = mat.shininess * mat.fresnel * pow(max(dot(reflect(-L,N), V), 0.0), mat.shininess);
+    vec3 H = normalize(L+V);
+    float specInt = mat.shininess * mat.fresnel * pow(max(dot(H, N), 0.0), mat.shininess);
     return (lightDiff * mat.diffuse + lightSpec * mat.specular*specInt) * max(dot(N, L), 0.0) / 3.1416;
 }
 

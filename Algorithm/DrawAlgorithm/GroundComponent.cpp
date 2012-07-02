@@ -13,7 +13,7 @@ using namespace cellar;
 
 
 GroundComponent::GroundComponent(DrawCityCommonData& common) :
-    _common(common),
+    AbstractComponent(common),
     _groundVao(0),
     _groundNbElems(0),
     _landsVao(0),
@@ -23,17 +23,6 @@ GroundComponent::GroundComponent(DrawCityCommonData& common) :
     _trianglesVao(0),
     _trianglesNbElems(0)
 {
-    _common.groundShader.pushThisProgram();
-    _common.groundShader.setVec4f("sun.direction", _common.sunLight.direction);
-    _common.groundShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
-    _common.groundShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
-    _common.groundShader.setVec4f("sun.specular",  _common.sunLight.specular);
-    _common.groundShader.setFloat("WaterHeight",   _common.ground.waterHeight());
-    _common.groundShader.setVec4f("GrassColor",    _common.grassColor);
-    _common.groundShader.setVec4f("MudColor",      _common.mudColor);
-    _common.groundShader.setVec4f("WaterColor",    _common.waterColor);    
-    _common.groundShader.popProgram();
-
     _groundTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/grass.bmp", false)
     );
@@ -381,28 +370,5 @@ void GroundComponent::draw()
     glBindVertexArray(_trianglesVao);
     glDrawArrays(GL_TRIANGLES, 0, _trianglesNbElems);
 
-    _common.groundShader.popProgram();
-}
-
-void GroundComponent::update()
-{
-    _common.groundShader.pushThisProgram();
-    _common.groundShader.setVec4f("sun.direction", _common.viewedSunDirection);
-    _common.groundShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
-    _common.groundShader.popProgram();
-}
-
-void GroundComponent::updateProjectionMatrix()
-{
-    _common.groundShader.pushThisProgram();
-    _common.groundShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
-    _common.groundShader.popProgram();
-}
-
-void GroundComponent::updateModelViewMatrix()
-{
-    _common.groundShader.pushThisProgram();
-    _common.groundShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
-    _common.groundShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
     _common.groundShader.popProgram();
 }

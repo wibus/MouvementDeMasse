@@ -9,7 +9,7 @@ using namespace std;
 using namespace cellar;
 
 BuildingsComponent::BuildingsComponent(DrawCityCommonData& common) :
-    _common(common),
+    AbstractComponent(common),
     _buildingWallsVao(0),
     _buildingNbElems(0),
     _roofVao(0),
@@ -315,16 +315,4 @@ void BuildingsComponent::draw()
     }
 
     _common.infrastructShader.popProgram();
-}
-
-void BuildingsComponent::update()
-{
-}
-
-void BuildingsComponent::updateProjectionMatrix()
-{
-}
-
-void BuildingsComponent::updateModelViewMatrix()
-{
 }

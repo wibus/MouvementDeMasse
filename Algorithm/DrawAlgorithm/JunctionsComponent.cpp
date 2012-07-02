@@ -10,21 +10,11 @@ using namespace cellar;
 
 
 JunctionsComponent::JunctionsComponent(DrawCityCommonData& common) :
-    _common(common),
+    AbstractComponent(common),
     _junctionsVao(0),
     _junctionsTex(0),
     _junctionsNbElems(0)
 {
-    _common.infrastructShader.pushThisProgram();
-    _common.infrastructShader.setVec4f("sun.direction", _common.sunLight.direction);
-    _common.infrastructShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
-    _common.infrastructShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
-    _common.infrastructShader.setVec4f("sun.specular",  _common.sunLight.specular);
-    _common.infrastructShader.setFloat("Shininess",     128.0f);
-    _common.infrastructShader.setInt("TexUnit",  0);
-    _common.infrastructShader.setInt("SpecUnit", 1);
-    _common.infrastructShader.popProgram();
-
     // Texture
     _junctionsTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/junction.bmp", false)
@@ -110,28 +100,5 @@ void JunctionsComponent::draw()
     glBindVertexArray(_junctionsVao);    
     glDrawArrays(GL_QUADS, 0, _junctionsNbElems);
 
-    _common.infrastructShader.popProgram();
-}
-
-void JunctionsComponent::update()
-{
-    _common.infrastructShader.pushThisProgram();
-    _common.infrastructShader.setVec4f("sun.direction", _common.viewedSunDirection);
-    _common.infrastructShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
-    _common.infrastructShader.popProgram();
-}
-
-void JunctionsComponent::updateProjectionMatrix()
-{
-    _common.infrastructShader.pushThisProgram();
-    _common.infrastructShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
-    _common.infrastructShader.popProgram();
-}
-
-void JunctionsComponent::updateModelViewMatrix()
-{
-    _common.infrastructShader.pushThisProgram();
-    _common.infrastructShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
-    _common.infrastructShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
     _common.infrastructShader.popProgram();
 }

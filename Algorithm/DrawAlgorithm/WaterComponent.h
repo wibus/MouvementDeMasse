@@ -1,23 +1,18 @@
 #ifndef WATERCOMPONENT_H
 #define WATERCOMPONENT_H
 
-struct DrawCityCommonData;
+#include "AbstractComponent.h"
 
 
-class WaterComponent
+class WaterComponent : public AbstractComponent
 {
 public:
     WaterComponent(DrawCityCommonData& common);
 
     void setup();
     void draw();
-    void update();
-
-    void updateProjectionMatrix();
-    void updateModelViewMatrix();
 
 protected:
-    DrawCityCommonData& _common;
     unsigned int _waterVao;
     const int _waterNbElems;
 };

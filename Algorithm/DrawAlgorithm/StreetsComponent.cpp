@@ -10,7 +10,7 @@ using namespace cellar;
 
 
 StreetsComponent::StreetsComponent(DrawCityCommonData& common) :
-    _common(common),
+    AbstractComponent(common),
     _streetsVao(0),
     _streetsTex(0),
     _streetsNbElems(0)
@@ -148,16 +148,4 @@ void StreetsComponent::draw()
     glDrawArrays(GL_QUADS, 0, _streetsNbElems);
 
     _common.infrastructShader.popProgram();
-}
-
-void StreetsComponent::update()
-{
-}
-
-void StreetsComponent::updateProjectionMatrix()
-{
-}
-
-void StreetsComponent::updateModelViewMatrix()
-{
 }

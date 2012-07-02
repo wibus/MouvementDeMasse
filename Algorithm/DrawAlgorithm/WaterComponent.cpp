@@ -8,18 +8,10 @@ using namespace cellar;
 
 
 WaterComponent::WaterComponent(DrawCityCommonData& common) :
-    _common(common),
+    AbstractComponent(common),
     _waterVao(0),
     _waterNbElems(4)
 {
-    _common.waterShader.pushThisProgram();
-    _common.waterShader.setVec4f("sun.direction", _common.sunLight.direction);
-    _common.waterShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
-    _common.waterShader.setVec4f("sun.diffuse",   _common.sunLight.diffuse);
-    _common.waterShader.setVec4f("sun.specular",  _common.sunLight.specular);
-    _common.waterShader.setFloat("Shininess",     _common.waterShininess);
-    _common.waterShader.setVec4f("WaterColor",    _common.waterColor);
-    _common.waterShader.popProgram();
 }
 
 void WaterComponent::setup()
@@ -64,28 +56,5 @@ void WaterComponent::draw()
     glDrawArrays(GL_TRIANGLE_FAN, 0, _waterNbElems);
     glDisable(GL_BLEND);
 
-    _common.waterShader.popProgram();
-}
-
-void WaterComponent::update()
-{
-    _common.waterShader.pushThisProgram();
-    _common.waterShader.setVec4f("sun.direction", _common.viewedSunDirection);
-    _common.waterShader.setVec4f("sun.ambient",   _common.sunLight.ambient);
-    _common.waterShader.popProgram();
-}
-
-void WaterComponent::updateProjectionMatrix()
-{
-    _common.waterShader.pushThisProgram();
-    _common.waterShader.setMatrix4x4("ProjectionMatrix", _common.projMat);
-    _common.waterShader.popProgram();
-}
-
-void WaterComponent::updateModelViewMatrix()
-{
-    _common.waterShader.pushThisProgram();
-    _common.waterShader.setMatrix4x4("ModelViewMatrix", _common.viewMat);
-    _common.waterShader.setMatrix3x3("NormalMatrix",    _common.normalMat);
     _common.waterShader.popProgram();
 }

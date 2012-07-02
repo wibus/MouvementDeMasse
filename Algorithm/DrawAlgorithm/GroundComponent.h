@@ -4,20 +4,16 @@
 #include <MathsAndPhysics/Vector.h>
 
 #include "MdMTypes.h"
-struct DrawCityCommonData;
+#include "AbstractComponent.h"
 
 
-class GroundComponent
+class GroundComponent : public AbstractComponent
 {
 public:
     GroundComponent(DrawCityCommonData& common);
 
     void setup();
     void draw();
-    void update();
-
-    void updateProjectionMatrix();
-    void updateModelViewMatrix();
 
 protected:
     void setupLands();
@@ -26,7 +22,6 @@ protected:
 
     bool isGrassRoad(int i, int j, CardinalDirection dir);
 
-    DrawCityCommonData& _common;
     unsigned int _groundVao;
     unsigned int _groundTex;
     int _groundNbElems;

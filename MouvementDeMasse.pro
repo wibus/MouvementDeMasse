@@ -52,7 +52,6 @@ SOURCES += \
     Land/Land.cpp \
     Algorithm/HeightsAlgorithm/HeightsAlgorithm.cpp \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.cpp \
-    Algorithm/DrawAlgorithm/DrawAlgorithm.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.cpp \
     Road/Street.cpp \
@@ -61,7 +60,6 @@ SOURCES += \
     City/Ground.cpp \
     Algorithm/DrawAlgorithm/DrawHighPrecisionGround.cpp \
     Algorithm/DrawAlgorithm/DrawCityModule.cpp \
-    Algorithm/DrawAlgorithm/SunComponent.cpp \
     Algorithm/DrawAlgorithm/SkyComponent.cpp \
     Algorithm/DrawAlgorithm/WaterComponent.cpp \
     Algorithm/DrawAlgorithm/GroundComponent.cpp \
@@ -81,7 +79,6 @@ HEADERS += \
     Land/Land.h \
     Algorithm/HeightsAlgorithm/HeightsAlgorithm.h \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h \
-    Algorithm/DrawAlgorithm/DrawAlgorithm.h \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h \
     Road/Street.h \
@@ -90,18 +87,17 @@ HEADERS += \
     City/Ground.h \
     Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h \
     Algorithm/DrawAlgorithm/DrawCityModule.h \
-    Algorithm/DrawAlgorithm/SunComponent.h \
     Algorithm/DrawAlgorithm/SkyComponent.h \
     Algorithm/DrawAlgorithm/WaterComponent.h \
     Algorithm/DrawAlgorithm/GroundComponent.h \
     Algorithm/DrawAlgorithm/JunctionsComponent.h \
     Algorithm/DrawAlgorithm/StreetsComponent.h \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.h \
-    Algorithm/DrawAlgorithm/BuildingsComponent.h
+    Algorithm/DrawAlgorithm/BuildingsComponent.h \
+    Helpers.h \
+    Algorithm/DrawAlgorithm/AbstractComponent.h
 
 OTHER_FILES += \
-    resources/shaders/sun.vert \
-    resources/shaders/sun.frag \
     resources/shaders/ground.vert \
     resources/shaders/ground.frag \
     resources/shaders/highPrecGround.vert \
@@ -109,7 +105,9 @@ OTHER_FILES += \
     resources/shaders/water.vert \
     resources/shaders/water.frag \
     resources/shaders/infrastruct.frag \
-    resources/shaders/infrastruct.vert
+    resources/shaders/infrastruct.vert \
+    resources/shaders/sky.vert \
+    resources/shaders/sky.frag
 
 
 

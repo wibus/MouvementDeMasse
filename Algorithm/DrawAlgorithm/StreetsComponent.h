@@ -1,23 +1,18 @@
 #ifndef STREETSCOMPONENT_H
 #define STREETSCOMPONENT_H
 
-struct DrawCityCommonData;
+#include "AbstractComponent.h"
 
 
-class StreetsComponent
+class StreetsComponent : public AbstractComponent
 {
 public:
     StreetsComponent(DrawCityCommonData& common);
 
     void setup();
     void draw();
-    void update();
-
-    void updateProjectionMatrix();
-    void updateModelViewMatrix();
 
 protected:
-    DrawCityCommonData& _common;
     unsigned int _streetsVao;
     unsigned int _streetsTex;
     int          _streetsNbElems;

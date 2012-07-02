@@ -2,7 +2,6 @@
 
 #include "City/CityMap.h"
 #include "SkyComponent.h"
-#include "SunComponent.h"
 #include "GroundComponent.h"
 #include "JunctionsComponent.h"
 #include "StreetsComponent.h"
@@ -33,12 +32,19 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     sunLight.specular(0.65, 0.58, 0.46);
 
 
-    // Sun
-    GLInOutProgramLocation sunLocations;
-    sunLocations.setInput(0, "relPos_att");
-    sunShader.setInAndOutLocations(sunLocations);
-    sunShader.loadShadersFromFile("resources/shaders/sun.vert",
-                                  "resources/shaders/sun.frag");
+    // Sky
+    GLInOutProgramLocation skyLocations;
+    skyLocations.setInput(0, "psotion_att");
+    skyLocations.setInput(1, "texCoord_att");
+    skyShader.setInAndOutLocations(skyLocations);
+    skyShader.loadShadersFromFile("resources/shaders/sky.vert",
+                                  "resources/shaders/sky.frag");
+    skyShader.pushThisProgram();
+    skyShader.setVec4f("SkyColor", curSkyColor);
+    skyShader.setVec4f("SunColor", sunColor);
+    skyShader.setFloat("SunRadius", sunRadius);
+    skyShader.setVec3f("SunPosition", Vec3f(0.0f, 0.0f, -1.0f));
+    skyShader.popProgram();
 
     // Ground
     GLInOutProgramLocation groundLocations;
@@ -48,6 +54,16 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     groundShader.setInAndOutLocations(groundLocations);
     groundShader.loadShadersFromFile("resources/shaders/ground.vert",
                                      "resources/shaders/ground.frag");
+    groundShader.pushThisProgram();
+    groundShader.setVec4f("sun.direction", sunLight.direction);
+    groundShader.setVec4f("sun.ambient",   sunLight.ambient);
+    groundShader.setVec4f("sun.diffuse",   sunLight.diffuse);
+    groundShader.setVec4f("sun.specular",  sunLight.specular);
+    groundShader.setFloat("WaterHeight",   ground.waterHeight());
+    groundShader.setVec4f("GrassColor",    grassColor);
+    groundShader.setVec4f("MudColor",      mudColor);
+    groundShader.setVec4f("WaterColor",    waterColor);
+    groundShader.popProgram();
 
     // Roads
     GLInOutProgramLocation junctionsLocations;
@@ -57,6 +73,15 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     infrastructShader.setInAndOutLocations(junctionsLocations);
     infrastructShader.loadShadersFromFile("resources/shaders/infrastruct.vert",
                                         "resources/shaders/infrastruct.frag");
+    infrastructShader.pushThisProgram();
+    infrastructShader.setVec4f("sun.direction", sunLight.direction);
+    infrastructShader.setVec4f("sun.ambient",   sunLight.ambient);
+    infrastructShader.setVec4f("sun.diffuse",   sunLight.diffuse);
+    infrastructShader.setVec4f("sun.specular",  sunLight.specular);
+    infrastructShader.setFloat("Shininess",     128.0f);
+    infrastructShader.setInt("TexUnit",         0);
+    infrastructShader.setInt("SpecUnit",        1);
+    infrastructShader.popProgram();
 
     // Water
     GLInOutProgramLocation waterLocations;
@@ -64,11 +89,19 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     waterShader.setInAndOutLocations(waterLocations);
     waterShader.loadShadersFromFile("resources/shaders/water.vert",
                                     "resources/shaders/water.frag");
+    waterShader.pushThisProgram();
+    waterShader.setVec4f("sun.direction", sunLight.direction);
+    waterShader.setVec4f("sun.ambient",   sunLight.ambient);
+    waterShader.setVec4f("sun.diffuse",   sunLight.diffuse);
+    waterShader.setVec4f("sun.specular",  sunLight.specular);
+    waterShader.setFloat("Shininess",     waterShininess);
+    waterShader.setVec4f("WaterColor",    waterColor);
+    waterShader.popProgram();
 }
 
 DrawCityModule::DrawCityModule(CityMap &cityMap) :
     _commonData(cityMap),
-    _sunComponent(new SunComponent(_commonData)),
+    _components(),
     _skyComponent(new SkyComponent(_commonData)),
     _groundComponent(new GroundComponent(_commonData)),
     _junctionsComponent(new JunctionsComponent(_commonData)),
@@ -76,28 +109,24 @@ DrawCityModule::DrawCityModule(CityMap &cityMap) :
     _buildingsComponent(new BuildingsComponent(_commonData)),
     _waterComponent(new WaterComponent(_commonData))
 {
+    _components.push_back(_skyComponent);
+    _components.push_back(_groundComponent);
+    _components.push_back(_junctionsComponent);
+    _components.push_back(_streetsComponent);
+    _components.push_back(_buildingsComponent);
+    _components.push_back(_waterComponent);
 }
 
 void DrawCityModule::setup()
 {
-    _sunComponent->setup();
-    _skyComponent->setup();
-    _groundComponent->setup();
-    _junctionsComponent->setup();
-    _streetsComponent->setup();
-    _buildingsComponent->setup();
-    _waterComponent->setup();
+    for(size_t i=0; i<_components.size(); ++i)
+        _components[i]->setup();
 }
 
 void DrawCityModule::draw()
 {
-    _sunComponent->draw();
-    _skyComponent->draw();
-    _groundComponent->draw();
-    _junctionsComponent->draw();
-    _streetsComponent->draw();
-    _buildingsComponent->draw();
-    _waterComponent->draw();
+    for(size_t i=0; i<_components.size(); ++i)
+        _components[i]->draw();
 }
 
 void DrawCityModule::update()
@@ -120,28 +149,56 @@ void DrawCityModule::update()
     const Vec4f BASE_LIGHT = Vec4f(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
     _commonData.sunLight.ambient = BASE_LIGHT + _commonData.curSkyColor * AMBIENT_EFF_FACT;
 
+    updateShaders();
+}
 
-    // Components Updates
-    _sunComponent->update();
-    _skyComponent->update();
-    _groundComponent->update();
-    _junctionsComponent->update();
-    _streetsComponent->update();
-    _buildingsComponent->update();
-    _waterComponent->update();
+void DrawCityModule::updateShaders()
+{
+    _commonData.skyShader.pushThisProgram();
+    _commonData.skyShader.setVec4f("SkyColor", _commonData.curSkyColor);
+    _commonData.skyShader.setVec3f("SunPosition", _commonData.normalMat * vec3(-_commonData.sunLight.direction));
+    _commonData.skyShader.popProgram();
+
+    _commonData.groundShader.pushThisProgram();
+    _commonData.groundShader.setVec4f("sun.direction", _commonData.viewedSunDirection);
+    _commonData.groundShader.setVec4f("sun.ambient",   _commonData.sunLight.ambient);
+    _commonData.groundShader.popProgram();
+
+    _commonData.infrastructShader.pushThisProgram();
+    _commonData.infrastructShader.setVec4f("sun.direction", _commonData.viewedSunDirection);
+    _commonData.infrastructShader.setVec4f("sun.ambient",   _commonData.sunLight.ambient);
+    _commonData.infrastructShader.popProgram();
+
+    _commonData.waterShader.pushThisProgram();
+    _commonData.waterShader.setVec4f("sun.direction", _commonData.viewedSunDirection);
+    _commonData.waterShader.setVec4f("sun.ambient",   _commonData.sunLight.ambient);
+    _commonData.waterShader.popProgram();
 }
 
 void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
 {
     _commonData.projMat = proj;
 
-    _sunComponent->updateProjectionMatrix();
-    _skyComponent->updateProjectionMatrix();
-    _groundComponent->updateProjectionMatrix();
-    _junctionsComponent->updateProjectionMatrix();
-    _streetsComponent->updateProjectionMatrix();
-    _buildingsComponent->updateProjectionMatrix();
-    _waterComponent->updateProjectionMatrix();
+    updateShadersProjectionMatrix();
+}
+
+void DrawCityModule::updateShadersProjectionMatrix()
+{
+    _commonData.skyShader.pushThisProgram();
+    _commonData.skyShader.setMatrix4x4("Projection", _commonData.projMat);
+    _commonData.skyShader.popProgram();
+
+    _commonData.groundShader.pushThisProgram();
+    _commonData.groundShader.setMatrix4x4("ProjectionMatrix", _commonData.projMat);
+    _commonData.groundShader.popProgram();
+
+    _commonData.infrastructShader.pushThisProgram();
+    _commonData.infrastructShader.setMatrix4x4("ProjectionMatrix", _commonData.projMat);
+    _commonData.infrastructShader.popProgram();
+
+    _commonData.waterShader.pushThisProgram();
+    _commonData.waterShader.setMatrix4x4("ProjectionMatrix", _commonData.projMat);
+    _commonData.waterShader.popProgram();
 }
 
 void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
@@ -149,13 +206,29 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
     _commonData.viewMat = view;
     _commonData.normalMat = view.subMat3();
 
-    _sunComponent->updateModelViewMatrix();
-    _skyComponent->updateModelViewMatrix();
-    _groundComponent->updateModelViewMatrix();
-    _junctionsComponent->updateModelViewMatrix();
-    _streetsComponent->updateModelViewMatrix();
-    _buildingsComponent->updateModelViewMatrix();
-    _waterComponent->updateModelViewMatrix();
+    updateShadersModelViewMatrix();
+}
+
+void DrawCityModule::updateShadersModelViewMatrix()
+{
+    _commonData.skyShader.pushThisProgram();
+    _commonData.skyShader.setMatrix3x3("View",  _commonData.normalMat);
+    _commonData.skyShader.popProgram();
+
+    _commonData.groundShader.pushThisProgram();
+    _commonData.groundShader.setMatrix4x4("ModelViewMatrix", _commonData.viewMat);
+    _commonData.groundShader.setMatrix3x3("NormalMatrix",    _commonData.normalMat);
+    _commonData.groundShader.popProgram();
+
+    _commonData.infrastructShader.pushThisProgram();
+    _commonData.infrastructShader.setMatrix4x4("ModelViewMatrix", _commonData.viewMat);
+    _commonData.infrastructShader.setMatrix3x3("NormalMatrix",    _commonData.normalMat);
+    _commonData.infrastructShader.popProgram();
+
+    _commonData.waterShader.pushThisProgram();
+    _commonData.waterShader.setMatrix4x4("ModelViewMatrix", _commonData.viewMat);
+    _commonData.waterShader.setMatrix3x3("NormalMatrix",    _commonData.normalMat);
+    _commonData.waterShader.popProgram();
 }
 
 DrawCityCommonData& DrawCityModule::commonData()

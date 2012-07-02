@@ -3,20 +3,17 @@
 
 #include <vector>
 #include <MathsAndPhysics/Vector.h>
-struct DrawCityCommonData;
+
+#include "AbstractComponent.h"
 
 
-class BuildingsComponent
+class BuildingsComponent : public AbstractComponent
 {
 public:
     BuildingsComponent(DrawCityCommonData& common);
 
     void setup();
     void draw();
-    void update();
-
-    void updateProjectionMatrix();
-    void updateModelViewMatrix();
 
 protected:
     float landHeight(int i, int j);
@@ -24,7 +21,6 @@ protected:
     void setupBuidlindSides();
     void setupRoofTop();
 
-    DrawCityCommonData& _common;
     unsigned int _buildingWallsVao;
     int          _buildingNbElems;
 

@@ -1,13 +1,15 @@
 #ifndef DRAWCITYMODULE_H
 #define DRAWCITYMODULE_H
 
+#include <vector>
+
 #include <Graphics/Light/Light3D.h>
 #include <Graphics/GL/GLShaderProgram.h>
 
 #include "City/CityMap.h"
 
+class AbstractComponent;
 class SkyComponent;
-class SunComponent;
 class GroundComponent;
 class JunctionsComponent;
 class StreetsComponent;
@@ -29,7 +31,7 @@ struct DrawCityCommonData
     cellar::Matrix3x3<float> normalMat;
 
     // Shaders
-    cellar::GLShaderProgram sunShader;
+    cellar::GLShaderProgram skyShader;
     cellar::GLShaderProgram groundShader;
     cellar::GLShaderProgram infrastructShader;
     cellar::GLShaderProgram waterShader;
@@ -70,8 +72,13 @@ public:
     DrawCityCommonData& commonData();
 
 protected:
-    DrawCityCommonData _commonData;
-    SunComponent*       _sunComponent;
+    void updateShaders();
+    void updateShadersProjectionMatrix();
+    void updateShadersModelViewMatrix();
+
+
+    DrawCityCommonData  _commonData;
+    std::vector<AbstractComponent*> _components;
     SkyComponent*       _skyComponent;
     GroundComponent*    _groundComponent;
     JunctionsComponent* _junctionsComponent;
