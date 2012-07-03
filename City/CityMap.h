@@ -6,7 +6,7 @@
 #include <DataStructures/PGrid.h>
 #include <MathsAndPhysics/Vector.h>
 
-#include "Sun.h"
+#include "Weather/Sun.h"
 #include "Ground.h"
 #include "Land/Land.h"
 #include "Road/Junction.h"

@@ -44,6 +44,7 @@ void MdMCharacter::enterStage()
     stage().camera().refresh();
 
     setAlgorithms();
+    _drawCityAlgorithm.update();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -146,8 +147,8 @@ void MdMCharacter::setAlgorithms()
 
     // Height algorithm
     HeightByNoiseAlgo heightAlgo;
-    heightAlgo.setNbNoises( cellar::min(_cityMap->size().x(), _cityMap->size().y()) / 2 );
-    heightAlgo.setWeightedNoisesRange(1, heightAlgo.nbNoises());
+    heightAlgo.setWeightedFrequenciesRange(1,
+        cellar::min(_cityMap->size().x(), _cityMap->size().y()) / 2 );
     heightAlgo.setup( *_cityMap );
 
     MapElementsDepthFirst mapElemAlgo;

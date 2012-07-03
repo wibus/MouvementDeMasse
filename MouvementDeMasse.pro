@@ -55,7 +55,7 @@ SOURCES += \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.cpp \
     Road/Street.cpp \
-    City/Sun.cpp \
+    Weather/Sun.cpp \
     Ui/MainWindow.cpp \
     City/Ground.cpp \
     Algorithm/DrawAlgorithm/DrawHighPrecisionGround.cpp \
@@ -67,7 +67,8 @@ SOURCES += \
     Algorithm/DrawAlgorithm/StreetsComponent.cpp \
     MdMTypes.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.cpp \
-    Algorithm/DrawAlgorithm/BuildingsComponent.cpp
+    Algorithm/DrawAlgorithm/BuildingsComponent.cpp \
+    Weather/Sky.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -82,7 +83,7 @@ HEADERS += \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h \
     Road/Street.h \
-    City/Sun.h \
+    Weather/Sun.h \
     Ui/MainWindow.h \
     City/Ground.h \
     Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h \
@@ -94,8 +95,8 @@ HEADERS += \
     Algorithm/DrawAlgorithm/StreetsComponent.h \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.h \
     Algorithm/DrawAlgorithm/BuildingsComponent.h \
-    Helpers.h \
-    Algorithm/DrawAlgorithm/AbstractComponent.h
+    Algorithm/DrawAlgorithm/AbstractComponent.h \
+    Weather/Sky.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \

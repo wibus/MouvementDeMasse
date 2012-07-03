@@ -1,6 +1,8 @@
 #ifndef SKYCOMPONENT_H
 #define SKYCOMPONENT_H
 
+#include <vector>
+
 #include "AbstractComponent.h"
 
 
@@ -16,16 +18,13 @@ protected:
     void setupSky();
     void setupSkyTop();
 
-    const double _skyCoefCorrection;
-    float _skyRadius;
     unsigned int _skyVao;
-    unsigned int _skyTopVao;
+    unsigned int _cloudsTex;
     unsigned int _daySkyTex;
     unsigned int _nightSkyTex;
     int _skyNbStacks;
     int _skyNbSlices;
-    int _skyNbElems;
-    int _skyTopNbElems;
+    std::vector<unsigned int> _skyIndices;
 };
 
 #endif // SKYCOMPONENT_H

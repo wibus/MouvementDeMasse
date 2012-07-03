@@ -44,6 +44,7 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     skyShader.setVec4f("SunColor", sunColor);
     skyShader.setFloat("SunRadius", sunRadius);
     skyShader.setVec3f("SunPosition", Vec3f(0.0f, 0.0f, -1.0f));
+    skyShader.setFloat("TexTShift", 0.0f);
     skyShader.popProgram();
 
     // Ground
@@ -139,24 +140,29 @@ void DrawCityModule::update()
     _commonData.curSkyColor = _commonData.nightSkyColor * (1 - skyColorCoef) +
                               _commonData.daySkyColor   * skyColorCoef;
 
-    // Sun position
-    Vec4f sunDir = _commonData.cityMap.sun().direction().normalized();
-    _commonData.sunLight.direction = sunDir;
-    _commonData.viewedSunDirection = _commonData.viewMat * sunDir;
-
+    // Sun ambient light
     const float AMBIENT_EFF_FACT = 0.50;
     const float BASE_INTENSITY = 0.03;
     const Vec4f BASE_LIGHT = Vec4f(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
     _commonData.sunLight.ambient = BASE_LIGHT + _commonData.curSkyColor * AMBIENT_EFF_FACT;
+
+    // Sun position
+    Vec4f sunDir = _commonData.cityMap.sun().direction().normalized();
+    _commonData.sunLight.direction = sunDir;
+    _commonData.viewedSunDirection = _commonData.viewMat * sunDir;    
 
     updateShaders();
 }
 
 void DrawCityModule::updateShaders()
 {
+    static float shift = 0.0f;
+    shift += 0.0002;
+
     _commonData.skyShader.pushThisProgram();
     _commonData.skyShader.setVec4f("SkyColor", _commonData.curSkyColor);
-    _commonData.skyShader.setVec3f("SunPosition", _commonData.normalMat * vec3(-_commonData.sunLight.direction));
+    _commonData.skyShader.setVec4f("SunPosition", -_commonData.viewedSunDirection);
+    _commonData.skyShader.setFloat("TexTShift", shift);
     _commonData.skyShader.popProgram();
 
     _commonData.groundShader.pushThisProgram();

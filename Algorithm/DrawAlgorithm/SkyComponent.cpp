@@ -7,66 +7,77 @@ using namespace std;
 #include <GL/glew.h>
 #include <Misc/CellarUtils.h>
 #include <Graphics/GL/GLToolkit.h>
-#include <Graphics/ImageBank.h>
+#include <MathsAndPhysics/Algorithms.h>
+#include <Graphics/Image.h>
 using namespace cellar;
 
 
 SkyComponent::SkyComponent(DrawCityCommonData &common) :
     AbstractComponent(common),
-    _skyCoefCorrection(0.1),
-    _skyRadius(1.0f),
     _skyVao(0),
-    _skyTopVao(0),
+    _cloudsTex(0),
     _daySkyTex(0),
     _nightSkyTex(0),
-    _skyNbStacks(16),
-    _skyNbSlices(24),
-    _skyNbElems(0),
-    _skyTopNbElems(0)
+    _skyNbStacks(10),
+    _skyNbSlices(16)
 {
-    /*
-    _daySkyTex = GLToolkit::genTextureId(getImageBank().getImage("daySkyTex.bmp", false));
-    _nightSkyTex = GLToolkit::genTextureId(getImageBank().getImage("nightSkyTex.bmp", false));
-    */
+    Grid<float> grid(256, 256, 0.0f);
+    perlinNoise(LinearWeighter(0, 100), grid);
 
-    _skyNbElems = _skyNbStacks * _skyNbSlices;
-    _skyTopNbElems = _skyNbSlices + 2;
+    Image nightSky(new unsigned char[grid.width()*grid.height()*4],
+                   grid.width(), grid.height(), Image::RGBA);
+
+    for(int j=0; j<grid.height(); ++j)
+    {
+        for(int i=0; i<grid.width(); ++i)
+        {
+            float skyDepth = grid.get(i, j);
+
+            if(skyDepth < 0.0f)
+                nightSky.setColorAt(i, j, RGBAColor(255, 255, 255, 0));
+            else
+            {
+                unsigned char intensity = clip(255 * 2.0f *  sqrt(skyDepth), 0.0f, 255.0f);
+                nightSky.setColorAt(i, j, RGBAColor(255, 255, 255, intensity));
+            }
+        }
+    }
+
+    _cloudsTex = GLToolkit::genTextureId(nightSky);
 }
 
 void SkyComponent::setup()
 {
     setupSky();
-    setupSkyTop();
 }
 
 void SkyComponent::setupSky()
 {
-}
-
-void SkyComponent::setupSkyTop()
-{
     vector<Vec3f> positions;
     vector<Vec2f> texCoords;
 
-    positions.push_back(Vec3f(0.0f, 0.0f, _skyRadius));
-    texCoords.push_back(Vec2f(0.5f, 1.0f));
-
-    float firstStackHeight = cos(PI*1.0f/_skyNbStacks);
-    float firstStackTCoord = 1.0f / _skyNbStacks;
-    float firstStackTWidth = sin(PI*1.0f/_skyNbStacks);
-    float fisrtStackTStart = 0.5f - 0.5f*firstStackTWidth;
-
-    for(int i=0; i<_skyNbSlices+1; ++i)
+    for(int j=0; j<_skyNbStacks+1; ++j)
     {
-        float advance = static_cast<float>(i)/_skyNbSlices;
-        float angle = 2*PI*advance;
-        positions.push_back(Vec3f(cos(angle), sin(-angle), firstStackHeight) * _skyRadius);
-        texCoords.push_back(Vec2f(fisrtStackTStart + advance*firstStackTWidth, firstStackTCoord));
+        float jadv = static_cast<float>(j) / _skyNbStacks;
+        float p = jadv * PI;
+        float cosp = cos(p);
+        float sinp = sin(p);
+
+        for(int i=0; i<_skyNbSlices+1; ++i)
+        {
+            float iadv = static_cast<float>(i) / _skyNbSlices;
+            float t = iadv * (2.0f*PI);
+            float cost = cos(t);
+            float sint = sin(t);
+
+            positions.push_back(Vec3f(cost * sinp, sint * sinp, cosp));
+            texCoords.push_back(Vec2f(cost , sint) * 0.5f * jadv);
+        }
     }
 
 
-    glGenVertexArrays(1, &_skyTopVao);
-    glBindVertexArray(_skyTopVao);
+    glGenVertexArrays(1, &_skyVao);
+    glBindVertexArray(_skyVao);
 
     unsigned int buffers[2];
     glGenBuffers(2, buffers);
@@ -87,12 +98,30 @@ void SkyComponent::setupSkyTop()
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
+
+
+    // Sphere Threading
+    int pointsByCircle = _skyNbSlices + 1;
+
+    for(int i=0; i<pointsByCircle * (3 * _skyNbStacks / 5); ++i)
+    {
+        _skyIndices.push_back(i + pointsByCircle);
+        _skyIndices.push_back(i);
+    }
 }
 
 void SkyComponent::draw()
 {
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(false);
+
     _common.skyShader.pushThisProgram();
-    glBindVertexArray(_skyTopVao);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, _skyTopNbElems);
+    glBindVertexArray(_skyVao);
+    glBindTexture(GL_TEXTURE_2D, _cloudsTex);
+    glDrawElements(GL_TRIANGLE_STRIP, _skyIndices.size(),
+                   GL_UNSIGNED_INT,   _skyIndices.data());
     _common.skyShader.popProgram();
+
+    glDepthMask(true);
+    glEnable(GL_DEPTH_TEST);
 }
