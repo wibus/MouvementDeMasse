@@ -40,16 +40,14 @@ public:
 
 private:
     void setAlgorithms();
-    void updateCalendar();
     void updateCamera(float elapsedtime);
 
     std::shared_ptr<CityMap> _cityMap;
     DrawCityModule _drawCityAlgorithm;
     cellar::CameraManFree _camMan;
-    cellar::Calendar _calendar;
     prop::twoD::Text _dateText;
     prop::twoD::Text _fpsText;
-    prop::twoD::Text _UpsText;
+    prop::twoD::Text _upsText;
 };
 
 #endif // MDMCHARACTER_H

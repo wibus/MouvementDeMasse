@@ -1,24 +1,35 @@
 #version 120
 
 uniform vec4  SkyColor;
+uniform vec4  SkylineColor;
 uniform vec4  SunColor;
 uniform float SunRadius;
 uniform vec4  SunPosition;
-uniform sampler2D NightTexUnit;
-
+uniform float Cloudyness;
+uniform float CloudsTightness;
+uniform sampler2D CloudsTexUnit;
 
 varying vec3 fragDir;
 varying vec2 texCoord;
-varying float positionZ;
+varying vec3 position;
+
 
 void main(void)
 {
-    vec4 color = SkyColor + positionZ * vec4(0.15);
+    vec4 color = SkyColor;
 
-    if(dot(normalize(fragDir), normalize(SunPosition.xyz)) > 0.999)
-        color = SunColor;
+    // Skyline
+    vec4 skylineColor = abs(pow(1.0 - position.z, 6.0)) * SkylineColor;
+    color += skylineColor;
 
-    vec4 texColor = texture2D(NightTexUnit, texCoord);
+    // Sun
+    float sunItensity = clamp((dot(normalize(fragDir), SunPosition.xyz) - 0.99994)*100000.0,0.0, 1.0);
+    color = sunItensity * SunColor + (1.0 - sunItensity) * color;
 
-    gl_FragColor = (texColor.a * texColor) + (1.0 - texColor.a) * color;
+    // Clouds
+    vec4 cloudsColor = texture2D(CloudsTexUnit, texCoord);
+    cloudsColor.a = pow(clamp((Cloudyness-cloudsColor.a), 0.0, 1.0), CloudsTightness);
+    color = (cloudsColor.a * cloudsColor) + (1.0 - cloudsColor.a) * color;
+
+    gl_FragColor = color;
 }

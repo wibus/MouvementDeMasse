@@ -8,6 +8,7 @@ class WaterComponent : public AbstractComponent
 {
 public:
     WaterComponent(DrawCityCommonData& common);
+    ~WaterComponent();
 
     void setup();
     void draw();

@@ -11,6 +11,7 @@ class GroundComponent : public AbstractComponent
 {
 public:
     GroundComponent(DrawCityCommonData& common);
+    ~GroundComponent();
 
     void setup();
     void draw();
@@ -22,16 +23,11 @@ protected:
 
     bool isGrassRoad(int i, int j, CardinalDirection dir);
 
-    unsigned int _groundVao;
     unsigned int _groundTex;
-    int _groundNbElems;
-
     unsigned int _landsVao;
     int _landsNbElems;
-
     unsigned int _roadsVao;
     int _roadsNbElems;
-
     unsigned int _trianglesVao;
     int _trianglesNbElems;
 };

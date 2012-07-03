@@ -15,10 +15,17 @@ JunctionsComponent::JunctionsComponent(DrawCityCommonData& common) :
     _junctionsTex(0),
     _junctionsNbElems(0)
 {
-    // Texture
+    glGenVertexArrays(1, &_junctionsVao);
+
     _junctionsTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/junction.bmp", false)
     );
+}
+
+JunctionsComponent::~JunctionsComponent()
+{
+    glDeleteVertexArrays(1, &_junctionsVao);
+    GLToolkit::deleteTextureId(_junctionsTex);
 }
 
 void JunctionsComponent::setup()
@@ -59,7 +66,6 @@ void JunctionsComponent::setup()
     int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
     int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
 
-    glGenVertexArrays(1, &_junctionsVao);
     glBindVertexArray( _junctionsVao );
 
     GLuint buffers[2];

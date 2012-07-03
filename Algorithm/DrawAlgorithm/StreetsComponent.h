@@ -8,6 +8,7 @@ class StreetsComponent : public AbstractComponent
 {
 public:
     StreetsComponent(DrawCityCommonData& common);
+    ~StreetsComponent();
 
     void setup();
     void draw();

@@ -8,6 +8,7 @@ class AbstractComponent
 {
 public:
     AbstractComponent(DrawCityCommonData& common) : _common(common) {}
+    virtual ~AbstractComponent() {}
 
     virtual void setup() = 0;
     virtual void draw() = 0;

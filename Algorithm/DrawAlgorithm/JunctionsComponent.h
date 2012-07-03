@@ -8,6 +8,7 @@ class JunctionsComponent : public AbstractComponent
 {
 public:
     JunctionsComponent(DrawCityCommonData& common);
+    ~JunctionsComponent();
 
     void setup();
     void draw();

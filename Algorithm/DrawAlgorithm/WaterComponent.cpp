@@ -12,6 +12,12 @@ WaterComponent::WaterComponent(DrawCityCommonData& common) :
     _waterVao(0),
     _waterNbElems(4)
 {
+    glGenVertexArrays(1, &_waterVao);
+}
+
+WaterComponent::~WaterComponent()
+{
+    glDeleteVertexArrays(1, &_waterVao);
 }
 
 void WaterComponent::setup()
@@ -26,7 +32,6 @@ void WaterComponent::setup()
 
 
     // Water VAO setup
-    glGenVertexArrays(1, &_waterVao);
     glBindVertexArray( _waterVao );
 
     GLuint wBuffer;

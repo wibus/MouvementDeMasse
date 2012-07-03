@@ -7,8 +7,6 @@ using namespace std;
 #include <GL/glew.h>
 #include <Misc/CellarUtils.h>
 #include <Graphics/GL/GLToolkit.h>
-#include <MathsAndPhysics/Algorithms.h>
-#include <Graphics/Image.h>
 using namespace cellar;
 
 
@@ -18,32 +16,20 @@ SkyComponent::SkyComponent(DrawCityCommonData &common) :
     _cloudsTex(0),
     _daySkyTex(0),
     _nightSkyTex(0),
-    _skyNbStacks(10),
-    _skyNbSlices(16)
+    _skyNbStacks(20),
+    _skyNbSlices(20)
 {
-    Grid<float> grid(256, 256, 0.0f);
-    perlinNoise(LinearWeighter(0, 100), grid);
+    glGenVertexArrays(1, &_skyVao);
 
-    Image nightSky(new unsigned char[grid.width()*grid.height()*4],
-                   grid.width(), grid.height(), Image::RGBA);
+    _cloudsTex = GLToolkit::genTextureId(_common.cityMap.sky().cloudsImage());
+}
 
-    for(int j=0; j<grid.height(); ++j)
-    {
-        for(int i=0; i<grid.width(); ++i)
-        {
-            float skyDepth = grid.get(i, j);
-
-            if(skyDepth < 0.0f)
-                nightSky.setColorAt(i, j, RGBAColor(255, 255, 255, 0));
-            else
-            {
-                unsigned char intensity = clip(255 * 2.0f *  sqrt(skyDepth), 0.0f, 255.0f);
-                nightSky.setColorAt(i, j, RGBAColor(255, 255, 255, intensity));
-            }
-        }
-    }
-
-    _cloudsTex = GLToolkit::genTextureId(nightSky);
+SkyComponent::~SkyComponent()
+{
+    glDeleteVertexArrays(1, &_skyVao);
+    GLToolkit::deleteTextureId(_cloudsTex);
+    GLToolkit::deleteTextureId(_daySkyTex);
+    GLToolkit::deleteTextureId(_nightSkyTex);
 }
 
 void SkyComponent::setup()
@@ -56,7 +42,7 @@ void SkyComponent::setupSky()
     vector<Vec3f> positions;
     vector<Vec2f> texCoords;
 
-    for(int j=0; j<_skyNbStacks+1; ++j)
+    for(int j=0; j<(_skyNbStacks+1)/2+1; ++j)
     {
         float jadv = static_cast<float>(j) / _skyNbStacks;
         float p = jadv * PI;
@@ -71,12 +57,12 @@ void SkyComponent::setupSky()
             float sint = sin(t);
 
             positions.push_back(Vec3f(cost * sinp, sint * sinp, cosp));
-            texCoords.push_back(Vec2f(cost , sint) * 0.5f * jadv);
+            texCoords.push_back(Vec2f(cost , sint) * 0.2f * tan(jadv*2.8f));
         }
     }
 
 
-    glGenVertexArrays(1, &_skyVao);
+    //VAO setup
     glBindVertexArray(_skyVao);
 
     unsigned int buffers[2];
@@ -103,7 +89,7 @@ void SkyComponent::setupSky()
     // Sphere Threading
     int pointsByCircle = _skyNbSlices + 1;
 
-    for(int i=0; i<pointsByCircle * (3 * _skyNbStacks / 5); ++i)
+    for(int i=0; i<pointsByCircle * _skyNbStacks/2; ++i)
     {
         _skyIndices.push_back(i + pointsByCircle);
         _skyIndices.push_back(i);

@@ -14,8 +14,6 @@ using namespace cellar;
 
 GroundComponent::GroundComponent(DrawCityCommonData& common) :
     AbstractComponent(common),
-    _groundVao(0),
-    _groundNbElems(0),
     _landsVao(0),
     _landsNbElems(0),
     _roadsVao(0),
@@ -23,9 +21,22 @@ GroundComponent::GroundComponent(DrawCityCommonData& common) :
     _trianglesVao(0),
     _trianglesNbElems(0)
 {
+    glGenVertexArrays(1, &_landsVao);
+    glGenVertexArrays(1, &_roadsVao);
+    glGenVertexArrays(1, &_trianglesVao);
+
     _groundTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/grass.bmp", false)
     );
+}
+
+GroundComponent::~GroundComponent()
+{
+    glDeleteVertexArrays(1, &_landsVao);
+    glDeleteVertexArrays(1, &_roadsVao);
+    glDeleteVertexArrays(1, &_trianglesVao);
+
+    GLToolkit::deleteTextureId(_groundTex);
 }
 
 void GroundComponent::setup()
@@ -84,7 +95,6 @@ void GroundComponent::setupLands()
 
 
     // Ground VAO setup
-    glGenVertexArrays(1, &_landsVao);
     glBindVertexArray(_landsVao);
 
     const int nbAttributes = 3;
@@ -172,7 +182,6 @@ void GroundComponent::setupRoads()
 
 
     // Ground VAO setup
-    glGenVertexArrays(1, &_roadsVao);
     glBindVertexArray(_roadsVao);
 
     const int nbAttributes = 3;
@@ -324,7 +333,6 @@ void GroundComponent::setupTriangles()
     _trianglesNbElems = tpositions.size();
 
     // Ground VAO setup
-    glGenVertexArrays(1, &_trianglesVao);
     glBindVertexArray(_trianglesVao);
 
     const int nbAttributes = 3;

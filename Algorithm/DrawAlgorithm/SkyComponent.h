@@ -10,6 +10,7 @@ class SkyComponent : public AbstractComponent
 {
 public:
     SkyComponent(DrawCityCommonData& common);
+    ~SkyComponent();
 
     void setup();
     void draw();

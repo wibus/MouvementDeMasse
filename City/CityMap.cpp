@@ -12,6 +12,7 @@ using namespace cellar;
 CityMap::CityMap(int width, int height):
     _size(width, height),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
+    _sky(      256,     256),
     _ground(   width+1, height+1),
     _lands(    width,   height),
     _junctions(width+1, height+1)
@@ -32,6 +33,14 @@ bool CityMap::load(const string &)
 bool CityMap::save(const string &)
 {
     return false;
+}
+
+void CityMap::update()
+{
+    _calendar.tic();
+    _sun.setTime(_calendar.date().hour,
+                 _calendar.date().minute);
+    _sky.update();
 }
 
 void CityMap::resetJunctions()

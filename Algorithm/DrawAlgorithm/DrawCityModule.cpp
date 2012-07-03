@@ -1,5 +1,7 @@
 #include "DrawCityModule.h"
 
+#include <GL/glew.h>
+
 #include "City/CityMap.h"
 #include "SkyComponent.h"
 #include "GroundComponent.h"
@@ -19,10 +21,13 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     sunColor(     1.00, 0.90, 0.20, 1.00),
     nightSkyColor(0.02, 0.01, 0.05, 1.00),
     daySkyColor(  0.40, 0.60, 0.80, 1.00),
+    skylineColor( 0.12, 0.12, 0.12, 1.00),
     curSkyColor(  nightSkyColor         ),
     grassColor(   0.32, 0.90, 0.08, 1.00),
     mudColor(     0.20, 0.14, 0.01, 1.00),
     waterColor(   0.03, 0.03, 0.30, 0.42),
+    cloudyness(0.5),
+    cloudsTightness(0.4),
     waterShininess( 200.0f),
     roadWidth(0.125f)
 {
@@ -41,10 +46,14 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
                                   "resources/shaders/sky.frag");
     skyShader.pushThisProgram();
     skyShader.setVec4f("SkyColor", curSkyColor);
+    skyShader.setVec4f("SkylineColor", skylineColor);
     skyShader.setVec4f("SunColor", sunColor);
     skyShader.setFloat("SunRadius", sunRadius);
     skyShader.setVec3f("SunPosition", Vec3f(0.0f, 0.0f, -1.0f));
-    skyShader.setFloat("TexTShift", 0.0f);
+    skyShader.setVec2f("TexShift",    Vec2f(0.0f, 0.0f));
+    skyShader.setFloat("Cloudyness",  cloudyness);
+    skyShader.setFloat("CloudsTightness", cloudsTightness);
+    skyShader.setInt("CloudsTexUnit", 0);
     skyShader.popProgram();
 
     // Ground
@@ -137,14 +146,20 @@ void DrawCityModule::update()
     Vec4f  nLightDir    = _commonData.sunLight.direction.normalized();
     double sunIntensity = cellar::max(nLightDir * Vec4f(0, 0, -1, 0) + skyCoefCorrection, 0.0);
     double skyColorCoef = pow(sunIntensity, 0.75) / (skyCoefCorrection + 1.0);
-    _commonData.curSkyColor = _commonData.nightSkyColor * (1 - skyColorCoef) +
-                              _commonData.daySkyColor   * skyColorCoef;
+    Vec4f  skyCol = _commonData.nightSkyColor * (1 - skyColorCoef) +
+                    _commonData.daySkyColor   * skyColorCoef;
+    _commonData.curSkyColor = skyCol;
+
+    skyCol += _commonData.skylineColor;
+    glClearColor(skyCol[0], skyCol[1], skyCol[2], skyCol[3]);
+
 
     // Sun ambient light
     const float AMBIENT_EFF_FACT = 0.50;
     const float BASE_INTENSITY = 0.03;
     const Vec4f BASE_LIGHT = Vec4f(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
     _commonData.sunLight.ambient = BASE_LIGHT + _commonData.curSkyColor * AMBIENT_EFF_FACT;
+
 
     // Sun position
     Vec4f sunDir = _commonData.cityMap.sun().direction().normalized();
@@ -156,13 +171,13 @@ void DrawCityModule::update()
 
 void DrawCityModule::updateShaders()
 {
-    static float shift = 0.0f;
-    shift += 0.0002;
+    static Vec2f shift(0.0f, 0.0f);
+    shift[1] += 0.0004;
 
     _commonData.skyShader.pushThisProgram();
     _commonData.skyShader.setVec4f("SkyColor", _commonData.curSkyColor);
     _commonData.skyShader.setVec4f("SunPosition", -_commonData.viewedSunDirection);
-    _commonData.skyShader.setFloat("TexTShift", shift);
+    _commonData.skyShader.setVec2f("TexShift", shift);
     _commonData.skyShader.popProgram();
 
     _commonData.groundShader.pushThisProgram();

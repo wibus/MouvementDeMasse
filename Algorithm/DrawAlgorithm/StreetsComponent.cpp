@@ -15,10 +15,17 @@ StreetsComponent::StreetsComponent(DrawCityCommonData& common) :
     _streetsTex(0),
     _streetsNbElems(0)
 {
-    // Texture
+    glGenVertexArrays(1, &_streetsVao);
+
     _streetsTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/street.bmp", false)
     );
+}
+
+StreetsComponent::~StreetsComponent()
+{
+    glDeleteVertexArrays(1, &_streetsVao);
+    GLToolkit::deleteTextureId(_streetsTex);
 }
 
 void StreetsComponent::setup()
@@ -97,7 +104,6 @@ void StreetsComponent::setup()
     }
 
     // Setup Vao
-    glGenVertexArrays(1, &_streetsVao);
     glBindVertexArray( _streetsVao );
 
     const int NB_BUFFS = 3;

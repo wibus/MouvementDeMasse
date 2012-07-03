@@ -22,47 +22,36 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _drawCityAlgorithm(*_cityMap),
     _camMan( stage.camera() ),
     _fpsText(),
-    _UpsText()
+    _upsText()
 {
     _fpsText.setPosition(5, 5);
-    _UpsText.setPosition(5, 25);
+    _upsText.setPosition(5, 25);
 
     stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->ground().maxHeight()),
                              Vec3f(_cityMap->size().x() / 2, _cityMap->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
 
-    _calendar.setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
+    _cityMap->calendar().setClock(Calendar::Clock(Calendar::Clock::MINUTE));
+    _cityMap->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
 }
 
 void MdMCharacter::enterStage()
 {
-    _calendar.setClock(Calendar::Clock(Calendar::Clock::MINUTE));
-    _calendar.start();
-    updateCalendar();
-
-    stage().camera().refresh();
-
     setAlgorithms();
-    _drawCityAlgorithm.update();
+    stage().camera().refresh();
+    _cityMap->calendar().start();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
 {
-    _UpsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
-
-    updateCalendar();
     updateCamera( time.elapsedTime() );
-    _drawCityAlgorithm.update();    
-}
 
-void MdMCharacter::updateCalendar()
-{
-    _calendar.tic();
+    _cityMap->update();
+    _drawCityAlgorithm.update();
 
-    _dateText.setText(_calendar.date().toString(true, true));
-
-    _cityMap->sun().setTime(_calendar.date().hour, _calendar.date().minute);
+    _dateText.setText(_cityMap->calendar().date().toString(true, true));
+    _upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
 void MdMCharacter::updateCamera(float elapsedtime)
@@ -105,13 +94,13 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 
     _drawCityAlgorithm.draw();    
     _fpsText.draw();
-    _UpsText.draw();
+    _upsText.draw();
     _dateText.draw();
 }
 
 void MdMCharacter::exitStage()
 {
-    _calendar.stop();
+    _cityMap->calendar().stop();
 }
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)

@@ -11,6 +11,7 @@ class BuildingsComponent : public AbstractComponent
 {
 public:
     BuildingsComponent(DrawCityCommonData& common);
+    ~BuildingsComponent();
 
     void setup();
     void draw();

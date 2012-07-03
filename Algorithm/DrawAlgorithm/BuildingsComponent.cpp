@@ -26,6 +26,9 @@ BuildingsComponent::BuildingsComponent(DrawCityCommonData& common) :
     _commercePos(),
     _commerceTexScaleCoeff()
 {
+    glGenVertexArrays(1, &_buildingWallsVao);
+    glGenVertexArrays(1, &_roofVao);
+
     _roofTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/roofTex.bmp", false)
     );
@@ -49,6 +52,19 @@ BuildingsComponent::BuildingsComponent(DrawCityCommonData& common) :
     _commerceSpec = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/commerceSpec.bmp", false)
     );
+}
+
+BuildingsComponent::~BuildingsComponent()
+{
+    glDeleteVertexArrays(1, &_buildingWallsVao);
+    glDeleteVertexArrays(1, &_roofVao);
+
+    GLToolkit::deleteTextureId(_roofTex);
+    GLToolkit::deleteTextureId(_roofSpec);
+    GLToolkit::deleteTextureId(_apartmentTex);
+    GLToolkit::deleteTextureId(_apartmentSpec);
+    GLToolkit::deleteTextureId(_commerceTex);
+    GLToolkit::deleteTextureId(_commerceSpec);
 }
 
 void BuildingsComponent::setup()
@@ -177,7 +193,6 @@ void BuildingsComponent::setupBuidlindSides()
 
 
     // Ground VAO setup
-    glGenVertexArrays(1, &_buildingWallsVao);
     glBindVertexArray(_buildingWallsVao);
 
     const int nbAttributes = 3;
@@ -230,7 +245,6 @@ void BuildingsComponent::setupRoofTop()
 
 
     // Ground VAO setup
-    glGenVertexArrays(1, &_roofVao);
     glBindVertexArray(_roofVao);
 
     const int nbAttributes = 2;
