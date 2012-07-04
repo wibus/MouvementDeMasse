@@ -87,14 +87,14 @@ inline void Ground::setWaterHeight(float height)
 
 inline float Ground::heightAt(int x, int y) const
 {
-    return _heights.get(cellar::clip(x, 0, _width-1),
-                        cellar::clip(y, 0, _height-1));
+    return _heights.get(cellar::clamp(x, 0, _width-1),
+                        cellar::clamp(y, 0, _height-1));
 }
 
 inline float Ground::heightAt(const cellar::Vec2i& pos) const
 {
-    return _heights.get(cellar::clip(pos.x(), 0, _width-1),
-                        cellar::clip(pos.y(), 0, _height-1));
+    return _heights.get(cellar::clamp(pos.x(), 0, _width-1),
+                        cellar::clamp(pos.y(), 0, _height-1));
 }
 
 inline float Ground::heightAt(const cellar::Vec2f& pos) const

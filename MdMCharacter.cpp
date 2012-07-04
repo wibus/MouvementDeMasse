@@ -137,7 +137,7 @@ void MdMCharacter::setAlgorithms()
     // Height algorithm
     HeightByNoiseAlgo heightAlgo;
     heightAlgo.setWeightedFrequenciesRange(1,
-        cellar::min(_cityMap->size().x(), _cityMap->size().y()) / 2 );
+        minVal(_cityMap->size().x(), _cityMap->size().y()) / 2 );
     heightAlgo.setup( *_cityMap );
 
     MapElementsDepthFirst mapElemAlgo;

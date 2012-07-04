@@ -18,9 +18,9 @@ int main(int argc, char** argv) try
     getApplication().addCustomStage(stage);
     getApplication().chooseStage(stage->id());
 
-    stage->setDrawSynch( true );
-    stage->setDrawInterval( 100 );
-    stage->setUpdateInterval( 10 );
+    stage->setDrawSynch( false );
+    stage->setDrawInterval( 16 );
+    stage->setUpdateInterval( 16 );
 
     MainWindow window(stage);
     window.show();

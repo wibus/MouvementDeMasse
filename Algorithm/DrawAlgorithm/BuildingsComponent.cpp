@@ -271,7 +271,7 @@ void BuildingsComponent::setupRoofTop()
 
 float BuildingsComponent::landHeight(int i, int j)
 {
-    return cellar::min(cellar::min(cellar::min(
+    return minVal(minVal(minVal(
         _common.ground.heightAt(i,   j),
         _common.ground.heightAt(i+1, j)),
         _common.ground.heightAt(i+1, j+1)),

@@ -30,7 +30,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         currentPoint += Vec2i(1, 1);
         if (currentPoint.x() >= _mapSize.x())
         {
-            currentPoint(random(0, _mapSize.x()), random(0, _mapSize.y()));
+            currentPoint(randomRange(0, _mapSize.x()), randomRange(0, _mapSize.y()));
         }
     }
 
@@ -81,7 +81,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         {
             // Choose randomly a free side
             int nbElements = freeSides.size();
-            int pos = cellar::random(0, nbElements);
+            int pos = randomRange(0, nbElements);
             Vec2i nextDirection = freeSides[pos];
             Vec2i nextPos = currPos + nextDirection;
 
@@ -96,11 +96,11 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         else
         {
             if(!reachableSides.empty())
-            if(random(4.0) > 1.0)
+            if(randomRange(0.0, 4.0) > 1.0)
             {
                 // Choose randomly an reachable side
                 int nbElements = reachableSides.size();
-                int pos = cellar::random(0, nbElements);
+                int pos = randomRange(0, nbElements);
                 Vec2i nextDirection = reachableSides[pos];
                 Vec2i nextPos = currPos + nextDirection;
 
@@ -124,10 +124,10 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
         {
             if (_cityMap->ground().heightAt(i, j) > 0)
             {
-                int landType = random(0, (int) Land::NB_TYPES);
+                int landType = randomRange(0, (int) Land::NB_TYPES);
 
                 lands->get(i, j)->setType((Land::Type) landType);
-                lands->get(i, j)->setNbStories(2+cellar::random(6));
+                lands->get(i, j)->setNbStories(2+randomRange(0, 6));
             }
         }
     }
