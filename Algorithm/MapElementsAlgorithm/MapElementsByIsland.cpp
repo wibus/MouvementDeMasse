@@ -1,7 +1,7 @@
 #include "MapElementsByIsland.h"
 
-#include <vector>
 #include <memory>
+#include <set>
 #include <Misc/CellarUtils.h>
 #include "Road/Junction.h"
 #include "Road/Street.h"
@@ -27,10 +27,11 @@ void MapElementsByIsland::setup(CityMap &cityMap)
                                    _mapSize.y(),
                                    -1);
 
-    findAndMapIslands();
+    findAndExploreIslands();
+    bridgeIslands();
 }
 
-void MapElementsByIsland::findAndMapIslands()
+void MapElementsByIsland::findAndExploreIslands()
 {
     bool prevIsLand = false;
     for (int j = 0; j < _mapSize.y(); ++j)
@@ -75,14 +76,14 @@ void MapElementsByIsland::findAndMapIslands()
                         direction.rotateQuarterCCW();
                     }
                 }
-                mapOneIsland(position, direction);
+                exploreOneIsland(position, direction);
             }
             prevIsLand = currIsLand;
         }
     }
 }
 
-void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection)
+void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirection)
 {
 
     // Small explanation about how it works.
@@ -150,7 +151,7 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
         currDirection = -currDirection;
 
         diffClockwise += 2;
-        // We when have to go back, we have to turn either two times CW or CCW.
+        // We then have to go back, we have to turn either two times CW or CCW.
         // Since we always keep the "land" to our right, we have to turn CW and not CCW.
         // Else we wouldn't have the "land" to our right.
     }
@@ -159,60 +160,148 @@ void MapElementsByIsland::mapOneIsland(Vec2i startPosition, Vec2i startDirection
     // We have an Island and not a Lake
     if (diffClockwise > 0)
     {
+        _islandEdges.push_back(positions);
         // We have an Island so we can identify an Island with the positions
         while (!positions.empty())
         {
             Vec2i position = positions.back();
             _islandIdentifiers.set(position, _nbIslands);
 
-            // LET'S TEST SOME ISLAND!!!!!
-            Vec2i endA = positions.back();
-
-            // END OF THE TEST
-
             positions.pop_back();
-
-
-            // TEST MOAR
-            if (!positions.empty())
-            {
-                Vec2i endB = positions.back();
-
-                std::shared_ptr<Street> newStreet(new Street(endA, endB));
-
-                Junction* juncA = _cityMap->junctions().get(endA);
-                juncA->setType(Junction::ASPHALT);
-                Junction* juncB = _cityMap->junctions().get(endB);
-                juncA->attach(newStreet, toCardinal(endB - endA));
-                juncB->attach(newStreet, toCardinal(endA - endB));
-                // END OF TEST MOAR
-            }
         }
         ++_nbIslands;
     }
     else
     {
+        // This is a Lake. We will set the Identifiers.
+        // That way, we won't visit it again.
         while (!positions.empty())
         {
             Vec2i position = positions.back();
-            _islandIdentifiers[position.y()][position.x()] = -2;
+            _islandIdentifiers.set(position, -2);
 
             positions.pop_back();
         }
     }
 }
 
+void MapElementsByIsland::roadOneIsland(int index)
+{
+
+}
+
+void MapElementsByIsland::bridgeIslands()
+{
+    std::set<int> toBridgeIslands;
+    for (int i = 0; i < _nbIslands; i++)
+    {
+        toBridgeIslands.insert(i);
+    }
+
+    std::set<int> bridgedIslands;
+    int nbOfBridgedIslands = 1;
+
+    int size = toBridgeIslands.size();
+    int nextIsland = randomRange(0, (size - 1));
+    int linkedIsland = 0;
+
+    std::set<int>::iterator toBridgeIter = toBridgeIslands.begin();
+    std::set<int>::iterator bridgedIter = bridgedIslands.begin();
+
+    for (int i = 0; i < nextIsland; i++)
+    {
+        toBridgeIter++;
+    }
+
+    bridgedIslands.insert(*toBridgeIter);
+    toBridgeIslands.erase(*toBridgeIter);
+
+    while (nbOfBridgedIslands != _nbIslands)
+    {
+        size = toBridgeIslands.size();
+        nextIsland = randomRange(0, (size - 1));
+        size = bridgedIslands.size();
+        linkedIsland = randomRange(0, (size - 1));
+
+        toBridgeIter = toBridgeIslands.begin();
+        bridgedIter = bridgedIslands.begin();
+
+        for (int i = 0; i < nextIsland; i++)
+        {
+            toBridgeIter++;
+        }
+
+        for (int i = 0; i < linkedIsland; i++)
+        {
+            bridgedIter++;
+        }
+
+        bridgeTwoIslands(*toBridgeIter, *bridgedIter);
+
+        bridgedIslands.insert(*toBridgeIter);
+        toBridgeIslands.erase(*toBridgeIter);
+
+        ++nbOfBridgedIslands;
+    }
+}
+
+void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
+{
+    int bestJuncFirst;
+    int bestJuncSecond;
+    int bestDistance = _mapSize.x() + _mapSize.y() + 1;
+    int currDistance;
+
+    int size = _islandEdges[firstIsland].size();
+    bestJuncFirst = randomRange(0, size - 1);
+
+    for (int currPos = 0; currPos < _islandEdges[secondIsland].size(); ++currPos)
+    {
+        currDistance = absolute(_islandEdges[firstIsland][bestJuncFirst].x() -
+                                _islandEdges[secondIsland][currPos].x())
+                            +
+                       absolute(_islandEdges[firstIsland][bestJuncFirst].y() -
+                                _islandEdges[secondIsland][currPos].y());
+        if (currDistance < bestDistance)
+            bestJuncSecond = currPos;
+    }
+
+    for (int currPos = 0; currPos < _islandEdges[firstIsland].size(); ++currPos)
+    {
+        currDistance = absolute(_islandEdges[firstIsland][currPos].x() -
+                                _islandEdges[secondIsland][bestJuncSecond].x())
+                            +
+                       absolute(_islandEdges[firstIsland][currPos].y() -
+                                _islandEdges[secondIsland][bestJuncSecond].y());
+        if (currDistance < bestDistance)
+            bestJuncFirst = currPos;
+    }
+}
+
+void MapElementsByIsland::landIslands()
+{
+
+}
+
 bool MapElementsByIsland::isJunctionInBounds(Vec2i position)
 {
     return !(position.x() >= _mapSize.x() ||
-            position.y() >= _mapSize.y() ||
-            position.x() < 0 ||
-            position.y() < 0);
+             position.y() >= _mapSize.y() ||
+             position.x() < 0 ||
+             position.y() < 0);
 }
 
 bool MapElementsByIsland::isJunctionAboveWater(Vec2i position)
 {
     return (_cityMap->ground().heightAt(position) > 0);
+}
+
+bool MapElementsByIsland::isLandInBounds(Vec2i position)
+{
+    return !(position.x() >= _mapSize.x() - 1 ||
+             position.y() >= _mapSize.y() - 1 ||
+             position.x() < 0 ||
+             position.y() < 0);
 }
 
 bool MapElementsByIsland::isLandAboveWater(Vec2i position)

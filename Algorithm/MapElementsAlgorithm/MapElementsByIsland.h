@@ -4,11 +4,19 @@
 #include <DataStructures/Grid.h>
 #include <MathsAndPhysics/Vector.h>
 #include <stack>
+#include <vector>
 
 #include "MapElementsAlgorithm.h"
 
 class MapElementsByIsland: public MapElementsAlgorithm
 {
+protected:
+    struct distance{
+        cellar::Vec2i endA;
+        cellar::Vec2i endB;
+        int distance;
+    };
+
 public:
     MapElementsByIsland();
     virtual ~MapElementsByIsland();
@@ -18,12 +26,18 @@ protected:
     std::stack<cellar::Vec2i> _junctionsStack;
     int _nbIslands;
     cellar::Grid<int> _islandIdentifiers;
+    std::vector<std::vector<cellar::Vec2i> > _islandEdges;
 
 private:
-    void findAndMapIslands();
-    void mapOneIsland(cellar::Vec2i postion, cellar::Vec2i direction);
+    void findAndExploreIslands();
+    void exploreOneIsland(cellar::Vec2i postion, cellar::Vec2i direction);
+    void roadOneIsland(int index);
+    void bridgeIslands();
+    void bridgeTwoIslands(int firstIsland, int secondIsland);
+    void landIslands();
     bool isJunctionInBounds(cellar::Vec2i position);
     bool isJunctionAboveWater(cellar::Vec2i position);
+    bool isLandInBounds(cellar::Vec2i position);
     bool isLandAboveWater(cellar::Vec2i position);
 
 };
