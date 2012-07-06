@@ -1,11 +1,9 @@
 #include "Algorithm.h"
-#include "City/CityMap.h"
+#include "City/City.h"
 
 Algorithm::Algorithm():
-    _cityMap(0x0),
-    _mapSize(0, 0),
-    _minHeight(0.0f),
-    _maxHeight(0.0f)
+    _city(0x0),
+    _mapSize(0, 0)
 {
 }
 
@@ -13,12 +11,10 @@ Algorithm::~Algorithm()
 {
 }
 
-void Algorithm::setup(CityMap &cityMap)
+void Algorithm::setup(City &city)
 {
-    _cityMap = &cityMap;
-    _ground  = &(cityMap.ground());
-    _mapSize(_cityMap->junctions().width(),
-             _cityMap->junctions().height());
-    _minHeight = _ground->minHeight();
-    _maxHeight = _ground->maxHeight();
+    _city = &city;
+    _ground  = &(city.ground());
+    _mapSize(_city->junctions().width(),
+             _city->junctions().height());
 }

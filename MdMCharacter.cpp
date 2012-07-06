@@ -11,15 +11,15 @@ using namespace cellar;
 using namespace scaena;
 
 #include "MdMCharacter.h"
-#include "City/CityMap.h"
+#include "City/City.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _cityMap( new CityMap(64, 48)),
-    _drawCityAlgorithm(*_cityMap),
+    _city( new City(64, 48)),
+    _drawCityAlgorithm(*_city),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()
@@ -27,30 +27,30 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _fpsText.setPosition(5, 5);
     _upsText.setPosition(5, 25);
 
-    stage.camera().setTripod(Vec3f(_cityMap->size().x() / 2, 0, _cityMap->ground().maxHeight()),
-                             Vec3f(_cityMap->size().x() / 2, _cityMap->size().y() / 2, 0),
+    stage.camera().setTripod(Vec3f(_city->size().x() / 2, 0, _city->ground().maxHeight()),
+                             Vec3f(_city->size().x() / 2, _city->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
 
-    _cityMap->calendar().setClock(Calendar::Clock(Calendar::Clock::MINUTE));
-    _cityMap->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
+    _city->calendar().setClock(Calendar::Clock(Calendar::Clock::MINUTE));
+    _city->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
 }
 
 void MdMCharacter::enterStage()
 {
     setAlgorithms();
     stage().camera().refresh();
-    _cityMap->calendar().start();
+    _city->calendar().start();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
 {
     updateCamera( time.elapsedTime() );
 
-    _cityMap->update();
+    _city->update();
     _drawCityAlgorithm.update();
 
-    _dateText.setText(_cityMap->calendar().date().toString(true, true));
+    _dateText.setText(_city->calendar().date().toString(true, true));
     _upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
@@ -100,7 +100,7 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 
 void MdMCharacter::exitStage()
 {
-    _cityMap->calendar().stop();
+    _city->calendar().stop();
 }
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)
@@ -117,32 +117,32 @@ void MdMCharacter::notify(cellar::CameraMsg &msg)
     }
 }
 
-CityMap& MdMCharacter::cityMap()
+City& MdMCharacter::city()
 {
-    return *_cityMap;
+    return *_city;
 }
 
-void MdMCharacter::setCityMap(CityMap* map)
+void MdMCharacter::setCity(City* city)
 {
-    _cityMap.reset( map );
+    _city.reset( city );
 }
 
 void MdMCharacter::setAlgorithms()
 {
-    _cityMap->reset();
-    _cityMap->ground().setMinHeight(-3.5f);
-    _cityMap->ground().setMaxHeight( 4.0f);
-    _cityMap->ground().setWaterHeight(0.0f);
+    _city->reset();
+    _city->ground().setMinHeight(-3.5f);
+    _city->ground().setMaxHeight( 4.0f);
+    _city->ground().setWaterHeight(0.0f);
 
     // Height algorithm
     HeightByNoiseAlgo heightAlgo;
     heightAlgo.setWeightedFrequenciesRange(1,
-        minVal(_cityMap->size().x(), _cityMap->size().y()) / 2 );
-    heightAlgo.setup( *_cityMap );
+        minVal(_city->size().x(), _city->size().y()) / 2 );
+    heightAlgo.setup( *_city );
 
     MapElementsDepthFirst mapElemAlgo;
     //MapElementsByIsland mapElemAlgo;
-    mapElemAlgo.setup(*_cityMap);
+    mapElemAlgo.setup(*_city);
 
     _drawCityAlgorithm.setup();
 }

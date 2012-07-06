@@ -33,13 +33,13 @@ void StreetsComponent::setup()
     // Compute number of street vertices
     _streetsNbElems = 0;
 
-    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
+    for(int j=0; j<_common.city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
+        for(int i=0; i<_common.city.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i , j)->getStreet(EAST)!= 0x0)
+            if(_common.city.junctions().get(i , j)->getStreet(EAST)!= 0x0)
                 _streetsNbElems += 4;
-            if(_common.cityMap.junctions().get(i , j)->getStreet(NORTH)!= 0x0)
+            if(_common.city.junctions().get(i , j)->getStreet(NORTH)!= 0x0)
                 _streetsNbElems += 4;
         }
     }
@@ -52,11 +52,11 @@ void StreetsComponent::setup()
 
     float lengthRatio = (1-2*_common.roadWidth) / _common.roadWidth;
 
-    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
+    for(int j=0; j<_common.city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
+        for(int i=0; i<_common.city.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i , j)->getStreet(EAST) != 0x0)
+            if(_common.city.junctions().get(i , j)->getStreet(EAST) != 0x0)
             {
                 float startHeight = _common.ground.heightAt(i, j);
                 float endHeight   = _common.ground.heightAt(i+1, j);
@@ -78,7 +78,7 @@ void StreetsComponent::setup()
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(0, 1);
             }
-            if(_common.cityMap.junctions().get(i , j)->getStreet(NORTH) != 0x0)
+            if(_common.city.junctions().get(i , j)->getStreet(NORTH) != 0x0)
             {
                 float startHeight = _common.ground.heightAt(i, j);
                 float endHeight = _common.ground.heightAt(i, j+1);

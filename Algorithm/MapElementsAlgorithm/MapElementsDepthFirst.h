@@ -12,7 +12,7 @@ public:
     MapElementsDepthFirst();
     virtual ~MapElementsDepthFirst();
 
-    virtual void setup(CityMap& cityMap);
+    virtual void setup(City& city);
 
 protected:
     std::stack<cellar::Vec2i> _junctionsStack;

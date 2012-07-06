@@ -15,7 +15,7 @@ protected:
 public:
     virtual ~MapElementsAlgorithm();
 
-    virtual void setup(CityMap& cityMap);
+    virtual void setup(City& city);
 
 protected:
     Land::Type _typesOfLand[Land::NB_TYPES];

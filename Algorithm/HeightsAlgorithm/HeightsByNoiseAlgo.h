@@ -8,7 +8,7 @@ class HeightByNoiseAlgo : public HeightsAlgorithm
 public:
     HeightByNoiseAlgo();
 
-    virtual void setup(CityMap& cityMap);
+    virtual void setup(City& city);
 
     int minFrequency() const;
     int maxFrequency() const;

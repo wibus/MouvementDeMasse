@@ -6,7 +6,7 @@ using namespace std;
 #include <Misc/CellarUtils.h>
 #include <MathsAndPhysics/Algorithms.h>
 
-#include "City/CityMap.h"
+#include "City/City.h"
 #include "Road/Junction.h"
 
 using namespace cellar;
@@ -15,12 +15,12 @@ HeightByNoiseAlgo::HeightByNoiseAlgo()
 {
 }
 
-void HeightByNoiseAlgo::setup(CityMap &cityMap)
+void HeightByNoiseAlgo::setup(City &city)
 {
-    HeightsAlgorithm::setup( cityMap );
+    HeightsAlgorithm::setup( city );
 
-    float middleHeight = (_maxHeight + _minHeight) / 2.0f;
-    float amplitude = (_maxHeight - _minHeight) / 2.0f;
+    float middleHeight = (_ground->maxHeight() + _ground->minHeight()) / 2.0f;
+    float amplitude    = (_ground->maxHeight() - _ground->minHeight()) / 2.0f;
 
     Grid<float> perlin(_mapSize.x(), _mapSize.y());
     perlinNoise(EqualWeighter(_minFreq, _maxFreq), perlin);

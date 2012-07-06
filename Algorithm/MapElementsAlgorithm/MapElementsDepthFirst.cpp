@@ -4,7 +4,7 @@
 #include <Misc/CellarUtils.h>
 #include "Road/Junction.h"
 #include "Road/Street.h"
-#include "City/CityMap.h"
+#include "City/City.h"
 
 using namespace cellar;
 
@@ -18,9 +18,9 @@ MapElementsDepthFirst::~MapElementsDepthFirst()
 
 }
 
-void MapElementsDepthFirst::setup(CityMap& cityMap)
+void MapElementsDepthFirst::setup(City& city)
 {
-    MapElementsAlgorithm::setup(cityMap);
+    MapElementsAlgorithm::setup(city);
 
     // Begining of algorithm
     Vec2i currentPoint(_mapSize / 2);
@@ -41,7 +41,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
     while (!_junctionsStack.empty())
     {
         Vec2i currPos = _junctionsStack.top();
-        Junction* currJunc = _cityMap->junctions().get(currPos);
+        Junction* currJunc = _city->junctions().get(currPos);
         currJunc->setType(Junction::ASPHALT);
 
         // Check wich sides are free (not under water and not visited)
@@ -70,7 +70,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
             reachableSides.push_back(direction);
 
             // Wasn't visited
-            if (_cityMap->junctions().get(neighPos)->type() != Junction::GRASS)
+            if (_city->junctions().get(neighPos)->type() != Junction::GRASS)
                 continue;
 
             freeSides.push_back(direction);
@@ -88,7 +88,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
             std::shared_ptr<Street> newStreet(new Street(currPos, nextPos));
 
             currJunc->attach(newStreet, toDirection(nextDirection));
-            _cityMap->junctions().get(nextDirection+currPos)->attach(newStreet, toDirection(-nextDirection));
+            _city->junctions().get(nextDirection+currPos)->attach(newStreet, toDirection(-nextDirection));
 
             // Add the next junction
             _junctionsStack.push( nextPos );
@@ -107,7 +107,7 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
                 std::shared_ptr<Street> newStreet(new Street(currPos, nextPos));
 
                 currJunc->attach(newStreet, toDirection(nextDirection));
-                _cityMap->junctions().get(nextDirection+currPos)->attach(newStreet, toDirection(-nextDirection));
+                _city->junctions().get(nextDirection+currPos)->attach(newStreet, toDirection(-nextDirection));
             }
 
             // Pop the current junction
@@ -117,12 +117,12 @@ void MapElementsDepthFirst::setup(CityMap& cityMap)
 
 
     // Add some lands.
-    PGrid<Land>* lands = &_cityMap->lands();
+    PGrid<Land>* lands = &_city->lands();
     for (int j = 0; j < lands->height(); ++j)
     {
         for (int i = 0; i < lands->width(); ++i)
         {
-            if (_cityMap->ground().heightAt(i, j) > 0)
+            if (_city->ground().heightAt(i, j) > 0)
             {
                 int landType = randomRange(0, (int) Land::NB_TYPES);
 

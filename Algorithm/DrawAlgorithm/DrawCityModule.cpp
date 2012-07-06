@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "City/CityMap.h"
+#include "City/City.h"
 #include "SkyComponent.h"
 #include "GroundComponent.h"
 #include "JunctionsComponent.h"
@@ -13,9 +13,9 @@
 using namespace cellar;
 
 
-DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
-    cityMap(cityMap),
-    ground(cityMap.ground()),
+DrawCityCommonData::DrawCityCommonData(City& city) :
+    city(city),
+    ground(city.ground()),
     sunRadius(10.0f),
     sunLight(),
     sunColor(     1.00, 0.90, 0.20, 1.00),
@@ -109,8 +109,8 @@ DrawCityCommonData::DrawCityCommonData(CityMap& cityMap) :
     waterShader.popProgram();
 }
 
-DrawCityModule::DrawCityModule(CityMap &cityMap) :
-    _commonData(cityMap),
+DrawCityModule::DrawCityModule(City &city) :
+    _commonData(city),
     _components(),
     _skyComponent(new SkyComponent(_commonData)),
     _groundComponent(new GroundComponent(_commonData)),
@@ -162,7 +162,7 @@ void DrawCityModule::update()
 
 
     // Sun position
-    Vec4f sunDir = _commonData.cityMap.sun().direction().normalized();
+    Vec4f sunDir = _commonData.city.sun().direction().normalized();
     _commonData.sunLight.direction = sunDir;
     _commonData.viewedSunDirection = _commonData.viewMat * sunDir;    
 

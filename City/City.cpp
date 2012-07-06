@@ -1,4 +1,4 @@
-#include "CityMap.h"
+#include "City.h"
 #include "Algorithm/HeightsAlgorithm/HeightsAlgorithm.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h"
 
@@ -9,7 +9,7 @@ using namespace std;
 using namespace cellar;
 
 
-CityMap::CityMap(int width, int height):
+City::City(int width, int height):
     _size(width, height),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
     _sky(      256,     256),
@@ -19,23 +19,23 @@ CityMap::CityMap(int width, int height):
 {
 }
 
-void CityMap::reset()
+void City::reset()
 {
     resetJunctions();
     resetLands();
 }
 
-bool CityMap::load(const string &)
+bool City::load(const string &)
 {
     return false;
 }
 
-bool CityMap::save(const string &)
+bool City::save(const string &)
 {
     return false;
 }
 
-void CityMap::update()
+void City::update()
 {
     _calendar.tic();
     _sun.setTime(_calendar.date().hour,
@@ -43,7 +43,7 @@ void CityMap::update()
     _sky.update();
 }
 
-void CityMap::resetJunctions()
+void City::resetJunctions()
 {
     for(int j=0; j<_junctions.height(); ++j)
     {
@@ -57,7 +57,7 @@ void CityMap::resetJunctions()
     }
 }
 
-void CityMap::resetLands()
+void City::resetLands()
 {
     for(int j=0; j<_lands.height(); ++j)
     {

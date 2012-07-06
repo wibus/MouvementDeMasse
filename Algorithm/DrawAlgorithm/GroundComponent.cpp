@@ -52,29 +52,29 @@ void GroundComponent::setupLands()
     vector<Vec3f> lnormals;
     vector<Vec2f> ltexCoords;
 
-    for(int j=0; j<_common.cityMap.size().y(); ++j)
+    for(int j=0; j<_common.city.size().y(); ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x(); ++i)
+        for(int i=0; i<_common.city.size().x(); ++i)
         {
-            if(_common.cityMap.lands().get(i, j)->type() != Land::GRASS)
+            if(_common.city.lands().get(i, j)->type() != Land::GRASS)
                 continue;
 
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i, j)->type() != Junction::GRASS)
                 lpositions.push_back(Vec3f(i+_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i, j)));
             else
                 lpositions.push_back(Vec3f(i, j, _common.ground.heightAt(i, j)));
 
-            if(_common.cityMap.junctions().get(i+1, j)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i+1, j)->type() != Junction::GRASS)
                 lpositions.push_back(Vec3f(i+1-_common.roadWidth, j+_common.roadWidth, _common.ground.heightAt(i+1, j)));
             else
                 lpositions.push_back(Vec3f(i+1, j, _common.ground.heightAt(i+1, j)));
 
-            if(_common.cityMap.junctions().get(i+1, j+1)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i+1, j+1)->type() != Junction::GRASS)
                 lpositions.push_back(Vec3f(i+1-_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i+1, j+1)));
             else
                 lpositions.push_back(Vec3f(i+1, j+1, _common.ground.heightAt(i+1, j+1)));
 
-            if(_common.cityMap.junctions().get(i, j+1)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i, j+1)->type() != Junction::GRASS)
                 lpositions.push_back(Vec3f(i+_common.roadWidth, j+1-_common.roadWidth, _common.ground.heightAt(i, j+1)));
             else
                 lpositions.push_back(Vec3f(i, j+1, _common.ground.heightAt(i, j+1)));
@@ -132,9 +132,9 @@ void GroundComponent::setupRoads()
     vector<Vec2f> rtexCoords;
     int idx = 0;
 
-    for(int j=0; j<_common.cityMap.size().y(); ++j)
+    for(int j=0; j<_common.city.size().y(); ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x(); ++i)
+        for(int i=0; i<_common.city.size().x(); ++i)
         {
             if( isGrassRoad(i, j, EAST) )
             {
@@ -216,9 +216,9 @@ bool GroundComponent::isGrassRoad(int i, int j, CardinalDirection dir)
 {
     Vec2i vecDir = toVec(dir);
 
-    if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
-        if(_common.cityMap.junctions().get(i + vecDir.x(), j + vecDir.y())->type() != Junction::GRASS)
-            if(_common.cityMap.junctions().get(i, j)->getStreet(dir) == 0x0)
+    if(_common.city.junctions().get(i, j)->type() != Junction::GRASS)
+        if(_common.city.junctions().get(i + vecDir.x(), j + vecDir.y())->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i, j)->getStreet(dir) == 0x0)
                 return true;
 
     return false;
@@ -231,12 +231,12 @@ void GroundComponent::setupTriangles()
     vector<Vec2f> ttexCoords;
 
     // East
-    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
+    for(int j=0; j<_common.city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x(); ++i)
+        for(int i=0; i<_common.city.size().x(); ++i)
         {
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
-            if(_common.cityMap.junctions().get(i+1, j)->type() == Junction::GRASS)
+            if(_common.city.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i+1, j)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _common.ground.heightAt(i, j);
 
@@ -256,12 +256,12 @@ void GroundComponent::setupTriangles()
     }
 
     // North
-    for(int j=0; j<_common.cityMap.size().y(); ++j)
+    for(int j=0; j<_common.city.size().y(); ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
+        for(int i=0; i<_common.city.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
-            if(_common.cityMap.junctions().get(i, j+1)->type() == Junction::GRASS)
+            if(_common.city.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i, j+1)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _common.ground.heightAt(i, j);
 
@@ -281,12 +281,12 @@ void GroundComponent::setupTriangles()
     }
 
     // West
-    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
+    for(int j=0; j<_common.city.size().y()+1; ++j)
     {
-        for(int i=1; i<_common.cityMap.size().x()+1; ++i)
+        for(int i=1; i<_common.city.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
-            if(_common.cityMap.junctions().get(i-1, j)->type() == Junction::GRASS)
+            if(_common.city.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i-1, j)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _common.ground.heightAt(i, j);
 
@@ -306,12 +306,12 @@ void GroundComponent::setupTriangles()
     }
 
     // South
-    for(int j=1; j<_common.cityMap.size().y()+1; ++j)
+    for(int j=1; j<_common.city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
+        for(int i=0; i<_common.city.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i, j)->type() != Junction::GRASS)
-            if(_common.cityMap.junctions().get(i, j-1)->type() == Junction::GRASS)
+            if(_common.city.junctions().get(i, j)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i, j-1)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _common.ground.heightAt(i, j);
 

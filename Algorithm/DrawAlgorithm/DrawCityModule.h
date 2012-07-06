@@ -6,7 +6,7 @@
 #include <Graphics/Light/Light3D.h>
 #include <Graphics/GL/GLShaderProgram.h>
 
-#include "City/CityMap.h"
+#include "City/City.h"
 
 class AbstractComponent;
 class SkyComponent;
@@ -19,10 +19,10 @@ class WaterComponent;
 
 struct DrawCityCommonData
 {
-    DrawCityCommonData(CityMap& cityMap);
+    DrawCityCommonData(City& city);
 
-    // CityMap
-    CityMap& cityMap;
+    // City
+    City& city;
     Ground&  ground;
 
     // Matrices
@@ -65,7 +65,7 @@ struct DrawCityCommonData
 class DrawCityModule
 {
 public:
-    DrawCityModule(CityMap& cityMap);
+    DrawCityModule(City& city);
 
     void setup();
     void draw();

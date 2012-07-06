@@ -5,7 +5,7 @@
 #include <Misc/CellarUtils.h>
 #include "Road/Junction.h"
 #include "Road/Street.h"
-#include "City/CityMap.h"
+#include "City/City.h"
 
 using namespace cellar;
 
@@ -18,9 +18,9 @@ MapElementsByIsland::~MapElementsByIsland()
 
 }
 
-void MapElementsByIsland::setup(CityMap &cityMap)
+void MapElementsByIsland::setup(City &city)
 {
-    MapElementsAlgorithm::setup(cityMap);
+    MapElementsAlgorithm::setup(city);
 
     _nbIslands = 0;
     _islandIdentifiers = Grid<int>(_mapSize.x(),
@@ -293,7 +293,7 @@ bool MapElementsByIsland::isJunctionInBounds(Vec2i position)
 
 bool MapElementsByIsland::isJunctionAboveWater(Vec2i position)
 {
-    return (_cityMap->ground().heightAt(position) > 0);
+    return (_city->ground().heightAt(position) > 0);
 }
 
 bool MapElementsByIsland::isLandInBounds(Vec2i position)
@@ -308,8 +308,8 @@ bool MapElementsByIsland::isLandAboveWater(Vec2i position)
 {
     int x = position.x();
     int y = position.y();
-    return (_cityMap->ground().heightAt(x,     y) > 0 &&
-            _cityMap->ground().heightAt(x + 1, y) > 0 &&
-            _cityMap->ground().heightAt(x,     y + 1) > 0 &&
-            _cityMap->ground().heightAt(x + 1, y + 1) > 0);
+    return (_city->ground().heightAt(x,     y) > 0 &&
+            _city->ground().heightAt(x + 1, y) > 0 &&
+            _city->ground().heightAt(x,     y + 1) > 0 &&
+            _city->ground().heightAt(x + 1, y + 1) > 0);
 }

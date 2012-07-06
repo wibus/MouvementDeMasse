@@ -83,25 +83,25 @@ void BuildingsComponent::setupPositions()
     _commerceTexScaleCoeff.clear();
 
 
-    for(int j=0; j<_common.cityMap.size().y(); ++j)
+    for(int j=0; j<_common.city.size().y(); ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x(); ++i)
+        for(int i=0; i<_common.city.size().x(); ++i)
         {
-            if(_common.cityMap.lands().get(i,j)->type() == Land::GRASS)
+            if(_common.city.lands().get(i,j)->type() == Land::GRASS)
                 continue;
 
             Vec3f pos = Vec3f(i, j, landHeight(i, j));
-            float height = _common.cityMap.lands().get(i,j)->nbStories() * 0.25f;
+            float height = _common.city.lands().get(i,j)->nbStories() * 0.25f;
 
             _roofPos.push_back(Vec3f(pos.x(), pos.y(), pos.z() + height));
 
-            if(_common.cityMap.lands().get(i,j)->type() == Land::RESIDENTIAL)
+            if(_common.city.lands().get(i,j)->type() == Land::RESIDENTIAL)
             {
                 _apartmentsPos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
                 _apartmentTexScaleCoeff.push_back( height );
             }
 
-            if(_common.cityMap.lands().get(i,j)->type() == Land::COMMERCIAL)
+            if(_common.city.lands().get(i,j)->type() == Land::COMMERCIAL)
             {
                 _commercePos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
                 _commerceTexScaleCoeff.push_back( height );

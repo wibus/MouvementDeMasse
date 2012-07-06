@@ -1,5 +1,5 @@
-#ifndef CITYMAP_H
-#define CITYMAP_H
+#ifndef CITY_H
+#define CITY_H
 
 #include <memory>
 
@@ -19,10 +19,10 @@ class HeightsAlgorithm;
 class MapElementsAlgorithm;
 
 
-class CityMap
+class City
 {
 public:
-    CityMap(int width, int height);
+    City(int width, int height);
 
     cellar::Vec2i  size() const;
     Sun& sun();
@@ -55,39 +55,39 @@ private:
 
 
 // Implementation //
-inline cellar::Vec2i CityMap::size() const
+inline cellar::Vec2i City::size() const
 {
     return _size;
 }
 
-inline Sun& CityMap::sun()
+inline Sun& City::sun()
 {
     return _sun;
 }
 
-inline Sky& CityMap::sky()
+inline Sky& City::sky()
 {
     return _sky;
 }
 
-inline Ground& CityMap::ground()
+inline Ground& City::ground()
 {
     return _ground;
 }
 
-inline cellar::PGrid<Land>& CityMap::lands()
+inline cellar::PGrid<Land>& City::lands()
 {
     return _lands;
 }
 
-inline cellar::PGrid<Junction>& CityMap::junctions()
+inline cellar::PGrid<Junction>& City::junctions()
 {
     return _junctions;
 }
 
-inline cellar::Calendar& CityMap::calendar()
+inline cellar::Calendar& City::calendar()
 {
     return _calendar;
 }
 
-#endif // CITYMAP_H
+#endif // CITY_H

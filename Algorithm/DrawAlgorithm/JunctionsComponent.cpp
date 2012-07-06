@@ -32,9 +32,9 @@ void JunctionsComponent::setup()
 {
     // Compute number of junction vertices
     _junctionsNbElems = 0;
-    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
-        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
-            if(_common.cityMap.junctions().get(i , j)->type() != Junction::GRASS)
+    for(int j=0; j<_common.city.size().y()+1; ++j)
+        for(int i=0; i<_common.city.size().x()+1; ++i)
+            if(_common.city.junctions().get(i , j)->type() != Junction::GRASS)
                 _junctionsNbElems += 4;
 
     // Collect junctions to draw
@@ -42,11 +42,11 @@ void JunctionsComponent::setup()
     Vec2f* junctionsTex = new Vec2f[_junctionsNbElems];
     int idx = -1;
 
-    for(int j=0; j<_common.cityMap.size().y()+1; ++j)
+    for(int j=0; j<_common.city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.cityMap.size().x()+1; ++i)
+        for(int i=0; i<_common.city.size().x()+1; ++i)
         {
-            if(_common.cityMap.junctions().get(i , j)->type() != Junction::GRASS)
+            if(_common.city.junctions().get(i , j)->type() != Junction::GRASS)
             {
                 float height = _common.ground.heightAt(i, j);
                 junctionsPos[++idx] = Vec3f(i-_common.roadWidth, j-_common.roadWidth, height);

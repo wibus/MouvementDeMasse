@@ -21,7 +21,7 @@ SkyComponent::SkyComponent(DrawCityCommonData &common) :
 {
     glGenVertexArrays(1, &_skyVao);
 
-    _cloudsTex = GLToolkit::genTextureId(_common.cityMap.sky().cloudsImage());
+    _cloudsTex = GLToolkit::genTextureId(_common.city.sky().cloudsImage());
 }
 
 SkyComponent::~SkyComponent()

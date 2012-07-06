@@ -2,7 +2,7 @@
 #define ALGORITHM_H
 
 #include <MathsAndPhysics/Vector.h>
-class CityMap;
+class City;
 class Ground;
 
 
@@ -14,14 +14,12 @@ protected:
 public:    
     virtual ~Algorithm();
 
-    virtual void setup(CityMap& cityMap);
+    virtual void setup(City& city);
 
 protected:
-    CityMap* _cityMap;
-    Ground*  _ground;
+    City*         _city;
+    Ground*       _ground;
     cellar::Vec2i _mapSize;
-    float _minHeight;
-    float _maxHeight;
 };
 
 #endif // ALGORITHM_H

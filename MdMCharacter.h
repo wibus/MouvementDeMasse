@@ -13,9 +13,8 @@
 #include <Characters/AbstractCharacter.h>
 
 #include "Algorithm/DrawAlgorithm/DrawCityModule.h"
-#include "Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h"
 
-class CityMap;
+class City;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
@@ -34,15 +33,15 @@ public:
     // Specific observer interface
     virtual void notify(cellar::CameraMsg &msg);
 
-    // CityMap manip
-    CityMap& cityMap();
-    void setCityMap(CityMap* map);
+    // City manip
+    City& city();
+    void setCity(City* city);
 
 private:
     void setAlgorithms();
     void updateCamera(float elapsedtime);
 
-    std::shared_ptr<CityMap> _cityMap;
+    std::shared_ptr<City> _city;
     DrawCityModule _drawCityAlgorithm;
     cellar::CameraManFree _camMan;
     prop::twoD::Text _dateText;

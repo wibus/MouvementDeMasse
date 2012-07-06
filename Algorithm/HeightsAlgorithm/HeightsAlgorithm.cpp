@@ -8,7 +8,7 @@ HeightsAlgorithm::~HeightsAlgorithm()
 {
 }
 
-void HeightsAlgorithm::setup(CityMap& cityMap)
+void HeightsAlgorithm::setup(City& city)
 {
-    Algorithm::setup( cityMap );
+    Algorithm::setup( city );
 }

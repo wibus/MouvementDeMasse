@@ -16,9 +16,9 @@ MapElementsAlgorithm::~MapElementsAlgorithm()
 {
 }
 
-void MapElementsAlgorithm::setup(CityMap& cityMap)
+void MapElementsAlgorithm::setup(City& city)
 {
-    Algorithm::setup(cityMap);
+    Algorithm::setup(city);
 }
 
 CardinalDirection MapElementsAlgorithm::toCardinal(const Vec2i& dir)

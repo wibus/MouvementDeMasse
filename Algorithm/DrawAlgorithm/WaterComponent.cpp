@@ -26,9 +26,9 @@ void WaterComponent::setup()
     float waterHeight = _common.ground.waterHeight();
     Vec3f* wpositions = new Vec3f[_waterNbElems];
     wpositions[0] = Vec3f(0.0,                        0.0,                          waterHeight);
-    wpositions[1] = Vec3f(_common.cityMap.size().x(), 0.0,                          waterHeight);
-    wpositions[2] = Vec3f(_common.cityMap.size().x(), _common.cityMap.size().y(),   waterHeight);
-    wpositions[3] = Vec3f(0.0,                        _common.cityMap.size().y(),   waterHeight);
+    wpositions[1] = Vec3f(_common.city.size().x(), 0.0,                          waterHeight);
+    wpositions[2] = Vec3f(_common.city.size().x(), _common.city.size().y(),   waterHeight);
+    wpositions[3] = Vec3f(0.0,                        _common.city.size().y(),   waterHeight);
 
 
     // Water VAO setup

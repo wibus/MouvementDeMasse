@@ -46,7 +46,7 @@ SOURCES += \
     main.cpp \
     MdMPlay.cpp \
     MdMCharacter.cpp \
-    City/CityMap.cpp \
+    City/City.cpp \
     Algorithm/Algorithm.cpp \
     Road/Junction.cpp \
     Land/Land.cpp \
@@ -58,7 +58,6 @@ SOURCES += \
     Weather/Sun.cpp \
     Ui/MainWindow.cpp \
     City/Ground.cpp \
-    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.cpp \
     Algorithm/DrawAlgorithm/DrawCityModule.cpp \
     Algorithm/DrawAlgorithm/SkyComponent.cpp \
     Algorithm/DrawAlgorithm/WaterComponent.cpp \
@@ -73,7 +72,7 @@ SOURCES += \
 HEADERS += \
     MdMPlay.h \
     MdMCharacter.h \
-    City/CityMap.h \
+    City/City.h \
     Algorithm/Algorithm.h \
     Road/Junction.h \
     MdMTypes.h \
@@ -86,7 +85,6 @@ HEADERS += \
     Weather/Sun.h \
     Ui/MainWindow.h \
     City/Ground.h \
-    Algorithm/DrawAlgorithm/DrawHighPrecisionGround.h \
     Algorithm/DrawAlgorithm/DrawCityModule.h \
     Algorithm/DrawAlgorithm/SkyComponent.h \
     Algorithm/DrawAlgorithm/WaterComponent.h \

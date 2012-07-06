@@ -11,7 +11,7 @@ protected:
 public:
     virtual ~HeightsAlgorithm();
 
-    virtual void setup(CityMap& cityMap);
+    virtual void setup(City& city);
 };
 
 #endif // HEIGHTSALGORITHM_H
