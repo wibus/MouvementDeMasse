@@ -5,11 +5,11 @@ CitizensEqualAlgo::CitizensEqualAlgo()
 {
 }
 
-void setup(City &city)
+void CitizensEqualAlgo::setup(City &city)
 {
     CitizensAlgorithm::setup(city);
 }
 
-void update()
+void CitizensEqualAlgo::update()
 {
 }

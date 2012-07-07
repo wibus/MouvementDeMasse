@@ -10,7 +10,7 @@ public:
     CitizensEqualAlgo();
 
     virtual void setup(City &city);
-    virtual void update() = 0;
+    virtual void update();
 };
 
 #endif // CITIZENSEQUALALGO_H

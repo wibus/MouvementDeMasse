@@ -12,14 +12,19 @@ using namespace scaena;
 
 #include "MdMCharacter.h"
 #include "City/City.h"
+#include "Rendering/DrawCityModule.h"
+#include "Algorithm/CitizensAlgorithm/CitizensEqualAlgo.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _city( new City(64, 48)),
-    _drawCityModule(*_city),
+    _city( new City(64, 48) ),
+    _drawCityModule( new DrawCityModule(*_city) ),
+    _citizensAlgo( new CitizensEqualAlgo() ),
+    _heightsAlgo(  new HeightByNoiseAlgo() ),
+    _mapElemAlgo(  new MapElementsDepthFirst() ),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()
@@ -36,6 +41,15 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _city->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
 }
 
+MdMCharacter::~MdMCharacter()
+{
+    delete _city;
+    delete _drawCityModule;
+    delete _citizensAlgo;
+    delete _heightsAlgo;
+    delete _mapElemAlgo;
+}
+
 void MdMCharacter::enterStage()
 {
     setAlgorithms();
@@ -48,7 +62,7 @@ void MdMCharacter::beginStep(const StageTime &time)
     updateCamera( time.elapsedTime() );
 
     _city->update();
-    _drawCityModule.update();
+    _drawCityModule->update();
 
     _dateText.setText(_city->calendar().date().toString(true, true));
     _upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
@@ -92,7 +106,7 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 {
     _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 
-    _drawCityModule.draw();    
+    _drawCityModule->draw();
     _fpsText.draw();
     _upsText.draw();
     _dateText.draw();
@@ -109,11 +123,11 @@ void MdMCharacter::notify(cellar::CameraMsg &msg)
 
     if(msg.change == CameraMsg::PROJECTION)
     {
-        _drawCityModule.updateProjectionMatrix( msg.camera.projectionMatrix() );
+        _drawCityModule->updateProjectionMatrix( msg.camera.projectionMatrix() );
     }
     else if(msg.change == CameraMsg::VIEW)
     {
-        _drawCityModule.updateModelViewMatrix( msg.camera.viewMatrix() );
+        _drawCityModule->updateModelViewMatrix( msg.camera.viewMatrix() );
     }
 }
 
@@ -124,7 +138,8 @@ City& MdMCharacter::city()
 
 void MdMCharacter::setCity(City* city)
 {
-    _city.reset( city );
+    delete _city;
+    _city = city;
 }
 
 void MdMCharacter::setAlgorithms()
@@ -135,18 +150,14 @@ void MdMCharacter::setAlgorithms()
     _city->ground().setWaterHeight(0.0f);
 
     // Height algorithm
-    HeightByNoiseAlgo heightAlgo;
-    heightAlgo.setWeightedFrequenciesRange(1,
-        minVal(_city->size().x(), _city->size().y()) / 2 );
-    heightAlgo.setup( *_city );
+    _heightsAlgo->setup( *_city );
 
     // Map elements
-    MapElementsDepthFirst mapElemAlgo;
-    //MapElementsByIsland mapElemAlgo;
-    mapElemAlgo.setup(*_city);
+    _mapElemAlgo->setup( *_city );
 
     // Citizens
+    _citizensAlgo->setup( *_city );
 
-
-    _drawCityModule.setup();
+    // Rendering
+    _drawCityModule->setup();
 }

@@ -114,4 +114,18 @@ OTHER_FILES += \
     resources/shaders/infrastruct.frag \
     resources/shaders/infrastruct.vert \
     resources/shaders/sky.vert \
-    resources/shaders/sky.frag
+    resources/shaders/sky.frag \
+    resources/textures/street.bmp \
+    resources/textures/roofTex.bmp \
+    resources/textures/roofSpec.bmp \
+    resources/textures/roof.xcf \
+    resources/textures/junction.bmp \
+    resources/textures/grass.bmp \
+    resources/textures/commerceTex.bmp \
+    resources/textures/commerceSpec.bmp \
+    resources/textures/commerce.xcf \
+    resources/textures/apartTex.bmp \
+    resources/textures/apartSpec.bmp \
+    resources/textures/apart.xcf \
+    resources/fonts/Arial.flw \
+    resources/fonts/Arial.bmp

@@ -10,9 +10,11 @@
 #include <Text/2D/Text.h>
 #include <Characters/AbstractCharacter.h>
 
-#include "Rendering/DrawCityModule.h"
-
 class City;
+class DrawCityModule;
+class CitizensAlgorithm;
+class HeightsAlgorithm;
+class MapElementsAlgorithm;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
@@ -20,6 +22,7 @@ class MdMCharacter : public scaena::AbstractCharacter,
 {
 public:
     MdMCharacter(scaena::AbstractStage& stage);
+    ~MdMCharacter();
 
     // Character interface
     virtual void enterStage();
@@ -39,12 +42,22 @@ private:
     void setAlgorithms();
     void updateCamera(float elapsedtime);
 
-    std::shared_ptr<City> _city;
-    DrawCityModule _drawCityModule;
+    City* _city;
+    DrawCityModule* _drawCityModule;
+    CitizensAlgorithm*    _citizensAlgo;
+    HeightsAlgorithm*     _heightsAlgo;
+    MapElementsAlgorithm* _mapElemAlgo;
+
     cellar::CameraManFree _camMan;
     prop::twoD::Text _dateText;
     prop::twoD::Text _fpsText;
     prop::twoD::Text _upsText;
+
+
+    // Deleted methods //
+private:
+    MdMCharacter(const MdMCharacter&);
+    MdMCharacter& operator= (const MdMCharacter&);
 };
 
 #endif // MDMCHARACTER_H

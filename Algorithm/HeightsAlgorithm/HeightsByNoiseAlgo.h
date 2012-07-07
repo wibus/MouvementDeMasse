@@ -9,14 +9,6 @@ public:
     HeightByNoiseAlgo();
 
     virtual void setup(City& city);
-
-    int minFrequency() const;
-    int maxFrequency() const;
-    void setWeightedFrequenciesRange(int min, int max);
-
-private:
-    int _minFreq;
-    int _maxFreq;
 };
 
 #endif // HEIGHTSBYNOISEALGO_H
