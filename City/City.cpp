@@ -1,8 +1,4 @@
 #include "City.h"
-#include "Algorithm/HeightsAlgorithm/HeightsAlgorithm.h"
-#include "Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h"
-
-#include "Road/Junction.h"
 
 #include <cmath>
 using namespace std;
@@ -11,12 +7,14 @@ using namespace cellar;
 
 City::City(int width, int height):
     _size(  width, height),
-    _ground(width+1, height+1),
-    _visual(),
+    _citizens(),
     _sky(256, 256),
-    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),        
+    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
+    _ground(   width+1, height+1),
     _lands(    width,   height),
-    _junctions(width+1, height+1)
+    _junctions(width+1, height+1),
+    _calendar(),
+    _visual()
 {
 }
 
@@ -24,6 +22,7 @@ void City::reset()
 {
     resetJunctions();
     resetLands();
+    resetCitizens();
 }
 
 bool City::load(const string &)
@@ -70,4 +69,12 @@ void City::resetLands()
             _lands.set(i, j, new Land());
         }
     }
+}
+
+void City::resetCitizens()
+{
+    for(size_t i=0; i<_citizens.size(); ++i)
+        delete _citizens[i];
+
+    _citizens.clear();
 }

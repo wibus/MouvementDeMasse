@@ -3,8 +3,6 @@
 #include <memory>
 #include <set>
 #include <Misc/CellarUtils.h>
-#include "Road/Junction.h"
-#include "Road/Street.h"
 #include "City/City.h"
 
 using namespace cellar;

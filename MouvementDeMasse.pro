@@ -48,55 +48,57 @@ SOURCES += \
     MdMCharacter.cpp \
     City/City.cpp \
     Algorithm/Algorithm.cpp \
-    Road/Junction.cpp \
-    Land/Land.cpp \
+    City/Junction.cpp \
+    City/Land.cpp \
     Algorithm/HeightsAlgorithm/HeightsAlgorithm.cpp \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.cpp \
-    Road/Street.cpp \
+    City/Street.cpp \
     City/Sun.cpp \
     Ui/MainWindow.cpp \
     City/Ground.cpp \
-    Algorithm/DrawAlgorithm/DrawCityModule.cpp \
-    Algorithm/DrawAlgorithm/SkyComponent.cpp \
-    Algorithm/DrawAlgorithm/WaterComponent.cpp \
-    Algorithm/DrawAlgorithm/GroundComponent.cpp \
-    Algorithm/DrawAlgorithm/JunctionsComponent.cpp \
-    Algorithm/DrawAlgorithm/StreetsComponent.cpp \
+    Rendering/DrawCityModule.cpp \
+    Rendering/SkyComponent.cpp \
+    Rendering/WaterComponent.cpp \
+    Rendering/GroundComponent.cpp \
+    Rendering/JunctionsComponent.cpp \
+    Rendering/StreetsComponent.cpp \
     MdMTypes.cpp \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.cpp \
-    Algorithm/DrawAlgorithm/BuildingsComponent.cpp \
+    Rendering/BuildingsComponent.cpp \
     City/Sky.cpp \
-    City/Visual.cpp
+    City/Visual.cpp \
+    City/Citizen.cpp
 
 HEADERS += \
     MdMPlay.h \
     MdMCharacter.h \
     City/City.h \
     Algorithm/Algorithm.h \
-    Road/Junction.h \
+    City/Junction.h \
     MdMTypes.h \
-    Land/Land.h \
+    City/Land.h \
     Algorithm/HeightsAlgorithm/HeightsAlgorithm.h \
     Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h \
     Algorithm/MapElementsAlgorithm/MapElementsAlgorithm.h \
     Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h \
-    Road/Street.h \
+    City/Street.h \
     City/Sun.h \
     Ui/MainWindow.h \
     City/Ground.h \
-    Algorithm/DrawAlgorithm/DrawCityModule.h \
-    Algorithm/DrawAlgorithm/SkyComponent.h \
-    Algorithm/DrawAlgorithm/WaterComponent.h \
-    Algorithm/DrawAlgorithm/GroundComponent.h \
-    Algorithm/DrawAlgorithm/JunctionsComponent.h \
-    Algorithm/DrawAlgorithm/StreetsComponent.h \
+    Rendering/DrawCityModule.h \
+    Rendering/SkyComponent.h \
+    Rendering/WaterComponent.h \
+    Rendering/GroundComponent.h \
+    Rendering/JunctionsComponent.h \
+    Rendering/StreetsComponent.h \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.h \
-    Algorithm/DrawAlgorithm/BuildingsComponent.h \
-    Algorithm/DrawAlgorithm/AbstractComponent.h \
+    Rendering/BuildingsComponent.h \
+    Rendering/AbstractComponent.h \
     City/Sky.h \
-    City/Visual.h
+    City/Visual.h \
+    City/Citizen.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \
