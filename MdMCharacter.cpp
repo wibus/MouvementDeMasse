@@ -19,7 +19,7 @@ using namespace scaena;
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
     _city( new City(64, 48)),
-    _drawCityAlgorithm(*_city),
+    _drawCityModule(*_city),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()
@@ -48,7 +48,7 @@ void MdMCharacter::beginStep(const StageTime &time)
     updateCamera( time.elapsedTime() );
 
     _city->update();
-    _drawCityAlgorithm.update();
+    _drawCityModule.update();
 
     _dateText.setText(_city->calendar().date().toString(true, true));
     _upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
@@ -92,7 +92,7 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 {
     _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 
-    _drawCityAlgorithm.draw();    
+    _drawCityModule.draw();    
     _fpsText.draw();
     _upsText.draw();
     _dateText.draw();
@@ -109,11 +109,11 @@ void MdMCharacter::notify(cellar::CameraMsg &msg)
 
     if(msg.change == CameraMsg::PROJECTION)
     {
-        _drawCityAlgorithm.updateProjectionMatrix( msg.camera.projectionMatrix() );
+        _drawCityModule.updateProjectionMatrix( msg.camera.projectionMatrix() );
     }
     else if(msg.change == CameraMsg::VIEW)
     {
-        _drawCityAlgorithm.updateModelViewMatrix( msg.camera.viewMatrix() );
+        _drawCityModule.updateModelViewMatrix( msg.camera.viewMatrix() );
     }
 }
 
@@ -140,9 +140,13 @@ void MdMCharacter::setAlgorithms()
         minVal(_city->size().x(), _city->size().y()) / 2 );
     heightAlgo.setup( *_city );
 
+    // Map elements
     MapElementsDepthFirst mapElemAlgo;
     //MapElementsByIsland mapElemAlgo;
     mapElemAlgo.setup(*_city);
 
-    _drawCityAlgorithm.setup();
+    // Citizens
+
+
+    _drawCityModule.setup();
 }

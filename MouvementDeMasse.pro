@@ -69,7 +69,9 @@ SOURCES += \
     Rendering/BuildingsComponent.cpp \
     City/Sky.cpp \
     City/Visual.cpp \
-    City/Citizen.cpp
+    City/Citizen.cpp \
+    Algorithm/CitizensAlgorithm/CitizensAlgorithm.cpp \
+    Algorithm/CitizensAlgorithm/CitizensEqualAlgo.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -98,7 +100,9 @@ HEADERS += \
     Rendering/AbstractComponent.h \
     City/Sky.h \
     City/Visual.h \
-    City/Citizen.h
+    City/Citizen.h \
+    Algorithm/CitizensAlgorithm/CitizensAlgorithm.h \
+    Algorithm/CitizensAlgorithm/CitizensEqualAlgo.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \

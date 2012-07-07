@@ -40,7 +40,7 @@ private:
     void updateCamera(float elapsedtime);
 
     std::shared_ptr<City> _city;
-    DrawCityModule _drawCityAlgorithm;
+    DrawCityModule _drawCityModule;
     cellar::CameraManFree _camMan;
     prop::twoD::Text _dateText;
     prop::twoD::Text _fpsText;

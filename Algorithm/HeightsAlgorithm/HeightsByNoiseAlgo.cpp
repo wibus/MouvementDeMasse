@@ -5,10 +5,6 @@ using namespace std;
 
 #include <Misc/CellarUtils.h>
 #include <MathsAndPhysics/Algorithms.h>
-
-#include "City/City.h"
-#include "City/Junction.h"
-
 using namespace cellar;
 
 HeightByNoiseAlgo::HeightByNoiseAlgo()

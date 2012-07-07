@@ -2,8 +2,8 @@
 #define ALGORITHM_H
 
 #include <MathsAndPhysics/Vector.h>
-class City;
-class Ground;
+
+#include "City/City.h"
 
 
 class Algorithm

@@ -2,10 +2,11 @@
 
 #include <memory>
 #include <set>
-#include <Misc/CellarUtils.h>
-#include "City/City.h"
+using namespace std;
 
+#include <Misc/CellarUtils.h>
 using namespace cellar;
+
 
 MapElementsByIsland::MapElementsByIsland()
 {

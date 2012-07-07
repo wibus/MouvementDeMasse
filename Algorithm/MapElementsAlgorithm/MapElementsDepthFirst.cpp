@@ -1,10 +1,11 @@
 #include "MapElementsDepthFirst.h"
+
 #include <vector>
 #include <memory>
-#include <Misc/CellarUtils.h>
-#include "City/City.h"
 
+#include <Misc/CellarUtils.h>
 using namespace cellar;
+
 
 MapElementsDepthFirst::MapElementsDepthFirst():
     _junctionsStack()
