@@ -23,6 +23,7 @@ private:
     cellar::Grid<float>  _cloudsGrid;
     cellar::Image        _cloudsImage;
     float _cloudyness;
+    float _cloudCompactness;
 };
 
 

@@ -1,5 +1,4 @@
 #include "BuildingsComponent.h"
-#include "DrawCityModule.h"
 
 #include <GL/glew.h>
 using namespace std;
@@ -8,8 +7,8 @@ using namespace std;
 #include <Graphics/ImageBank.h>
 using namespace cellar;
 
-BuildingsComponent::BuildingsComponent(DrawCityCommonData& common) :
-    AbstractComponent(common),
+BuildingsComponent::BuildingsComponent(City &city, GLShaderProgram &shader) :
+    AbstractComponent(city, shader),
     _buildingWallsVao(0),
     _buildingNbElems(0),
     _roofVao(0),
@@ -83,25 +82,25 @@ void BuildingsComponent::setupPositions()
     _commerceTexScaleCoeff.clear();
 
 
-    for(int j=0; j<_common.city.size().y(); ++j)
+    for(int j=0; j<_city.size().y(); ++j)
     {
-        for(int i=0; i<_common.city.size().x(); ++i)
+        for(int i=0; i<_city.size().x(); ++i)
         {
-            if(_common.city.lands().get(i,j)->type() == Land::GRASS)
+            if(_city.lands().get(i,j)->type() == Land::GRASS)
                 continue;
 
             Vec3f pos = Vec3f(i, j, landHeight(i, j));
-            float height = _common.city.lands().get(i,j)->nbStories() * 0.25f;
+            float height = _city.lands().get(i,j)->nbStories() * 0.25f;
 
             _roofPos.push_back(Vec3f(pos.x(), pos.y(), pos.z() + height));
 
-            if(_common.city.lands().get(i,j)->type() == Land::RESIDENTIAL)
+            if(_city.lands().get(i,j)->type() == Land::RESIDENTIAL)
             {
                 _apartmentsPos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
                 _apartmentTexScaleCoeff.push_back( height );
             }
 
-            if(_common.city.lands().get(i,j)->type() == Land::COMMERCIAL)
+            if(_city.lands().get(i,j)->type() == Land::COMMERCIAL)
             {
                 _commercePos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
                 _commerceTexScaleCoeff.push_back( height );
@@ -113,7 +112,7 @@ void BuildingsComponent::setupPositions()
 void BuildingsComponent::setupBuidlindSides()
 {
     _buildingNbElems = 16;
-    float halfWidth = 0.5f-_common.roadWidth;
+    float halfWidth = 0.5f-_visual.roadWidth;
 
     Vec3f positions[16];
     Vec3f normals[16];
@@ -199,9 +198,9 @@ void BuildingsComponent::setupBuidlindSides()
     GLuint gBuffers[nbAttributes];
     glGenBuffers(nbAttributes, gBuffers);
 
-    int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
-    int normal_loc   = _common.infrastructShader.getAttributeLocation("normal_att");
-    int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
+    int position_loc = _shader.getAttributeLocation("position_att");
+    int normal_loc   = _shader.getAttributeLocation("normal_att");
+    int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _buildingNbElems, positions, GL_STATIC_DRAW);
@@ -229,10 +228,10 @@ void BuildingsComponent::setupRoofTop()
 
     Vec3f positions[4] =
     {
-        Vec3f(_common.roadWidth,   _common.roadWidth,   0),
-        Vec3f(1-_common.roadWidth, _common.roadWidth,   0),
-        Vec3f(1-_common.roadWidth, 1-_common.roadWidth, 0),
-        Vec3f(_common.roadWidth,   1-_common.roadWidth, 0)
+        Vec3f(_visual.roadWidth,   _visual.roadWidth,   0),
+        Vec3f(1-_visual.roadWidth, _visual.roadWidth,   0),
+        Vec3f(1-_visual.roadWidth, 1-_visual.roadWidth, 0),
+        Vec3f(_visual.roadWidth,   1-_visual.roadWidth, 0)
     };
 
     Vec2f texCoords[4] =
@@ -251,8 +250,8 @@ void BuildingsComponent::setupRoofTop()
     GLuint gBuffers[nbAttributes];
     glGenBuffers(nbAttributes, gBuffers);
 
-    int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
-    int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
+    int position_loc = _shader.getAttributeLocation("position_att");
+    int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _roofNbElems, positions, GL_STATIC_DRAW);
@@ -272,16 +271,16 @@ void BuildingsComponent::setupRoofTop()
 float BuildingsComponent::landHeight(int i, int j)
 {
     return minVal(minVal(minVal(
-        _common.ground.heightAt(i,   j),
-        _common.ground.heightAt(i+1, j)),
-        _common.ground.heightAt(i+1, j+1)),
-        _common.ground.heightAt(i,   j+1)
+        _ground.heightAt(i,   j),
+        _ground.heightAt(i+1, j)),
+        _ground.heightAt(i+1, j+1)),
+        _ground.heightAt(i,   j+1)
     );
 }
 
 void BuildingsComponent::draw()
 {
-    _common.infrastructShader.pushThisProgram();
+    _shader.pushThisProgram();
 
     // Roof tops
     glActiveTexture(GL_TEXTURE1);
@@ -290,11 +289,11 @@ void BuildingsComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _roofTex);
 
     glBindVertexArray(_roofVao);
-    glVertexAttrib3f(_common.infrastructShader.getAttributeLocation("normal_att"), 0,0,1);
-    _common.infrastructShader.setFloat("StructureHeight", 1.0f);
+    glVertexAttrib3f(_shader.getAttributeLocation("normal_att"), 0,0,1);
+    _shader.setFloat("StructureHeight", 1.0f);
     for(size_t i=0; i<_roofPos.size(); ++i)
     {
-        _common.infrastructShader.setVec3f("Translation", _roofPos[i] );
+        _shader.setVec3f("Translation", _roofPos[i] );
         glDrawArrays(GL_TRIANGLE_FAN , 0, _roofNbElems);
     }
 
@@ -308,8 +307,8 @@ void BuildingsComponent::draw()
     glBindVertexArray(_buildingWallsVao);
     for(size_t i=0; i<_apartmentsPos.size(); ++i)
     {
-        _common.infrastructShader.setVec3f("Translation", _apartmentsPos[i]);
-        _common.infrastructShader.setFloat("StructureHeight", _apartmentTexScaleCoeff[i]);
+        _shader.setVec3f("Translation", _apartmentsPos[i]);
+        _shader.setFloat("StructureHeight", _apartmentTexScaleCoeff[i]);
         glDrawArrays(GL_QUADS, 0, _buildingNbElems);
     }
 
@@ -323,10 +322,10 @@ void BuildingsComponent::draw()
     glBindVertexArray(_buildingWallsVao);
     for(size_t i=0; i<_commercePos.size(); ++i)
     {
-        _common.infrastructShader.setVec3f("Translation", _commercePos[i]);
-        _common.infrastructShader.setFloat("StructureHeight", _commerceTexScaleCoeff[i]);
+        _shader.setVec3f("Translation", _commercePos[i]);
+        _shader.setFloat("StructureHeight", _commerceTexScaleCoeff[i]);
         glDrawArrays(GL_QUADS, 0, _buildingNbElems);
     }
 
-    _common.infrastructShader.popProgram();
+    _shader.popProgram();
 }

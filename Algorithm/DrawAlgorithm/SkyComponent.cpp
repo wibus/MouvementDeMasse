@@ -1,5 +1,4 @@
 #include "SkyComponent.h"
-#include "DrawCityModule.h"
 
 #include <vector>
 using namespace std;
@@ -10,18 +9,18 @@ using namespace std;
 using namespace cellar;
 
 
-SkyComponent::SkyComponent(DrawCityCommonData &common) :
-    AbstractComponent(common),
+SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
+    AbstractComponent(city, shader),
     _skyVao(0),
     _cloudsTex(0),
     _daySkyTex(0),
     _nightSkyTex(0),
-    _skyNbStacks(20),
-    _skyNbSlices(20)
+    _skyNbStacks(2),
+    _skyNbSlices(3)
 {
     glGenVertexArrays(1, &_skyVao);
 
-    _cloudsTex = GLToolkit::genTextureId(_common.city.sky().cloudsImage());
+    _cloudsTex = GLToolkit::genTextureId(_city.sky().cloudsImage());
 }
 
 SkyComponent::~SkyComponent()
@@ -40,7 +39,6 @@ void SkyComponent::setup()
 void SkyComponent::setupSky()
 {
     vector<Vec3f> positions;
-    vector<Vec2f> texCoords;
 
     for(int j=0; j<(_skyNbStacks+1)/2+1; ++j)
     {
@@ -57,7 +55,6 @@ void SkyComponent::setupSky()
             float sint = sin(t);
 
             positions.push_back(Vec3f(cost * sinp, sint * sinp, cosp));
-            texCoords.push_back(Vec2f(cost , sint) * 0.2f * tan(jadv*2.8f));
         }
     }
 
@@ -65,21 +62,15 @@ void SkyComponent::setupSky()
     //VAO setup
     glBindVertexArray(_skyVao);
 
-    unsigned int buffers[2];
-    glGenBuffers(2, buffers);
+    unsigned int buffers[1];
+    glGenBuffers(1, buffers);
 
-    int position_loc = _common.skyShader.getAttributeLocation("position_att");
-    int texCoord_loc = _common.skyShader.getAttributeLocation("texCoord_att");
+    int position_loc = _shader.getAttributeLocation("position_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), positions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords[0]) * texCoords.size(), texCoords.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(texCoord_loc);
-    glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
 
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -101,12 +92,12 @@ void SkyComponent::draw()
     glDisable(GL_DEPTH_TEST);
     glDepthMask(false);
 
-    _common.skyShader.pushThisProgram();
+    _shader.pushThisProgram();
     glBindVertexArray(_skyVao);
     glBindTexture(GL_TEXTURE_2D, _cloudsTex);
     glDrawElements(GL_TRIANGLE_STRIP, _skyIndices.size(),
                    GL_UNSIGNED_INT,   _skyIndices.data());
-    _common.skyShader.popProgram();
+    _shader.popProgram();
 
     glDepthMask(true);
     glEnable(GL_DEPTH_TEST);

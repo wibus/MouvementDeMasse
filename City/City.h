@@ -7,9 +7,10 @@
 #include <DataStructures/PGrid.h>
 #include <MathsAndPhysics/Vector.h>
 
-#include "Weather/Sun.h"
-#include "Weather/Sky.h"
 #include "Ground.h"
+#include "Visual.h"
+#include "Sky.h"
+#include "Sun.h"
 #include "Land/Land.h"
 #include "Road/Junction.h"
 #include "Road/Street.h"
@@ -25,9 +26,10 @@ public:
     City(int width, int height);
 
     cellar::Vec2i  size() const;
-    Sun& sun();
-    Sky& sky();
     Ground& ground();
+    Visual& visual();
+    Sky& sky();
+    Sun& sun();        
     cellar::PGrid<Land> &lands();
     cellar::PGrid<Junction>& junctions();
     cellar::Calendar& calendar();
@@ -44,9 +46,10 @@ protected:
 
 private:
     cellar::Vec2i _size;
-    Sun _sun;
-    Sky _sky;
     Ground _ground;
+    Visual _visual;
+    Sky _sky;
+    Sun _sun;        
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;
     cellar::Calendar _calendar;
@@ -60,9 +63,14 @@ inline cellar::Vec2i City::size() const
     return _size;
 }
 
-inline Sun& City::sun()
+inline Ground& City::ground()
 {
-    return _sun;
+    return _ground;
+}
+
+inline Visual& City::visual()
+{
+    return _visual;
 }
 
 inline Sky& City::sky()
@@ -70,9 +78,9 @@ inline Sky& City::sky()
     return _sky;
 }
 
-inline Ground& City::ground()
+inline Sun& City::sun()
 {
-    return _ground;
+    return _sun;
 }
 
 inline cellar::PGrid<Land>& City::lands()

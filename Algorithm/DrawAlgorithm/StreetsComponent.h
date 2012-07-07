@@ -7,7 +7,7 @@
 class StreetsComponent : public AbstractComponent
 {
 public:
-    StreetsComponent(DrawCityCommonData& common);
+    StreetsComponent(City& city, cellar::GLShaderProgram& shader);
     ~StreetsComponent();
 
     void setup();

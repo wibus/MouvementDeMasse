@@ -1,5 +1,4 @@
 #include "StreetsComponent.h"
-#include "DrawCityModule.h"
 
 #include <GL/glew.h>
 using namespace std;
@@ -9,8 +8,8 @@ using namespace std;
 using namespace cellar;
 
 
-StreetsComponent::StreetsComponent(DrawCityCommonData& common) :
-    AbstractComponent(common),
+StreetsComponent::StreetsComponent(City &city, GLShaderProgram &shader) :
+    AbstractComponent(city, shader),
     _streetsVao(0),
     _streetsTex(0),
     _streetsNbElems(0)
@@ -33,13 +32,13 @@ void StreetsComponent::setup()
     // Compute number of street vertices
     _streetsNbElems = 0;
 
-    for(int j=0; j<_common.city.size().y()+1; ++j)
+    for(int j=0; j<_city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.city.size().x()+1; ++i)
+        for(int i=0; i<_city.size().x()+1; ++i)
         {
-            if(_common.city.junctions().get(i , j)->getStreet(EAST)!= 0x0)
+            if(_city.junctions().get(i , j)->getStreet(EAST)!= 0x0)
                 _streetsNbElems += 4;
-            if(_common.city.junctions().get(i , j)->getStreet(NORTH)!= 0x0)
+            if(_city.junctions().get(i , j)->getStreet(NORTH)!= 0x0)
                 _streetsNbElems += 4;
         }
     }
@@ -50,53 +49,53 @@ void StreetsComponent::setup()
     Vec2f* streetsTex = new Vec2f[_streetsNbElems];
     int idx = -1;
 
-    float lengthRatio = (1-2*_common.roadWidth) / _common.roadWidth;
+    float lengthRatio = (1-2*_visual.roadWidth) / _visual.roadWidth;
 
-    for(int j=0; j<_common.city.size().y()+1; ++j)
+    for(int j=0; j<_city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.city.size().x()+1; ++i)
+        for(int i=0; i<_city.size().x()+1; ++i)
         {
-            if(_common.city.junctions().get(i , j)->getStreet(EAST) != 0x0)
+            if(_city.junctions().get(i , j)->getStreet(EAST) != 0x0)
             {
-                float startHeight = _common.ground.heightAt(i, j);
-                float endHeight   = _common.ground.heightAt(i+1, j);
-                Vec3f dzdx = Vec3f(_common.ground.dzdx(i+0.5, j), 0, 1).normalize();
+                float startHeight = _ground.heightAt(i, j);
+                float endHeight   = _ground.heightAt(i+1, j);
+                Vec3f dzdx = Vec3f(_ground.dzdx(i+0.5, j), 0, 1).normalize();
 
-                streetsPos[++idx] = Vec3f(i + _common.roadWidth, j-_common.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i + _visual.roadWidth, j-_visual.roadWidth, startHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(0, 0);
 
-                streetsPos[++idx] = Vec3f(i+1-_common.roadWidth, j-_common.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i+1-_visual.roadWidth, j-_visual.roadWidth, endHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(lengthRatio, 0);
 
-                streetsPos[++idx] = Vec3f(i+1-_common.roadWidth, j+_common.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i+1-_visual.roadWidth, j+_visual.roadWidth, endHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(lengthRatio, 1);
 
-                streetsPos[++idx] = Vec3f(i + _common.roadWidth, j+_common.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i + _visual.roadWidth, j+_visual.roadWidth, startHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(0, 1);
             }
-            if(_common.city.junctions().get(i , j)->getStreet(NORTH) != 0x0)
+            if(_city.junctions().get(i , j)->getStreet(NORTH) != 0x0)
             {
-                float startHeight = _common.ground.heightAt(i, j);
-                float endHeight = _common.ground.heightAt(i, j+1);
-                Vec3f dzdy = Vec3f(_common.ground.dzdy(i, j+0.5), 0, 1).normalize();
+                float startHeight = _ground.heightAt(i, j);
+                float endHeight = _ground.heightAt(i, j+1);
+                Vec3f dzdy = Vec3f(_ground.dzdy(i, j+0.5), 0, 1).normalize();
 
-                streetsPos[++idx] = Vec3f(i-_common.roadWidth, j + _common.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i-_visual.roadWidth, j + _visual.roadWidth, startHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(0, 1);
 
-                streetsPos[++idx] = Vec3f(i+_common.roadWidth, j + _common.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i+_visual.roadWidth, j + _visual.roadWidth, startHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(0, 0);
 
-                streetsPos[++idx] = Vec3f(i+_common.roadWidth, j+1-_common.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i+_visual.roadWidth, j+1-_visual.roadWidth, endHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(lengthRatio, 0);
 
-                streetsPos[++idx] = Vec3f(i-_common.roadWidth, j+1-_common.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i-_visual.roadWidth, j+1-_visual.roadWidth, endHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(lengthRatio, 1);
             }
@@ -110,9 +109,9 @@ void StreetsComponent::setup()
     GLuint buffers[NB_BUFFS];
     glGenBuffers(NB_BUFFS, buffers);
 
-    int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
-    int normal_loc   = _common.infrastructShader.getAttributeLocation("normal_att");
-    int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
+    int position_loc = _shader.getAttributeLocation("position_att");
+    int normal_loc   = _shader.getAttributeLocation("normal_att");
+    int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*streetsPos) * _streetsNbElems, streetsPos, GL_STATIC_DRAW);
@@ -141,9 +140,9 @@ void StreetsComponent::setup()
 
 void StreetsComponent::draw()
 {
-    _common.infrastructShader.pushThisProgram();
-    _common.infrastructShader.setVec3f("Translation", Vec3f());
-    _common.infrastructShader.setFloat("StructureHeight", 1.0f);
+    _shader.pushThisProgram();
+    _shader.setVec3f("Translation", Vec3f());
+    _shader.setFloat("StructureHeight", 1.0f);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _streetsTex);
@@ -153,5 +152,5 @@ void StreetsComponent::draw()
     glBindVertexArray(_streetsVao);
     glDrawArrays(GL_QUADS, 0, _streetsNbElems);
 
-    _common.infrastructShader.popProgram();
+    _shader.popProgram();
 }

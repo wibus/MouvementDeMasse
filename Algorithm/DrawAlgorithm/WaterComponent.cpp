@@ -1,5 +1,4 @@
 #include "WaterComponent.h"
-#include "DrawCityModule.h"
 
 #include <GL/glew.h>
 using namespace std;
@@ -7,8 +6,8 @@ using namespace std;
 using namespace cellar;
 
 
-WaterComponent::WaterComponent(DrawCityCommonData& common) :
-    AbstractComponent(common),
+WaterComponent::WaterComponent(City &city, GLShaderProgram &shader) :
+    AbstractComponent(city, shader),
     _waterVao(0),
     _waterNbElems(4)
 {
@@ -23,12 +22,12 @@ WaterComponent::~WaterComponent()
 void WaterComponent::setup()
 {
     // Positions
-    float waterHeight = _common.ground.waterHeight();
+    float waterHeight = _ground.waterHeight();
     Vec3f* wpositions = new Vec3f[_waterNbElems];
-    wpositions[0] = Vec3f(0.0,                        0.0,                          waterHeight);
-    wpositions[1] = Vec3f(_common.city.size().x(), 0.0,                          waterHeight);
-    wpositions[2] = Vec3f(_common.city.size().x(), _common.city.size().y(),   waterHeight);
-    wpositions[3] = Vec3f(0.0,                        _common.city.size().y(),   waterHeight);
+    wpositions[0] = Vec3f(0.0,              0.0,                waterHeight);
+    wpositions[1] = Vec3f(_city.size().x(), 0.0,                waterHeight);
+    wpositions[2] = Vec3f(_city.size().x(), _city.size().y(),   waterHeight);
+    wpositions[3] = Vec3f(0.0,              _city.size().y(),   waterHeight);
 
 
     // Water VAO setup
@@ -39,7 +38,7 @@ void WaterComponent::setup()
     glBindBuffer(GL_ARRAY_BUFFER, wBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*wpositions) * _waterNbElems, wpositions, GL_STATIC_DRAW);
 
-    int position_loc = _common.waterShader.getAttributeLocation("position_att");
+    int position_loc = _shader.getAttributeLocation("position_att");
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
@@ -54,12 +53,12 @@ void WaterComponent::setup()
 
 void WaterComponent::draw()
 {
-    _common.waterShader.pushThisProgram();
+    _shader.pushThisProgram();
 
     glBindVertexArray(_waterVao);
     glEnable(GL_BLEND);
     glDrawArrays(GL_TRIANGLE_FAN, 0, _waterNbElems);
     glDisable(GL_BLEND);
 
-    _common.waterShader.popProgram();
+    _shader.popProgram();
 }

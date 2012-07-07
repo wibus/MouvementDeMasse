@@ -7,7 +7,7 @@
 class JunctionsComponent : public AbstractComponent
 {
 public:
-    JunctionsComponent(DrawCityCommonData& common);
+    JunctionsComponent(City& city, cellar::GLShaderProgram& shader);
     ~JunctionsComponent();
 
     void setup();

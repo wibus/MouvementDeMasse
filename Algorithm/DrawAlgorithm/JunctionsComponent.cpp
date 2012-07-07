@@ -1,5 +1,4 @@
 #include "JunctionsComponent.h"
-#include "DrawCityModule.h"
 
 #include <GL/glew.h>
 using namespace std;
@@ -9,8 +8,8 @@ using namespace std;
 using namespace cellar;
 
 
-JunctionsComponent::JunctionsComponent(DrawCityCommonData& common) :
-    AbstractComponent(common),
+JunctionsComponent::JunctionsComponent(City &city, GLShaderProgram &shader) :
+    AbstractComponent(city, shader),
     _junctionsVao(0),
     _junctionsTex(0),
     _junctionsNbElems(0)
@@ -32,9 +31,9 @@ void JunctionsComponent::setup()
 {
     // Compute number of junction vertices
     _junctionsNbElems = 0;
-    for(int j=0; j<_common.city.size().y()+1; ++j)
-        for(int i=0; i<_common.city.size().x()+1; ++i)
-            if(_common.city.junctions().get(i , j)->type() != Junction::GRASS)
+    for(int j=0; j<_city.size().y()+1; ++j)
+        for(int i=0; i<_city.size().x()+1; ++i)
+            if(_city.junctions().get(i , j)->type() != Junction::GRASS)
                 _junctionsNbElems += 4;
 
     // Collect junctions to draw
@@ -42,20 +41,20 @@ void JunctionsComponent::setup()
     Vec2f* junctionsTex = new Vec2f[_junctionsNbElems];
     int idx = -1;
 
-    for(int j=0; j<_common.city.size().y()+1; ++j)
+    for(int j=0; j<_city.size().y()+1; ++j)
     {
-        for(int i=0; i<_common.city.size().x()+1; ++i)
+        for(int i=0; i<_city.size().x()+1; ++i)
         {
-            if(_common.city.junctions().get(i , j)->type() != Junction::GRASS)
+            if(_city.junctions().get(i , j)->type() != Junction::GRASS)
             {
-                float height = _common.ground.heightAt(i, j);
-                junctionsPos[++idx] = Vec3f(i-_common.roadWidth, j-_common.roadWidth, height);
+                float height = _ground.heightAt(i, j);
+                junctionsPos[++idx] = Vec3f(i-_visual.roadWidth, j-_visual.roadWidth, height);
                 junctionsTex[idx] = Vec2f(0, 0);
-                junctionsPos[++idx] = Vec3f(i+_common.roadWidth, j-_common.roadWidth, height);
+                junctionsPos[++idx] = Vec3f(i+_visual.roadWidth, j-_visual.roadWidth, height);
                 junctionsTex[idx] = Vec2f(1, 0);
-                junctionsPos[++idx] = Vec3f(i+_common.roadWidth, j+_common.roadWidth, height);
+                junctionsPos[++idx] = Vec3f(i+_visual.roadWidth, j+_visual.roadWidth, height);
                 junctionsTex[idx] = Vec2f(1, 1);
-                junctionsPos[++idx] = Vec3f(i-_common.roadWidth, j+_common.roadWidth, height);
+                junctionsPos[++idx] = Vec3f(i-_visual.roadWidth, j+_visual.roadWidth, height);
                 junctionsTex[idx] = Vec2f(0, 1);
             }
         }
@@ -63,8 +62,8 @@ void JunctionsComponent::setup()
 
 
     // Setup Vao
-    int position_loc = _common.infrastructShader.getAttributeLocation("position_att");
-    int texCoord_loc = _common.infrastructShader.getAttributeLocation("texCoord_att");
+    int position_loc = _shader.getAttributeLocation("position_att");
+    int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
     glBindVertexArray( _junctionsVao );
 
@@ -93,10 +92,10 @@ void JunctionsComponent::setup()
 
 void JunctionsComponent::draw()
 {
-    _common.infrastructShader.pushThisProgram();
-    _common.infrastructShader.setVec3f("Translation", Vec3f());
-    _common.infrastructShader.setFloat("StructureHeight", 1.0f);
-    glVertexAttrib3f(_common.infrastructShader.getAttributeLocation("normal_att"), 0,0,1);
+    _shader.pushThisProgram();
+    _shader.setVec3f("Translation", Vec3f());
+    _shader.setFloat("StructureHeight", 1.0f);
+    glVertexAttrib3f(_shader.getAttributeLocation("normal_att"), 0,0,1);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _junctionsTex);
@@ -106,5 +105,5 @@ void JunctionsComponent::draw()
     glBindVertexArray(_junctionsVao);    
     glDrawArrays(GL_QUADS, 0, _junctionsNbElems);
 
-    _common.infrastructShader.popProgram();
+    _shader.popProgram();
 }

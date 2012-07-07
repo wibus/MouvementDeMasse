@@ -10,10 +10,11 @@ using namespace cellar;
 
 
 City::City(int width, int height):
-    _size(width, height),
-    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
-    _sky(      256,     256),
-    _ground(   width+1, height+1),
+    _size(  width, height),
+    _ground(width+1, height+1),
+    _visual(),
+    _sky(256, 256),
+    _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),        
     _lands(    width,   height),
     _junctions(width+1, height+1)
 {
