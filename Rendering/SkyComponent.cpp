@@ -21,6 +21,15 @@ SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
     glGenVertexArrays(1, &_skyVao);
 
     _cloudsTex = GLToolkit::genTextureId(_city.sky().cloudsImage());
+
+    // Sphere Threading
+    int pointsByCircle = _skyNbSlices + 1;
+
+    for(int i=0; i<pointsByCircle * _skyNbStacks/2; ++i)
+    {
+        _skyIndices.push_back(i + pointsByCircle);
+        _skyIndices.push_back(i);
+    }
 }
 
 SkyComponent::~SkyComponent()
@@ -75,16 +84,6 @@ void SkyComponent::setupSky()
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
-
-
-    // Sphere Threading
-    int pointsByCircle = _skyNbSlices + 1;
-
-    for(int i=0; i<pointsByCircle * _skyNbStacks/2; ++i)
-    {
-        _skyIndices.push_back(i + pointsByCircle);
-        _skyIndices.push_back(i);
-    }
 }
 
 void SkyComponent::draw()

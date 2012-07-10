@@ -4,7 +4,7 @@
 using namespace std;
 
 #include <Misc/CellarUtils.h>
-#include <MathsAndPhysics/Algorithms.h>
+#include <MathsAndPhysics/Noise.h>
 using namespace cellar;
 
 HeightByNoiseAlgo::HeightByNoiseAlgo()
@@ -17,14 +17,18 @@ void HeightByNoiseAlgo::setup(City &city)
 
     float middleHeight = (_ground->maxHeight() + _ground->minHeight()) / 2.0f;
     float amplitude    = (_ground->maxHeight() - _ground->minHeight()) / 2.0f;
-    int maxFreq = minVal(_mapSize.x(), _mapSize.y()) / 4;
-
-    Grid<float> perlin(_mapSize.x(), _mapSize.y());
-    perlinNoise(EqualWeighter(1, maxFreq), perlin);
+    SimplexNoise noisegen;
+    float nsx = randomRange(-10.0f, 10.0f);
+    float nsy = randomRange(-10.0f, 10.0f);
 
     for(int j=0; j< _mapSize.y(); ++j)
         for(int i=0; i< _mapSize.x(); ++i)
+        {
+            float xc = i/(float)_mapSize.x();
+            float yc = j/(float)_mapSize.y();
+
             _ground->setHeightAt(i, j,
-                perlin.get(i, j) * amplitude + middleHeight
+                noisegen.noiseTile2d(xc + nsx, yc + nsy, 0.5f) * amplitude + middleHeight
             );
+        }
 }
