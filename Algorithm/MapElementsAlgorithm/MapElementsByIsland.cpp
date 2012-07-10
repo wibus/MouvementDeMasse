@@ -254,7 +254,7 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
     int size = _islandEdges[firstIsland].size();
     bestJuncFirst = randomRange(0, size - 1);
 
-    for (int currPos = 0; currPos < _islandEdges[secondIsland].size(); ++currPos)
+    for (uint currPos = 0; currPos < _islandEdges[secondIsland].size(); ++currPos)
     {
         currDistance = absolute(_islandEdges[firstIsland][bestJuncFirst].x() -
                                 _islandEdges[secondIsland][currPos].x())
@@ -265,7 +265,7 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
             bestJuncSecond = currPos;
     }
 
-    for (int currPos = 0; currPos < _islandEdges[firstIsland].size(); ++currPos)
+    for (uint currPos = 0; currPos < _islandEdges[firstIsland].size(); ++currPos)
     {
         currDistance = absolute(_islandEdges[firstIsland][currPos].x() -
                                 _islandEdges[secondIsland][bestJuncSecond].x())
@@ -275,6 +275,10 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
         if (currDistance < bestDistance)
             bestJuncFirst = currPos;
     }
+
+    Vec2i endA(_islandEdges[firstIsland][bestJuncFirst]);
+    Vec2i endB(_islandEdges[secondIsland][bestJuncSecond]);
+    _city->bridges().push_back(new Bridge(endA, endB));
 }
 
 void MapElementsByIsland::landIslands()

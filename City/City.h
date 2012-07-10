@@ -12,6 +12,7 @@
 #include "Sky.h"
 #include "Sun.h"
 #include "Ground.h"
+#include "Bridge.h"
 #include "Land.h"
 #include "Junction.h"
 #include "Street.h"
@@ -27,7 +28,8 @@ public:
     std::vector<Citizen*>& citizens();
     Sky& sky();
     Sun& sun();
-    Ground& ground();               
+    Ground& ground();
+    std::vector<Bridge*>& bridges();
     cellar::PGrid<Land>& lands();
     cellar::PGrid<Junction>& junctions();    
     cellar::Calendar& calendar();
@@ -50,6 +52,7 @@ private:
     Sky _sky;
     Sun _sun;
     Ground _ground;
+    std::vector<Bridge*> _bridges;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;    
     cellar::Calendar _calendar;
@@ -82,6 +85,11 @@ inline Sun& City::sun()
 inline Ground& City::ground()
 {
     return _ground;
+}
+
+inline std::vector<Bridge*>& City::bridges()
+{
+    return _bridges;
 }
 
 inline cellar::PGrid<Land>& City::lands()

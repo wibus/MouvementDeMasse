@@ -72,7 +72,8 @@ SOURCES += \
     City/Citizen.cpp \
     Algorithm/CitizensAlgorithm/CitizensAlgorithm.cpp \
     Algorithm/CitizensAlgorithm/CitizensEqualAlgo.cpp \
-    Rendering/BridgesComponent.cpp
+    Rendering/BridgesComponent.cpp \
+    City/Bridge.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -104,7 +105,8 @@ HEADERS += \
     City/Citizen.h \
     Algorithm/CitizensAlgorithm/CitizensAlgorithm.h \
     Algorithm/CitizensAlgorithm/CitizensEqualAlgo.h \
-    Rendering/BridgesComponent.h
+    Rendering/BridgesComponent.h \
+    City/Bridge.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \
@@ -129,3 +131,5 @@ OTHER_FILES += \
     resources/textures/apart.xcf \
     resources/fonts/Arial.flw \
     resources/fonts/Arial.bmp
+
+
