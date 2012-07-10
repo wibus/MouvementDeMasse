@@ -29,7 +29,7 @@ public:
     Sky& sky();
     Sun& sun();
     Ground& ground();
-    std::vector<Bridge*>& bridges();
+    std::vector<Bridge>& bridges();
     cellar::PGrid<Land>& lands();
     cellar::PGrid<Junction>& junctions();    
     cellar::Calendar& calendar();
@@ -52,7 +52,7 @@ private:
     Sky _sky;
     Sun _sun;
     Ground _ground;
-    std::vector<Bridge*> _bridges;
+    std::vector<Bridge> _bridges;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;    
     cellar::Calendar _calendar;
@@ -87,7 +87,7 @@ inline Ground& City::ground()
     return _ground;
 }
 
-inline std::vector<Bridge*>& City::bridges()
+inline std::vector<Bridge>& City::bridges()
 {
     return _bridges;
 }

@@ -191,12 +191,21 @@ void MapElementsByIsland::roadOneIsland(int index)
 
 void MapElementsByIsland::bridgeIslands()
 {
+    // The general idea here is to take an unlinked island
+    // and link it with an island that is already linked
+    // thus making an island mob
+    // When all the islands are linked to the mob,
+    // the "graph" connectivity is true
+
+    // All islands start unbridged
     std::set<int> toBridgeIslands;
     for (int i = 0; i < _nbIslands; i++)
     {
         toBridgeIslands.insert(i);
     }
 
+    // We will randomly pick an island.
+    // That island will be the first one of the mob
     std::set<int> bridgedIslands;
     int nbOfBridgedIslands = 1;
 
@@ -215,8 +224,10 @@ void MapElementsByIsland::bridgeIslands()
     bridgedIslands.insert(*toBridgeIter);
     toBridgeIslands.erase(*toBridgeIter);
 
+    // We bridge other islands
     while (nbOfBridgedIslands != _nbIslands)
     {
+        // We randomly choose what islands will be bridges
         size = toBridgeIslands.size();
         nextIsland = randomRange(0, (size - 1));
         size = bridgedIslands.size();
@@ -237,6 +248,8 @@ void MapElementsByIsland::bridgeIslands()
 
         bridgeTwoIslands(*toBridgeIter, *bridgedIter);
 
+        // There is one less island to bridge.
+        // and one more bridged
         bridgedIslands.insert(*toBridgeIter);
         toBridgeIslands.erase(*toBridgeIter);
 
@@ -253,6 +266,7 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
 
     int size = _islandEdges[firstIsland].size();
     bestJuncFirst = randomRange(0, size - 1);
+    bestJuncSecond = 0;
 
     for (uint currPos = 0; currPos < _islandEdges[secondIsland].size(); ++currPos)
     {
@@ -278,7 +292,7 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
 
     Vec2i endA(_islandEdges[firstIsland][bestJuncFirst]);
     Vec2i endB(_islandEdges[secondIsland][bestJuncSecond]);
-    _city->bridges().push_back(new Bridge(endA, endB));
+    _city->bridges().push_back(Bridge(endA, endB));
 }
 
 void MapElementsByIsland::landIslands()
