@@ -11,6 +11,7 @@ City::City(int width, int height):
     _sky(128, 128),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
     _ground(   width+1, height+1),
+    _bridges(),
     _lands(    width,   height),
     _junctions(width+1, height+1),
     _calendar(),
