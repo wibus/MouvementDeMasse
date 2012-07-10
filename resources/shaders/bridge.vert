@@ -7,5 +7,5 @@ attribute vec3 position_att;
 
 void main(void)
 {
-    gl_Position = ProjectionMatrix * ModelViewMatrix * position_att;
+    gl_Position = ProjectionMatrix * ModelViewMatrix * vec4(position_att, 1);
 }

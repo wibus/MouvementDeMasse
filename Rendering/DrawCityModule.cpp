@@ -38,6 +38,7 @@ DrawCityModule::DrawCityModule(City &city) :
     _components.push_back(_junctionsComponent);
     _components.push_back(_streetsComponent);
     _components.push_back(_buildingsComponent);
+    _components.push_back(_bridgesComponent);
     _components.push_back(_waterComponent);
 
 
