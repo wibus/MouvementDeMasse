@@ -12,8 +12,7 @@ Visual::Visual() :
     mudColor(     0.20, 0.14, 0.01, 1.00),
     waterColor(   0.03, 0.03, 0.30, 0.42),
     waterShininess( 200.0f),
-    roadWidth(0.125f),
-    roadHalfWidth(roadWidth/2.0f)
+    roadWidth(0.200f)
 {
     sunLight.direction(1.0f, 1.0f, 0.0f, 0.0f).normalize();
     sunLight.ambient = curSkyColor;

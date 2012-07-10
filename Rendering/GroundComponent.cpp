@@ -50,6 +50,8 @@ void GroundComponent::setupLands()
     vector<Vec3f> lnormals;
     vector<Vec2f> ltexCoords;
 
+    float roadHalfWidth = _visual.roadWidth * 0.5f;
+
     for(int j=0; j<_city.size().y(); ++j)
     {
         for(int i=0; i<_city.size().x(); ++i)
@@ -58,22 +60,22 @@ void GroundComponent::setupLands()
                 continue;
 
             if(_city.junctions().get(i, j)->type() != Junction::GRASS)
-                lpositions.push_back(Vec3f(i+_visual.roadWidth, j+_visual.roadWidth, _ground.heightAt(i, j)));
+                lpositions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i, j)));
             else
                 lpositions.push_back(Vec3f(i, j, _ground.heightAt(i, j)));
 
             if(_city.junctions().get(i+1, j)->type() != Junction::GRASS)
-                lpositions.push_back(Vec3f(i+1-_visual.roadWidth, j+_visual.roadWidth, _ground.heightAt(i+1, j)));
+                lpositions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
             else
                 lpositions.push_back(Vec3f(i+1, j, _ground.heightAt(i+1, j)));
 
             if(_city.junctions().get(i+1, j+1)->type() != Junction::GRASS)
-                lpositions.push_back(Vec3f(i+1-_visual.roadWidth, j+1-_visual.roadWidth, _ground.heightAt(i+1, j+1)));
+                lpositions.push_back(Vec3f(i+1-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i+1, j+1)));
             else
                 lpositions.push_back(Vec3f(i+1, j+1, _ground.heightAt(i+1, j+1)));
 
             if(_city.junctions().get(i, j+1)->type() != Junction::GRASS)
-                lpositions.push_back(Vec3f(i+_visual.roadWidth, j+1-_visual.roadWidth, _ground.heightAt(i, j+1)));
+                lpositions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
             else
                 lpositions.push_back(Vec3f(i, j+1, _ground.heightAt(i, j+1)));
 
@@ -130,21 +132,23 @@ void GroundComponent::setupRoads()
     vector<Vec2f> rtexCoords;
     int idx = 0;
 
+    float roadHalfWidth = _visual.roadWidth * 0.5f;
+
     for(int j=0; j<_city.size().y(); ++j)
     {
         for(int i=0; i<_city.size().x(); ++i)
         {
             if( isGrassRoad(i, j, EAST) )
             {
-                rpositions.push_back(Vec3f(i+_visual.roadWidth,   j-_visual.roadWidth, _ground.heightAt(i,   j)));
-                rpositions.push_back(Vec3f(i+1-_visual.roadWidth, j-_visual.roadWidth, _ground.heightAt(i+1, j)));
-                rpositions.push_back(Vec3f(i+1-_visual.roadWidth, j+_visual.roadWidth, _ground.heightAt(i+1, j)));
-                rpositions.push_back(Vec3f(i+_visual.roadWidth,   j+_visual.roadWidth, _ground.heightAt(i,   j)));
+                rpositions.push_back(Vec3f(i+roadHalfWidth,   j-roadHalfWidth, _ground.heightAt(i,   j)));
+                rpositions.push_back(Vec3f(i+1-roadHalfWidth, j-roadHalfWidth, _ground.heightAt(i+1, j)));
+                rpositions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
+                rpositions.push_back(Vec3f(i+roadHalfWidth,   j+roadHalfWidth, _ground.heightAt(i,   j)));
 
-                rtexCoords.push_back(Vec2f(0, -_visual.roadWidth));
-                rtexCoords.push_back(Vec2f(1, -_visual.roadWidth));
-                rtexCoords.push_back(Vec2f(1, _visual.roadWidth));
-                rtexCoords.push_back(Vec2f(0, _visual.roadWidth));
+                rtexCoords.push_back(Vec2f(0, -roadHalfWidth));
+                rtexCoords.push_back(Vec2f(1, -roadHalfWidth));
+                rtexCoords.push_back(Vec2f(1, roadHalfWidth));
+                rtexCoords.push_back(Vec2f(0, roadHalfWidth));
 
                 rnormals.push_back(_ground.normalAt(i,   j));
                 rnormals.push_back(_ground.normalAt(i+1, j));
@@ -156,15 +160,15 @@ void GroundComponent::setupRoads()
 
             if( isGrassRoad(i, j, NORTH) )
             {
-                rpositions.push_back(Vec3f(i-_visual.roadWidth, j+_visual.roadWidth,   _ground.heightAt(i, j)));
-                rpositions.push_back(Vec3f(i+_visual.roadWidth, j+_visual.roadWidth,   _ground.heightAt(i, j)));
-                rpositions.push_back(Vec3f(i+_visual.roadWidth, j+1-_visual.roadWidth, _ground.heightAt(i, j+1)));
-                rpositions.push_back(Vec3f(i-_visual.roadWidth, j+1-_visual.roadWidth, _ground.heightAt(i, j+1)));
+                rpositions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
+                rpositions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
+                rpositions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
+                rpositions.push_back(Vec3f(i-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
 
-                rtexCoords.push_back(Vec2f(-_visual.roadWidth, 0));
-                rtexCoords.push_back(Vec2f(_visual.roadWidth,  0));
-                rtexCoords.push_back(Vec2f(_visual.roadWidth,  1));
-                rtexCoords.push_back(Vec2f(-_visual.roadWidth, 1));
+                rtexCoords.push_back(Vec2f(-roadHalfWidth, 0));
+                rtexCoords.push_back(Vec2f(roadHalfWidth,  0));
+                rtexCoords.push_back(Vec2f(roadHalfWidth,  1));
+                rtexCoords.push_back(Vec2f(-roadHalfWidth, 1));
 
                 rnormals.push_back(_ground.normalAt(i, j));
                 rnormals.push_back(_ground.normalAt(i, j));
@@ -228,6 +232,8 @@ void GroundComponent::setupTriangles()
     vector<Vec3f> tnormals;
     vector<Vec2f> ttexCoords;
 
+    float roadHalfWidth = _visual.roadWidth * 0.5f;
+
     // East
     for(int j=0; j<_city.size().y()+1; ++j)
     {
@@ -238,13 +244,13 @@ void GroundComponent::setupTriangles()
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                tpositions.push_back(Vec3f(i+_visual.roadWidth, j+_visual.roadWidth, curJuncHeight));
-                tpositions.push_back(Vec3f(i+_visual.roadWidth, j-_visual.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i+roadHalfWidth, j-roadHalfWidth, curJuncHeight));
                 tpositions.push_back(Vec3f(i+1, j, _ground.heightAt(i+1, j)));
 
-                ttexCoords.push_back(Vec2f(0, -_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(0, +_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(1 - _visual.roadWidth, 0));
+                ttexCoords.push_back(Vec2f(0, -roadHalfWidth));
+                ttexCoords.push_back(Vec2f(0, +roadHalfWidth));
+                ttexCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
 
                 tnormals.push_back(_ground.normalAt(i,   j));
                 tnormals.push_back(_ground.normalAt(i,   j));
@@ -263,13 +269,13 @@ void GroundComponent::setupTriangles()
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                tpositions.push_back(Vec3f(i-_visual.roadWidth, j+_visual.roadWidth, curJuncHeight));
-                tpositions.push_back(Vec3f(i+_visual.roadWidth, j+_visual.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, curJuncHeight));
                 tpositions.push_back(Vec3f(i, j+1, _ground.heightAt(i, j+1)));
 
-                ttexCoords.push_back(Vec2f(0, -_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(0, +_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(1 - _visual.roadWidth, 0));
+                ttexCoords.push_back(Vec2f(0, -roadHalfWidth));
+                ttexCoords.push_back(Vec2f(0, +roadHalfWidth));
+                ttexCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
 
                 tnormals.push_back(_ground.normalAt(i, j));
                 tnormals.push_back(_ground.normalAt(i, j));
@@ -288,13 +294,13 @@ void GroundComponent::setupTriangles()
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                tpositions.push_back(Vec3f(i-_visual.roadWidth, j-_visual.roadWidth, curJuncHeight));
-                tpositions.push_back(Vec3f(i-_visual.roadWidth, j+_visual.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i-roadHalfWidth, j-roadHalfWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth, curJuncHeight));
                 tpositions.push_back(Vec3f(i-1, j, _ground.heightAt(i-1, j)));
 
-                ttexCoords.push_back(Vec2f(0, -_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(0, +_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(1 - _visual.roadWidth, 0));
+                ttexCoords.push_back(Vec2f(0, -roadHalfWidth));
+                ttexCoords.push_back(Vec2f(0, +roadHalfWidth));
+                ttexCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
 
                 tnormals.push_back(_ground.normalAt(i,   j));
                 tnormals.push_back(_ground.normalAt(i,   j));
@@ -313,13 +319,13 @@ void GroundComponent::setupTriangles()
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                tpositions.push_back(Vec3f(i+_visual.roadWidth, j-_visual.roadWidth, curJuncHeight));
-                tpositions.push_back(Vec3f(i-_visual.roadWidth, j-_visual.roadWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i+roadHalfWidth, j-roadHalfWidth, curJuncHeight));
+                tpositions.push_back(Vec3f(i-roadHalfWidth, j-roadHalfWidth, curJuncHeight));
                 tpositions.push_back(Vec3f(i, j-1, _ground.heightAt(i, j-1)));
 
-                ttexCoords.push_back(Vec2f(0, -_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(0, +_visual.roadWidth));
-                ttexCoords.push_back(Vec2f(1 - _visual.roadWidth, 0));
+                ttexCoords.push_back(Vec2f(0, -roadHalfWidth));
+                ttexCoords.push_back(Vec2f(0, +roadHalfWidth));
+                ttexCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
 
                 tnormals.push_back(_ground.normalAt(i, j));
                 tnormals.push_back(_ground.normalAt(i, j));

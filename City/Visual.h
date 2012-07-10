@@ -35,7 +35,6 @@ public:
 
     // Roads
     float roadWidth;
-    float roadHalfWidth;
 };
 
 #endif // VISUAL_H

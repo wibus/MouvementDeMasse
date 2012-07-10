@@ -112,7 +112,7 @@ void BuildingsComponent::setupPositions()
 void BuildingsComponent::setupBuidlindSides()
 {
     _buildingNbElems = 16;
-    float halfWidth = 0.5f-_visual.roadWidth;
+    float halfWidth = 0.5f-_visual.roadWidth*0.5f;
 
     Vec3f positions[16];
     Vec3f normals[16];
@@ -226,12 +226,14 @@ void BuildingsComponent::setupRoofTop()
 {
     _roofNbElems = 4;
 
+    float roadHalfWidth = _visual.roadWidth * 0.5f;
+
     Vec3f positions[4] =
     {
-        Vec3f(_visual.roadWidth,   _visual.roadWidth,   0),
-        Vec3f(1-_visual.roadWidth, _visual.roadWidth,   0),
-        Vec3f(1-_visual.roadWidth, 1-_visual.roadWidth, 0),
-        Vec3f(_visual.roadWidth,   1-_visual.roadWidth, 0)
+        Vec3f(roadHalfWidth,   roadHalfWidth,   0),
+        Vec3f(1-roadHalfWidth, roadHalfWidth,   0),
+        Vec3f(1-roadHalfWidth, 1-roadHalfWidth, 0),
+        Vec3f(roadHalfWidth,   1-roadHalfWidth, 0)
     };
 
     Vec2f texCoords[4] =

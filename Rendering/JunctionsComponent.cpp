@@ -41,6 +41,8 @@ void JunctionsComponent::setup()
     Vec2f* junctionsTex = new Vec2f[_junctionsNbElems];
     int idx = -1;
 
+    float roadHalfWidth = _visual.roadWidth * 0.5f;
+
     for(int j=0; j<_city.size().y()+1; ++j)
     {
         for(int i=0; i<_city.size().x()+1; ++i)
@@ -48,13 +50,13 @@ void JunctionsComponent::setup()
             if(_city.junctions().get(i , j)->type() != Junction::GRASS)
             {
                 float height = _ground.heightAt(i, j);
-                junctionsPos[++idx] = Vec3f(i-_visual.roadWidth, j-_visual.roadWidth, height);
+                junctionsPos[++idx] = Vec3f(i-roadHalfWidth, j-roadHalfWidth, height);
                 junctionsTex[idx] = Vec2f(0, 0);
-                junctionsPos[++idx] = Vec3f(i+_visual.roadWidth, j-_visual.roadWidth, height);
+                junctionsPos[++idx] = Vec3f(i+roadHalfWidth, j-roadHalfWidth, height);
                 junctionsTex[idx] = Vec2f(1, 0);
-                junctionsPos[++idx] = Vec3f(i+_visual.roadWidth, j+_visual.roadWidth, height);
+                junctionsPos[++idx] = Vec3f(i+roadHalfWidth, j+roadHalfWidth, height);
                 junctionsTex[idx] = Vec2f(1, 1);
-                junctionsPos[++idx] = Vec3f(i-_visual.roadWidth, j+_visual.roadWidth, height);
+                junctionsPos[++idx] = Vec3f(i-roadHalfWidth, j+roadHalfWidth, height);
                 junctionsTex[idx] = Vec2f(0, 1);
             }
         }

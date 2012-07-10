@@ -71,7 +71,8 @@ SOURCES += \
     City/Visual.cpp \
     City/Citizen.cpp \
     Algorithm/CitizensAlgorithm/CitizensAlgorithm.cpp \
-    Algorithm/CitizensAlgorithm/CitizensEqualAlgo.cpp
+    Algorithm/CitizensAlgorithm/CitizensEqualAlgo.cpp \
+    Rendering/BridgesComponent.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -102,13 +103,12 @@ HEADERS += \
     City/Visual.h \
     City/Citizen.h \
     Algorithm/CitizensAlgorithm/CitizensAlgorithm.h \
-    Algorithm/CitizensAlgorithm/CitizensEqualAlgo.h
+    Algorithm/CitizensAlgorithm/CitizensEqualAlgo.h \
+    Rendering/BridgesComponent.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \
     resources/shaders/ground.frag \
-    resources/shaders/highPrecGround.vert \
-    resources/shaders/highPrecGround.frag \
     resources/shaders/water.vert \
     resources/shaders/water.frag \
     resources/shaders/infrastruct.frag \

@@ -49,7 +49,9 @@ void StreetsComponent::setup()
     Vec2f* streetsTex = new Vec2f[_streetsNbElems];
     int idx = -1;
 
-    float lengthRatio = (1-2*_visual.roadWidth) / _visual.roadWidth;
+    float roadHalfWidth = _visual.roadWidth * 0.5f;
+
+    float lengthRatio = (1-2*_visual.roadWidth) / roadHalfWidth;
 
     for(int j=0; j<_city.size().y()+1; ++j)
     {
@@ -61,19 +63,19 @@ void StreetsComponent::setup()
                 float endHeight   = _ground.heightAt(i+1, j);
                 Vec3f dzdx = Vec3f(_ground.dzdx(i+0.5, j), 0, 1).normalize();
 
-                streetsPos[++idx] = Vec3f(i + _visual.roadWidth, j-_visual.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i + roadHalfWidth, j-roadHalfWidth, startHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(0, 0);
 
-                streetsPos[++idx] = Vec3f(i+1-_visual.roadWidth, j-_visual.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i+1-roadHalfWidth, j-roadHalfWidth, endHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(lengthRatio, 0);
 
-                streetsPos[++idx] = Vec3f(i+1-_visual.roadWidth, j+_visual.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, endHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(lengthRatio, 1);
 
-                streetsPos[++idx] = Vec3f(i + _visual.roadWidth, j+_visual.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i + roadHalfWidth, j+roadHalfWidth, startHeight);
                 streetsNorm[idx] =  dzdx;
                 streetsTex[idx] = Vec2f(0, 1);
             }
@@ -83,19 +85,19 @@ void StreetsComponent::setup()
                 float endHeight = _ground.heightAt(i, j+1);
                 Vec3f dzdy = Vec3f(_ground.dzdy(i, j+0.5), 0, 1).normalize();
 
-                streetsPos[++idx] = Vec3f(i-_visual.roadWidth, j + _visual.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i-roadHalfWidth, j + roadHalfWidth, startHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(0, 1);
 
-                streetsPos[++idx] = Vec3f(i+_visual.roadWidth, j + _visual.roadWidth, startHeight);
+                streetsPos[++idx] = Vec3f(i+roadHalfWidth, j + roadHalfWidth, startHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(0, 0);
 
-                streetsPos[++idx] = Vec3f(i+_visual.roadWidth, j+1-_visual.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, endHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(lengthRatio, 0);
 
-                streetsPos[++idx] = Vec3f(i-_visual.roadWidth, j+1-_visual.roadWidth, endHeight);
+                streetsPos[++idx] = Vec3f(i-roadHalfWidth, j+1-roadHalfWidth, endHeight);
                 streetsNorm[idx] =  dzdy;
                 streetsTex[idx] = Vec2f(lengthRatio, 1);
             }
