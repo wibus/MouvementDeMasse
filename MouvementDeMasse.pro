@@ -130,6 +130,8 @@ OTHER_FILES += \
     resources/textures/apartSpec.bmp \
     resources/textures/apart.xcf \
     resources/fonts/Arial.flw \
-    resources/fonts/Arial.bmp
+    resources/fonts/Arial.bmp \
+    resources/shaders/bridge.vert \
+    resources/shaders/bridge.frag
 
 

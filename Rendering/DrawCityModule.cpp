@@ -8,6 +8,7 @@
 #include "JunctionsComponent.h"
 #include "StreetsComponent.h"
 #include "BuildingsComponent.h"
+#include "BridgesComponent.h"
 #include "WaterComponent.h"
 
 using namespace cellar;
@@ -20,6 +21,7 @@ DrawCityModule::DrawCityModule(City &city) :
     _skyShader(),
     _groundShader(),
     _infrastructShader(),
+    _bridgeShader(),
     _waterShader(),
     _components(),
     _skyComponent(      new SkyComponent(      _city, _skyShader)),
@@ -27,6 +29,7 @@ DrawCityModule::DrawCityModule(City &city) :
     _junctionsComponent(new JunctionsComponent(_city, _infrastructShader)),
     _streetsComponent(  new StreetsComponent(  _city, _infrastructShader)),
     _buildingsComponent(new BuildingsComponent(_city, _infrastructShader)),
+    _bridgesComponent(  new BridgesComponent(  _city, _bridgeShader)),
     _waterComponent(    new WaterComponent(    _city, _waterShader))
 {
     // Draw components
@@ -74,12 +77,12 @@ DrawCityModule::DrawCityModule(City &city) :
     _groundShader.setVec4f("WaterColor",    _visual.waterColor);
     _groundShader.popProgram();
 
-    // Roads
-    GLInOutProgramLocation junctionsLocations;
-    junctionsLocations.setInput(0, "position_att");
-    junctionsLocations.setInput(1, "normal_att");
-    junctionsLocations.setInput(2, "texCoord_att");
-    _infrastructShader.setInAndOutLocations(junctionsLocations);
+    // Infrastructure
+    GLInOutProgramLocation infrastructureLocations;
+    infrastructureLocations.setInput(0, "position_att");
+    infrastructureLocations.setInput(1, "normal_att");
+    infrastructureLocations.setInput(2, "texCoord_att");
+    _infrastructShader.setInAndOutLocations(infrastructureLocations);
     _infrastructShader.loadShadersFromFile("resources/shaders/infrastruct.vert",
                                         "resources/shaders/infrastruct.frag");
     _infrastructShader.pushThisProgram();
@@ -91,6 +94,19 @@ DrawCityModule::DrawCityModule(City &city) :
     _infrastructShader.setInt("TexUnit",         0);
     _infrastructShader.setInt("SpecUnit",        1);
     _infrastructShader.popProgram();
+
+
+    // Infrastructure
+    GLInOutProgramLocation bridgeLocations;
+    bridgeLocations.setInput(0, "position_att");
+    bridgeLocations.setInput(1, "normal_att");
+    bridgeLocations.setInput(2, "texCoord_att");
+    _bridgeShader.setInAndOutLocations(bridgeLocations);
+    _bridgeShader.loadShadersFromFile("resources/shaders/bridge.vert",
+                                      "resources/shaders/bridge.frag");
+    _bridgeShader.pushThisProgram();
+    _infrastructShader.popProgram();
+
 
     // Water
     GLInOutProgramLocation waterLocations;
@@ -193,7 +209,7 @@ void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
 void DrawCityModule::updateShadersProjectionMatrix()
 {
     _skyShader.pushThisProgram();
-    _skyShader.setMatrix4x4("Projection", _visual.projMat);
+    _skyShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
     _skyShader.popProgram();
 
     _groundShader.pushThisProgram();
@@ -203,6 +219,10 @@ void DrawCityModule::updateShadersProjectionMatrix()
     _infrastructShader.pushThisProgram();
     _infrastructShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
     _infrastructShader.popProgram();
+
+    _bridgeShader.pushThisProgram();
+    _bridgeShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
+    _bridgeShader.popProgram();
 
     _waterShader.pushThisProgram();
     _waterShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
@@ -220,7 +240,7 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
 void DrawCityModule::updateShadersModelViewMatrix()
 {
     _skyShader.pushThisProgram();
-    _skyShader.setMatrix3x3("View",  _visual.normalMat);
+    _skyShader.setMatrix3x3("ModelViewMatrix",  _visual.normalMat);
     _skyShader.popProgram();
 
     _groundShader.pushThisProgram();
@@ -232,6 +252,10 @@ void DrawCityModule::updateShadersModelViewMatrix()
     _infrastructShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
     _infrastructShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
     _infrastructShader.popProgram();
+
+    _bridgeShader.pushThisProgram();
+    _bridgeShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
+    _bridgeShader.popProgram();
 
     _waterShader.pushThisProgram();
     _waterShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);

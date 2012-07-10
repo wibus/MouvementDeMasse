@@ -13,6 +13,7 @@ class GroundComponent;
 class JunctionsComponent;
 class StreetsComponent;
 class BuildingsComponent;
+class BridgesComponent;
 class WaterComponent;
 
 
@@ -42,6 +43,7 @@ protected:
     cellar::GLShaderProgram _skyShader;
     cellar::GLShaderProgram _groundShader;
     cellar::GLShaderProgram _infrastructShader;
+    cellar::GLShaderProgram _bridgeShader;
     cellar::GLShaderProgram _waterShader;
 
     std::vector<AbstractComponent*> _components;
@@ -50,6 +52,7 @@ protected:
     JunctionsComponent* _junctionsComponent;
     StreetsComponent*   _streetsComponent;
     BuildingsComponent* _buildingsComponent;
+    BridgesComponent*   _bridgesComponent;
     WaterComponent*     _waterComponent;    
 };
 

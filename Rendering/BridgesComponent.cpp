@@ -31,7 +31,10 @@ void BridgesComponent::setup()
 {
     vector<Vec3f> positions;
 
-
+    for(size_t b=0; b<_city.bridges().size(); ++b)
+    {
+        positions.push_back(Vec3f());
+    }
 }
 
 void BridgesComponent::draw()
