@@ -131,7 +131,7 @@ OTHER_FILES += \
     resources/textures/apart.xcf \
     resources/fonts/Arial.flw \
     resources/fonts/Arial.bmp \
-    resources/shaders/bridge.vert \
-    resources/shaders/bridge.frag
+    resources/shaders/minimalist.frag \
+    resources/shaders/minimalist.vert
 
 

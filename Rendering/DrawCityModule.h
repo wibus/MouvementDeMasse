@@ -40,10 +40,10 @@ protected:
     Visual& _visual;
 
     // Shaders
+    cellar::GLShaderProgram _minimalistShader;
     cellar::GLShaderProgram _skyShader;
     cellar::GLShaderProgram _groundShader;
-    cellar::GLShaderProgram _infrastructShader;
-    cellar::GLShaderProgram _bridgeShader;
+    cellar::GLShaderProgram _infrastructShader;    
     cellar::GLShaderProgram _waterShader;
 
     std::vector<AbstractComponent*> _components;

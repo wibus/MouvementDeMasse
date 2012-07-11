@@ -97,13 +97,13 @@ void BuildingsComponent::setupPositions()
             if(_city.lands().get(i,j)->type() == Land::RESIDENTIAL)
             {
                 _apartmentsPos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
-                _apartmentTexScaleCoeff.push_back( height );
+                _apartmentTexScaleCoeff.push_back( Vec2f(1.0f, height) );
             }
 
             if(_city.lands().get(i,j)->type() == Land::COMMERCIAL)
             {
                 _commercePos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
-                _commerceTexScaleCoeff.push_back( height );
+                _commerceTexScaleCoeff.push_back( Vec2f(1.0f, height) );
             }
         }
     }
@@ -292,12 +292,12 @@ void BuildingsComponent::draw()
 
     glBindVertexArray(_roofVao);
     glVertexAttrib3f(_shader.getAttributeLocation("normal_att"), 0,0,1);
-    _shader.setFloat("StructureHeight", 1.0f);
     for(size_t i=0; i<_roofPos.size(); ++i)
     {
         _shader.setVec3f("Translation", _roofPos[i] );
         glDrawArrays(GL_TRIANGLE_FAN , 0, _roofNbElems);
     }
+    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
 
 
     // Residential
@@ -307,12 +307,17 @@ void BuildingsComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _apartmentTex);
 
     glBindVertexArray(_buildingWallsVao);
+
+    _shader.setVec2f("RepeatFrom", Vec2f(0.5f, 0.5f));
     for(size_t i=0; i<_apartmentsPos.size(); ++i)
     {
         _shader.setVec3f("Translation", _apartmentsPos[i]);
-        _shader.setFloat("StructureHeight", _apartmentTexScaleCoeff[i]);
+        _shader.setVec2f("Scale", _apartmentTexScaleCoeff[i]);
         glDrawArrays(GL_QUADS, 0, _buildingNbElems);
     }
+    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
+    _shader.setVec2f("Scale", Vec2f(1.0f, 1.0f));
+    _shader.setVec2f("RepeatFrom", Vec2f(1.0f, 1.0f));
 
 
     // Commercial
@@ -322,12 +327,17 @@ void BuildingsComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _commerceTex);
 
     glBindVertexArray(_buildingWallsVao);
+
+    _shader.setVec2f("RepeatFrom", Vec2f(0.5f, 0.5f));
     for(size_t i=0; i<_commercePos.size(); ++i)
     {
         _shader.setVec3f("Translation", _commercePos[i]);
-        _shader.setFloat("StructureHeight", _commerceTexScaleCoeff[i]);
+        _shader.setVec2f("Scale", _commerceTexScaleCoeff[i]);
         glDrawArrays(GL_QUADS, 0, _buildingNbElems);
     }
+    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
+    _shader.setVec2f("Scale", Vec2f(1.0f, 1.0f));
+    _shader.setVec2f("RepeatFrom", Vec2f(1.0f, 1.0f));
 
     _shader.popProgram();
 }

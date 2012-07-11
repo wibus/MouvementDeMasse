@@ -34,12 +34,12 @@ protected:
     unsigned int _apartmentTex;
     unsigned int _apartmentSpec;
     std::vector< cellar::Vec3f > _apartmentsPos;
-    std::vector< float > _apartmentTexScaleCoeff;
+    std::vector< cellar::Vec2f > _apartmentTexScaleCoeff;
 
     unsigned int _commerceTex;
     unsigned int _commerceSpec;
     std::vector< cellar::Vec3f > _commercePos;
-    std::vector< float > _commerceTexScaleCoeff;
+    std::vector< cellar::Vec2f > _commerceTexScaleCoeff;
 };
 
 #endif // BUILDINGSCOMPONENT_H

@@ -22,9 +22,9 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
     _city( new City(64, 48) ),
     _drawCityModule( new DrawCityModule(*_city) ),
-    _citizensAlgo( new CitizensEqualAlgo() ),
-    _heightsAlgo(  new HeightByNoiseAlgo() ),
-    _mapElemAlgo(  new MapElementsByIsland() ),
+    _citizensAlgo(   new CitizensEqualAlgo() ),
+    _heightsAlgo(    new HeightByNoiseAlgo() ),
+    _mapElemAlgo(    new MapElementsByIsland() ),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()

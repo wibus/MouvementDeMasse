@@ -143,8 +143,6 @@ void StreetsComponent::setup()
 void StreetsComponent::draw()
 {
     _shader.pushThisProgram();
-    _shader.setVec3f("Translation", Vec3f());
-    _shader.setFloat("StructureHeight", 1.0f);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _streetsTex);

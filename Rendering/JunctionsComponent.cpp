@@ -95,8 +95,6 @@ void JunctionsComponent::setup()
 void JunctionsComponent::draw()
 {
     _shader.pushThisProgram();
-    _shader.setVec3f("Translation", Vec3f());
-    _shader.setFloat("StructureHeight", 1.0f);
     glVertexAttrib3f(_shader.getAttributeLocation("normal_att"), 0,0,1);
 
     glActiveTexture(GL_TEXTURE1);
