@@ -21,25 +21,25 @@ DrawCityModule::DrawCityModule(City &city) :
     _minimalistShader(),
     _skyShader(),
     _groundShader(),
-    _infrastructShader(),
     _waterShader(),
+    _infrastructShader(),    
     _components(),
     _skyComponent(      new SkyComponent(      _city, _skyShader)),
     _groundComponent(   new GroundComponent(   _city, _groundShader)),
+    _waterComponent(    new WaterComponent(    _city, _waterShader)),
     _junctionsComponent(new JunctionsComponent(_city, _infrastructShader)),
     _streetsComponent(  new StreetsComponent(  _city, _infrastructShader)),
     _buildingsComponent(new BuildingsComponent(_city, _infrastructShader)),
-    _bridgesComponent(  new BridgesComponent(  _city, _infrastructShader)),
-    _waterComponent(    new WaterComponent(    _city, _waterShader))
+    _bridgesComponent(  new BridgesComponent(  _city, _infrastructShader))
 {
     // Draw components
     _components.push_back(_skyComponent);
     _components.push_back(_groundComponent);
+    _components.push_back(_waterComponent);
     _components.push_back(_junctionsComponent);
     _components.push_back(_streetsComponent);
-    _components.push_back(_buildingsComponent);
+    _components.push_back(_buildingsComponent);    
     _components.push_back(_bridgesComponent);
-    _components.push_back(_waterComponent);
 
 
     // Minimalist
@@ -89,6 +89,21 @@ DrawCityModule::DrawCityModule(City &city) :
     _groundShader.setVec4f("WaterColor",    _visual.waterColor);
     _groundShader.popProgram();
 
+    // Water
+    GLInOutProgramLocation waterLocations;
+    waterLocations.setInput(0, "position_att");
+    _waterShader.setInAndOutLocations(waterLocations);
+    _waterShader.loadShadersFromFile("resources/shaders/water.vert",
+                                    "resources/shaders/water.frag");
+    _waterShader.pushThisProgram();
+    _waterShader.setVec4f("sun.direction", _visual.sunLight.direction);
+    _waterShader.setVec4f("sun.ambient",   _visual.sunLight.ambient);
+    _waterShader.setVec4f("sun.diffuse",   _visual.sunLight.diffuse);
+    _waterShader.setVec4f("sun.specular",  _visual.sunLight.specular);
+    _waterShader.setFloat("Shininess",     _visual.waterShininess);
+    _waterShader.setVec4f("WaterColor",    _visual.waterColor);
+    _waterShader.popProgram();
+
     // Infrastructure
     GLInOutProgramLocation infrastructureLocations;
     infrastructureLocations.setInput(0, "position_att");
@@ -109,21 +124,6 @@ DrawCityModule::DrawCityModule(City &city) :
     _infrastructShader.setInt("TexUnit",         0);
     _infrastructShader.setInt("SpecUnit",        1);
     _infrastructShader.popProgram();
-
-    // Water
-    GLInOutProgramLocation waterLocations;
-    waterLocations.setInput(0, "position_att");
-    _waterShader.setInAndOutLocations(waterLocations);
-    _waterShader.loadShadersFromFile("resources/shaders/water.vert",
-                                    "resources/shaders/water.frag");
-    _waterShader.pushThisProgram();
-    _waterShader.setVec4f("sun.direction", _visual.sunLight.direction);
-    _waterShader.setVec4f("sun.ambient",   _visual.sunLight.ambient);
-    _waterShader.setVec4f("sun.diffuse",   _visual.sunLight.diffuse);
-    _waterShader.setVec4f("sun.specular",  _visual.sunLight.specular);
-    _waterShader.setFloat("Shininess",     _visual.waterShininess);
-    _waterShader.setVec4f("WaterColor",    _visual.waterColor);
-    _waterShader.popProgram();
 }
 
 DrawCityModule::~DrawCityModule()
@@ -190,15 +190,15 @@ void DrawCityModule::updateShaders()
     _groundShader.setVec4f("sun.ambient",   _visual.sunLight.ambient);
     _groundShader.popProgram();
 
-    _infrastructShader.pushThisProgram();
-    _infrastructShader.setVec4f("sun.direction", _visual.viewedSunDirection);
-    _infrastructShader.setVec4f("sun.ambient",   _visual.sunLight.ambient);
-    _infrastructShader.popProgram();
-
     _waterShader.pushThisProgram();
     _waterShader.setVec4f("sun.direction", _visual.viewedSunDirection);
     _waterShader.setVec4f("sun.ambient",   _visual.sunLight.ambient);
     _waterShader.popProgram();
+
+    _infrastructShader.pushThisProgram();
+    _infrastructShader.setVec4f("sun.direction", _visual.viewedSunDirection);
+    _infrastructShader.setVec4f("sun.ambient",   _visual.sunLight.ambient);
+    _infrastructShader.popProgram();
 }
 
 void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
@@ -209,7 +209,11 @@ void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
 }
 
 void DrawCityModule::updateShadersProjectionMatrix()
-{
+{    
+    _minimalistShader.pushThisProgram();
+    _minimalistShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
+    _minimalistShader.popProgram();
+
     _skyShader.pushThisProgram();
     _skyShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
     _skyShader.popProgram();
@@ -218,17 +222,13 @@ void DrawCityModule::updateShadersProjectionMatrix()
     _groundShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
     _groundShader.popProgram();
 
-    _infrastructShader.pushThisProgram();
-    _infrastructShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
-    _infrastructShader.popProgram();
-
-    _minimalistShader.pushThisProgram();
-    _minimalistShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
-    _minimalistShader.popProgram();
-
     _waterShader.pushThisProgram();
     _waterShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
     _waterShader.popProgram();
+
+    _infrastructShader.pushThisProgram();
+    _infrastructShader.setMatrix4x4("ProjectionMatrix", _visual.projMat);
+    _infrastructShader.popProgram();
 }
 
 void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
@@ -241,6 +241,10 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
 
 void DrawCityModule::updateShadersModelViewMatrix()
 {
+    _minimalistShader.pushThisProgram();
+    _minimalistShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
+    _minimalistShader.popProgram();
+
     _skyShader.pushThisProgram();
     _skyShader.setMatrix3x3("ModelViewMatrix",  _visual.normalMat);
     _skyShader.popProgram();
@@ -250,17 +254,13 @@ void DrawCityModule::updateShadersModelViewMatrix()
     _groundShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
     _groundShader.popProgram();
 
-    _infrastructShader.pushThisProgram();
-    _infrastructShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
-    _infrastructShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
-    _infrastructShader.popProgram();
-
-    _minimalistShader.pushThisProgram();
-    _minimalistShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
-    _minimalistShader.popProgram();
-
     _waterShader.pushThisProgram();
     _waterShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
     _waterShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
     _waterShader.popProgram();
+
+    _infrastructShader.pushThisProgram();
+    _infrastructShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
+    _infrastructShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
+    _infrastructShader.popProgram();
 }

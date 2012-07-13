@@ -19,7 +19,7 @@ BridgesComponent::BridgesComponent(City& city, cellar::GLShaderProgram& shader) 
     glGenVertexArrays(1, &_bridgeVao);
 
     _bridgeTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/street.bmp", false)
+        getImageBank().getImage("resources/textures/bridgeTex.bmp", true)
     );
 }
 
@@ -32,38 +32,131 @@ BridgesComponent::~BridgesComponent()
 void BridgesComponent::setup()
 {
     vector<Vec3f> positions;
+    vector<Vec3f> normals;
     vector<Vec2f> texCoords;
+
+    float roadHalfwidth = _visual.roadWidth * 0.5f;
+    float bridgeHalfWidth = _visual.bridgeWidth * 0.5f;
+    float diagonal = Vec2f(_visual.bridgeWidth, _visual.bridgeWidth).length();
+
+    Vec3f corners[4];
 
     for(size_t b=0; b<_city.bridges().size(); ++b)
     {
-        float bridgeHalfWidth = _visual.bridgeWidth * 0.5f;
-        float diagonal = Vec2f(_visual.bridgeWidth, _visual.bridgeWidth).length();
+        Vec3f endA = vec3<float>(_city.bridges()[b].endA(), _ground.heightAt(_city.bridges()[b].endA()));
+        Vec3f endB = vec3<float>(_city.bridges()[b].endB(), _ground.heightAt(_city.bridges()[b].endB()));
 
-        Vec2f endA = _city.bridges()[b].endA();
-        Vec2f endB = _city.bridges()[b].endB();
 
-        float endAHeight = _ground.heightAt(_city.bridges()[b].endA());
-        float endBHeight = _ground.heightAt(_city.bridges()[b].endB());
+        float length = ((endB - endA).length() - 2.0f*bridgeHalfWidth) / _visual.bridgeWidth;
+        float texDeckRepeat = length;
+        float texBracingRepeat = round(length / 4.0f);
 
-        Vec2f dir = endB - endA;
-        float length = dir.length() - 2.0f*bridgeHalfWidth;
-        dir.normalize();
-        Vec2f perp = dir;
-        perp.rotateQuarterCCW();
+        Vec3f dir = (endB - endA).normalize();
+        Vec3f perp = vec3(vec2(dir).normalize().rotateQuarterCCW(), 0.0f);
+        Vec3f up = (dir ^ perp) * _visual.bridgeHeight;
 
-        Vec3f corners[4];
-        corners[0] = vec3(endA + dir * diagonal + perp * bridgeHalfWidth, endAHeight);
-        corners[1] = vec3(endA + dir * diagonal - perp * bridgeHalfWidth, endAHeight);
-        corners[2] = vec3(endB - dir * diagonal - perp * bridgeHalfWidth, endBHeight);
-        corners[3] = vec3(endB - dir * diagonal + perp * bridgeHalfWidth, endBHeight);
+        Vec2f domDirAxe, domDiraxePerp;
+        if(absolute(dir.x()) < absolute(dir.y()))
+            domDirAxe(0, sign(dir.y()));
+        else
+            domDirAxe(sign(dir.x()), 0);
+        domDiraxePerp = domDirAxe;
+        domDiraxePerp.rotateQuarterCCW();
 
+
+        // Positions
+        corners[0] = endA + dir * diagonal + perp * bridgeHalfWidth;
+        corners[1] = endA + dir * diagonal - perp * bridgeHalfWidth;
+        corners[2] = endB - dir * diagonal - perp * bridgeHalfWidth;
+        corners[3] = endB - dir * diagonal + perp * bridgeHalfWidth;
+
+
+
+        // Deck
         for(int c=0; c<4; ++c)
             positions.push_back(corners[c]);
 
-        texCoords.push_back(Vec2f(0.0f, 2.0f));
-        texCoords.push_back(Vec2f(0.0f, 0.0f));
-        texCoords.push_back(Vec2f(length, 0.0f));
-        texCoords.push_back(Vec2f(length, 2.0f));
+        for(int c=0; c<4; ++c)
+            normals.push_back(up);
+
+        texCoords.push_back(Vec2f(0.0f,          0.5f));
+        texCoords.push_back(Vec2f(0.0f,          0.0f));
+        texCoords.push_back(Vec2f(texDeckRepeat, 0.0f));
+        texCoords.push_back(Vec2f(texDeckRepeat, 0.5f));
+
+
+
+        // Entrance 1
+        positions.push_back(endA + vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endA + vec3(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(corners[1]);
+        positions.push_back(corners[0]);
+
+        for(int c=0; c<4; ++c)
+            normals.push_back(up);
+
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+
+        // Entrance 2
+        positions.push_back(endB - vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endB - vec3(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(corners[3]);
+        positions.push_back(corners[2]);
+
+        for(int c=0; c<4; ++c)
+            normals.push_back(up);
+
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+
+
+
+        // Side 1
+        positions.push_back(corners[1]);
+        positions.push_back(corners[2]);
+        positions.push_back(corners[2] + up);
+        positions.push_back(corners[1] + up);
+
+        for(int c=0; c<4; ++c)
+            normals.push_back(-perp);
+
+        texCoords.push_back(Vec2f(0.0f,             0.50f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.50f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
+        texCoords.push_back(Vec2f(0.0f,             0.75f));
+
+        // Side 2
+        positions.push_back(corners[0]);
+        positions.push_back(corners[3]);
+        positions.push_back(corners[3] + up);
+        positions.push_back(corners[0] + up);
+
+        for(int c=0; c<4; ++c)
+            normals.push_back(perp);
+
+        texCoords.push_back(Vec2f(0.0f,             0.50f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.50f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
+        texCoords.push_back(Vec2f(0.0f,             0.75f));
+
+
+
+        // Roof
+        for(int c=0; c<4; ++c)
+            positions.push_back(corners[c] + up);
+
+        for(int c=0; c<4; ++c)
+            normals.push_back(up);
+
+        texCoords.push_back(Vec2f(0.0f,             1.0f));
+        texCoords.push_back(Vec2f(0.0f,             0.75f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 1.0f));
     }
 
     _bridgeNbElems = positions.size();
@@ -71,11 +164,12 @@ void BridgesComponent::setup()
     // Setup Vao
     glBindVertexArray( _bridgeVao );
 
-    const int NB_BUFFS = 2;
+    const int NB_BUFFS = 3;
     GLuint buffers[NB_BUFFS];
     glGenBuffers(NB_BUFFS, buffers);
 
     int position_loc = _shader.getAttributeLocation("position_att");
+    int normal_loc   = _shader.getAttributeLocation("normal_att");
     int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
@@ -83,7 +177,12 @@ void BridgesComponent::setup()
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[3]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(normals[0]) * normals.size(), normals.data(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(normal_loc);
+    glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords[0]) * texCoords.size(), texCoords.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(texCoord_loc);
     glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
@@ -97,6 +196,9 @@ void BridgesComponent::draw()
 {
     _shader.pushThisProgram();
 
+    glEnable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _bridgeTex);
     glActiveTexture(GL_TEXTURE0);
@@ -105,6 +207,9 @@ void BridgesComponent::draw()
     glBindVertexArray(_bridgeVao);
     glDrawArrays(GL_QUADS, 0, _bridgeNbElems);
     glBindVertexArray(0);
+
+    glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 
     _shader.popProgram();
 }

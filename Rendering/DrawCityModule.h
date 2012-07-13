@@ -43,17 +43,17 @@ protected:
     cellar::GLShaderProgram _minimalistShader;
     cellar::GLShaderProgram _skyShader;
     cellar::GLShaderProgram _groundShader;
-    cellar::GLShaderProgram _infrastructShader;    
     cellar::GLShaderProgram _waterShader;
+    cellar::GLShaderProgram _infrastructShader;
 
     std::vector<AbstractComponent*> _components;
     SkyComponent*       _skyComponent;
     GroundComponent*    _groundComponent;
+    WaterComponent*     _waterComponent;
     JunctionsComponent* _junctionsComponent;
     StreetsComponent*   _streetsComponent;
     BuildingsComponent* _buildingsComponent;
     BridgesComponent*   _bridgesComponent;
-    WaterComponent*     _waterComponent;    
 };
 
 

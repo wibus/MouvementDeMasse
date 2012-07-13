@@ -36,6 +36,7 @@ public:
     // Roads
     float roadWidth;
     float bridgeWidth;
+    float bridgeHeight;
 };
 
 #endif // VISUAL_H
