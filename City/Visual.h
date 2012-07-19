@@ -33,7 +33,10 @@ public:
     // Shininesses
     float waterShininess;
 
-    // Roads
+    // Sizes
+    float unitPerMeter;
+    float meterPerUnit;
+    float citizensHeight;
     float roadWidth;
     float bridgeWidth;
     float bridgeHeight;

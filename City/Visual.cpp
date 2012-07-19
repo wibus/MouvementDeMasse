@@ -12,9 +12,12 @@ Visual::Visual() :
     mudColor(     0.20, 0.14, 0.01, 1.00),
     waterColor(   0.03, 0.03, 0.30, 0.42),
     waterShininess( 200.0f),
-    roadWidth(0.200f),
-    bridgeWidth(2.0f*roadWidth),
-    bridgeHeight(bridgeWidth)
+    unitPerMeter(1.0f/40.0f),
+    meterPerUnit(1.0f/unitPerMeter),
+    citizensHeight(0.9f * unitPerMeter),
+    roadWidth(     8.00f * unitPerMeter),
+    bridgeWidth(   2.0f*roadWidth),
+    bridgeHeight(  bridgeWidth)
 {
     sunLight.direction(1.0f, 1.0f, 0.0f, 0.0f).normalize();
     sunLight.ambient = curSkyColor;

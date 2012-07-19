@@ -1,7 +1,7 @@
 #version 120
 
 uniform mat4 ProjectionMatrix;
-uniform mat4 ModelViewMatrix;
+uniform mat4 ViewMatrix;
 uniform mat3 NormalMatrix;
 
 attribute vec3 position_att;
@@ -15,7 +15,7 @@ varying float height;
 
 void main(void)
 {
-    eyeVec = ModelViewMatrix * vec4(position_att, 1.0);
+    eyeVec = ViewMatrix * vec4(position_att, 1.0);
     gl_Position = ProjectionMatrix * eyeVec;
 
     normal = NormalMatrix * normal_att;

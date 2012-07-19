@@ -23,7 +23,9 @@ void City::reset()
 {
     resetJunctions();
     resetLands();
-    resetCitizens();
+
+    _citizens.clear();
+    _bridges.clear();
 }
 
 bool City::load(const string &)
@@ -70,12 +72,4 @@ void City::resetLands()
             _lands.set(i, j, new Land());
         }
     }
-}
-
-void City::resetCitizens()
-{
-    for(size_t i=0; i<_citizens.size(); ++i)
-        delete _citizens[i];
-
-    _citizens.clear();
 }

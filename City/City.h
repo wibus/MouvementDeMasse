@@ -25,7 +25,7 @@ public:
     City(int width, int height);
 
     cellar::Vec2i  size() const;
-    std::vector<Citizen*>& citizens();
+    std::vector<Citizen>& citizens();
     Sky& sky();
     Sun& sun();
     Ground& ground();
@@ -44,11 +44,10 @@ public:
 protected:
     void resetJunctions();
     void resetLands();
-    void resetCitizens();
 
 private:
     cellar::Vec2i _size;
-    std::vector<Citizen*> _citizens;
+    std::vector<Citizen> _citizens;
     Sky _sky;
     Sun _sun;
     Ground _ground;
@@ -67,7 +66,7 @@ inline cellar::Vec2i City::size() const
     return _size;
 }
 
-inline std::vector<Citizen*>& City::citizens()
+inline std::vector<Citizen>& City::citizens()
 {
     return _citizens;
 }

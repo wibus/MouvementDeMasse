@@ -5,11 +5,12 @@
 #include "City/City.h"
 #include "SkyComponent.h"
 #include "GroundComponent.h"
+#include "WaterComponent.h"
+#include "CitizensComponent.h"
 #include "JunctionsComponent.h"
 #include "StreetsComponent.h"
 #include "BuildingsComponent.h"
 #include "BridgesComponent.h"
-#include "WaterComponent.h"
 
 using namespace cellar;
 
@@ -27,6 +28,7 @@ DrawCityModule::DrawCityModule(City &city) :
     _skyComponent(      new SkyComponent(      _city, _skyShader)),
     _groundComponent(   new GroundComponent(   _city, _groundShader)),
     _waterComponent(    new WaterComponent(    _city, _waterShader)),
+    _citizensComponent( new CitizensComponent( _city, _minimalistShader)),
     _junctionsComponent(new JunctionsComponent(_city, _infrastructShader)),
     _streetsComponent(  new StreetsComponent(  _city, _infrastructShader)),
     _buildingsComponent(new BuildingsComponent(_city, _infrastructShader)),
@@ -36,6 +38,7 @@ DrawCityModule::DrawCityModule(City &city) :
     _components.push_back(_skyComponent);
     _components.push_back(_groundComponent);
     _components.push_back(_waterComponent);
+    _components.push_back(_citizensComponent);
     _components.push_back(_junctionsComponent);
     _components.push_back(_streetsComponent);
     _components.push_back(_buildingsComponent);    
@@ -172,6 +175,10 @@ void DrawCityModule::update()
     _visual.viewedSunDirection = _visual.viewMat * sunDir;
 
     updateShaders();
+
+    // Update Components
+    for(size_t i=0; i<_components.size(); ++i)
+        _components[i]->update();
 }
 
 void DrawCityModule::updateShaders()
@@ -242,25 +249,25 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
 void DrawCityModule::updateShadersModelViewMatrix()
 {
     _minimalistShader.pushThisProgram();
-    _minimalistShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
+    _minimalistShader.setMatrix4x4("ViewMatrix", _visual.viewMat);
     _minimalistShader.popProgram();
 
     _skyShader.pushThisProgram();
-    _skyShader.setMatrix3x3("ModelViewMatrix",  _visual.normalMat);
+    _skyShader.setMatrix3x3("ViewMatrix",  _visual.normalMat);
     _skyShader.popProgram();
 
     _groundShader.pushThisProgram();
-    _groundShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
+    _groundShader.setMatrix4x4("ViewMatrix", _visual.viewMat);
     _groundShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
     _groundShader.popProgram();
 
     _waterShader.pushThisProgram();
-    _waterShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
+    _waterShader.setMatrix4x4("ViewMatrix", _visual.viewMat);
     _waterShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
     _waterShader.popProgram();
 
     _infrastructShader.pushThisProgram();
-    _infrastructShader.setMatrix4x4("ModelViewMatrix", _visual.viewMat);
+    _infrastructShader.setMatrix4x4("ViewMatrix", _visual.viewMat);
     _infrastructShader.setMatrix3x3("NormalMatrix",    _visual.normalMat);
     _infrastructShader.popProgram();
 }

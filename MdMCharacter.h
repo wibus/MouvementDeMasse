@@ -12,9 +12,9 @@
 
 class City;
 class DrawCityModule;
-class CitizensAlgorithm;
 class HeightsAlgorithm;
 class MapElementsAlgorithm;
+class CitizensAlgorithm;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
@@ -44,9 +44,9 @@ private:
 
     City* _city;
     DrawCityModule* _drawCityModule;
-    CitizensAlgorithm*    _citizensAlgo;
     HeightsAlgorithm*     _heightsAlgo;
     MapElementsAlgorithm* _mapElemAlgo;
+    CitizensAlgorithm*    _citizensAlgo;
 
     cellar::CameraManFree _camMan;
     prop::twoD::Text _dateText;

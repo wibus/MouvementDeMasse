@@ -22,9 +22,9 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
     _city( new City(64, 48) ),
     _drawCityModule( new DrawCityModule(*_city) ),
-    _citizensAlgo(   new CitizensEqualAlgo() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
-    _mapElemAlgo(    new MapElementsByIsland() ),
+    _mapElemAlgo(    new MapElementsDepthFirst() ),
+    _citizensAlgo(   new CitizensEqualAlgo() ),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()
@@ -62,6 +62,7 @@ void MdMCharacter::beginStep(const StageTime &time)
     updateCamera( time.elapsedTime() );
 
     _city->update();
+    _citizensAlgo->update();
     _drawCityModule->update();
 
     _dateText.setText(_city->calendar().date().toString(true, true));

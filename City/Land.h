@@ -14,6 +14,7 @@ public:
 
     void setNbStories(int stories);
     int nbStories() const;
+    static int maxNbStories();
 
     void setCapacity(int capacity);
     int capacity() const;
@@ -25,6 +26,7 @@ public:
 private:
     Type _type;
     int _nbStories;
+    static const int _NB_MAX_STORIES = 8;
 
     int _capacity;
     int _nbOfPeople;
@@ -51,6 +53,11 @@ inline void Land::setNbStories(int stories)
 inline int Land::nbStories() const
 {
     return _nbStories;
+}
+
+inline int Land::maxNbStories()
+{
+    return _NB_MAX_STORIES;
 }
 
 inline void Land::setCapacity(int capacity)

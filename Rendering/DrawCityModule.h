@@ -7,14 +7,16 @@
 class City;
 class Ground;
 class Visual;
+
 class AbstractComponent;
 class SkyComponent;
 class GroundComponent;
+class WaterComponent;
+class CitizensComponent;
 class JunctionsComponent;
 class StreetsComponent;
 class BuildingsComponent;
 class BridgesComponent;
-class WaterComponent;
 
 
 class DrawCityModule
@@ -50,6 +52,7 @@ protected:
     SkyComponent*       _skyComponent;
     GroundComponent*    _groundComponent;
     WaterComponent*     _waterComponent;
+    CitizensComponent*  _citizensComponent;
     JunctionsComponent* _junctionsComponent;
     StreetsComponent*   _streetsComponent;
     BuildingsComponent* _buildingsComponent;

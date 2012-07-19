@@ -16,6 +16,7 @@ public:
 
     virtual void setup() = 0;
     virtual void draw() = 0;
+    virtual void update() {}
 
 protected:
     City&   _city;
