@@ -17,8 +17,9 @@ void CitizensEqualAlgo::setup(City &city)
         {
             if(_city->junctions().get(i, j)->type() == Junction::ASPHALT)
             {
-                Citizen ctz(Vec3f(i, j, _ground->heightAt(i, j)));
-                ctz.walkSpeed = (0.8f + randomRange(-0.5f, 0.5f)) * _city->visual().unitPerMeter;
+                Citizen ctz;
+                ctz.position(i, j, _ground->heightAt(i, j));
+                ctz.walkingSpeed = (0.8f + randomRange(-0.5f, 0.5f)) * _city->description().unitPerMeter;
 
                 _city->citizens().push_back(ctz);
             }
@@ -28,13 +29,13 @@ void CitizensEqualAlgo::setup(City &city)
 
 void CitizensEqualAlgo::update()
 {
-    const float roadQuarterWidth = _city->visual().roadWidth *0.25f;
+    const float roadQuarterWidth = _city->description().roadWidth *0.25f;
 
     for(size_t c=0; c<_city->citizens().size(); ++c)
     {
         Citizen& ctz = _city->citizens()[c];
 
-        if(ctz.state == Citizen::HOME)
+        if(ctz.state == Citizen::AT_HOME)
         {
             Vec2i pos(round(ctz.position.x()),  round(ctz.position.y()));
             Vec2i dir(round(ctz.direction.x()), round(ctz.direction.y()));
@@ -51,18 +52,18 @@ void CitizensEqualAlgo::update()
 
             ctz.state = Citizen::MOVING;
             ctz.direction(dir.x(), dir.y(), 0.0f);
-            ctz.currentPath.destination = pos + dir;
+            ctz.homeToWorkPath.destination = pos + dir;
             ctz.position(pos.x() + rightSide.x(),
                          pos.y() + rightSide.y(),
                          _ground->heightAt(pos));
         }
         else
         {
-            ctz.position += ctz.direction * ctz.walkSpeed;
+            ctz.position += ctz.direction * ctz.walkingSpeed;
             ctz.position.setZ( _ground->heightAt(ctz.position.x(), ctz.position.y()));
 
-            if(vec2(ctz.position).distanceTo(Vec2f(ctz.currentPath.destination)) < ctz.walkSpeed + roadQuarterWidth)
-                ctz.state = Citizen::HOME;
+            if(vec2(ctz.position).distanceTo(Vec2f(ctz.homeToWorkPath.destination)) < ctz.walkingSpeed + roadQuarterWidth)
+                ctz.state = Citizen::AT_HOME;
         }
     }
 }

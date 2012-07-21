@@ -19,7 +19,10 @@ public:
 protected:
     City*         _city;
     Ground*       _ground;
+    Description*  _description;
     cellar::Vec2i _mapSize;
+
+    static const CardinalDirection _cardinalDirections[NB_DIRECTIONS];
 };
 
 #endif // ALGORITHM_H

@@ -9,15 +9,14 @@
 class Path
 {
 public:
-    enum NodeType {NODE_JUNCTION, NODE_METRO, NODE_BUS_STOP, NB_NODES};
-    typedef std::vector< std::pair<NodeType, std::string> > NodeVector;
+    enum NodeType {LAND, JUNCTION, METRO, BUS_STOP, NB_NODES};
+    typedef std::vector< std::pair<NodeType, cellar::Vec2i> > NodeVector;
 
     Path();
-    Path(const cellar::Vec2i& destination, const cellar::Vec2i& source);
+    Path(const cellar::Vec2i& source, const cellar::Vec2i& destination);
 
-
-    cellar::Vec2i destination;
     cellar::Vec2i source;
+    cellar::Vec2i destination;    
     NodeVector    nodes;
 };
 
@@ -25,17 +24,17 @@ public:
 class Citizen
 {
 public:
-    enum State {HOME, WORKING, SHOPING, MOVING, NB_STATES};
+    enum State {AT_HOME, WORKING, SHOPING, MOVING, NB_STATES};
 
-    Citizen(const cellar::Vec3f& pos);
+    Citizen();
 
     State         state;
     cellar::Vec3f position;
     cellar::Vec3f direction;
-    cellar::Vec2i housePos;
+    cellar::Vec2i homePos;
     cellar::Vec2i workPos;
-    Path          currentPath;
-    float         walkSpeed;
+    Path          homeToWorkPath;
+    float         walkingSpeed;
 };
 
 #endif // CITIZEN_H

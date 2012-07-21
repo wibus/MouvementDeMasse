@@ -41,7 +41,7 @@ void JunctionsComponent::setup()
     Vec2f* junctionsTex = new Vec2f[_junctionsNbElems];
     int idx = -1;
 
-    float roadHalfWidth = _visual.roadWidth * 0.5f;
+    float roadHalfWidth = _description.roadWidth * 0.5f;
 
     for(int j=0; j<_city.size().y()+1; ++j)
     {

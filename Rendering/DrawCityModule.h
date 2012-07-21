@@ -6,7 +6,7 @@
 
 class City;
 class Ground;
-class Visual;
+class Description;
 
 class AbstractComponent;
 class SkyComponent;
@@ -39,7 +39,7 @@ protected:
 
     City&   _city;
     Ground& _ground;
-    Visual& _visual;
+    Description& _description;
 
     // Shaders
     cellar::GLShaderProgram _minimalistShader;

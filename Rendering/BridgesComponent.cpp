@@ -35,9 +35,9 @@ void BridgesComponent::setup()
     vector<Vec3f> normals;
     vector<Vec2f> texCoords;
 
-    float roadHalfwidth = _visual.roadWidth * 0.5f;
-    float bridgeHalfWidth = _visual.bridgeWidth * 0.5f;
-    float diagonal = Vec2f(_visual.bridgeWidth, _visual.bridgeWidth).length();
+    float roadHalfwidth = _description.roadWidth * 0.5f;
+    float bridgeHalfWidth = _description.bridgeWidth * 0.5f;
+    float diagonal = Vec2f(_description.bridgeWidth, _description.bridgeWidth).length();
 
     Vec3f corners[4];
 
@@ -47,13 +47,13 @@ void BridgesComponent::setup()
         Vec3f endB = vec3<float>(_city.bridges()[b].endB(), _ground.heightAt(_city.bridges()[b].endB()));
 
 
-        float length = ((endB - endA).length() - 2.0f*bridgeHalfWidth) / _visual.bridgeWidth;
+        float length = ((endB - endA).length() - 2.0f*bridgeHalfWidth) / _description.bridgeWidth;
         float texDeckRepeat = length;
         float texBracingRepeat = round(length / 4.0f);
 
         Vec3f dir = (endB - endA).normalize();
         Vec3f perp = vec3(vec2(dir).normalize().rotateQuarterCCW(), 0.0f);
-        Vec3f up = (dir ^ perp) * _visual.bridgeHeight;
+        Vec3f up = (dir ^ perp) * _description.bridgeHeight;
 
         Vec2f domDirAxe, domDiraxePerp;
         if(absolute(dir.x()) < absolute(dir.y()))

@@ -49,9 +49,9 @@ void StreetsComponent::setup()
     Vec2f* streetsTex = new Vec2f[_streetsNbElems];
     int idx = -1;
 
-    float roadHalfWidth = _visual.roadWidth * 0.5f;
+    float roadHalfWidth = _description.roadWidth * 0.5f;
 
-    float lengthRatio = (1-2*_visual.roadWidth) / roadHalfWidth;
+    float lengthRatio = (1-2*_description.roadWidth) / roadHalfWidth;
 
     for(int j=0; j<_city.size().y()+1; ++j)
     {

@@ -41,7 +41,7 @@ void CitizensComponent::setup()
 
     // Scale
     for(size_t i=0; i<positions.size(); ++i)
-        positions[i] *= _visual.citizensHeight;
+        positions[i] *= _description.citizensHeight;
 
 
     // Setup Vao
@@ -95,10 +95,14 @@ void CitizensComponent::update()
     {
         Citizen& citizen = _city.citizens()[i];
 
-        mat.loadIdentity();
-        mat.translate(citizen.position.x(), citizen.position.y(), citizen.position.z() + 0.05f);
-        mat.rotate(0.0f, 0.0f, 1.0f, atan2(citizen.direction.y(), citizen.direction.x()));
+        if(citizen.state == Citizen::AT_HOME)
+        {
+            mat.loadIdentity();
+            mat.translate(citizen.position.x(),
+                          citizen.position.y(),
+                          citizen.position.z());
 
-        _modelMats.push_back( mat );
+            _modelMats.push_back( mat );
+        }
     }
 }

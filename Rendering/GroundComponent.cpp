@@ -50,7 +50,7 @@ void GroundComponent::setupLands()
     vector<Vec3f> lnormals;
     vector<Vec2f> ltexCoords;
 
-    float roadHalfWidth = _visual.roadWidth * 0.5f;
+    float roadHalfWidth = _description.roadWidth * 0.5f;
 
     for(int j=0; j<_city.size().y(); ++j)
     {
@@ -132,7 +132,7 @@ void GroundComponent::setupRoads()
     vector<Vec2f> rtexCoords;
     int idx = 0;
 
-    float roadHalfWidth = _visual.roadWidth * 0.5f;
+    float roadHalfWidth = _description.roadWidth * 0.5f;
 
     for(int j=0; j<_city.size().y(); ++j)
     {
@@ -232,7 +232,7 @@ void GroundComponent::setupTriangles()
     vector<Vec3f> tnormals;
     vector<Vec2f> ttexCoords;
 
-    float roadHalfWidth = _visual.roadWidth * 0.5f;
+    float roadHalfWidth = _description.roadWidth * 0.5f;
 
     // East
     for(int j=0; j<_city.size().y()+1; ++j)

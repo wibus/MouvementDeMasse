@@ -1,26 +1,26 @@
 #include "Citizen.h"
 
 Path::Path() :
-    destination(),
     source(),
+    destination(),
     nodes()
 {
 }
 
-Path::Path(const cellar::Vec2i& destination, const cellar::Vec2i& source) :
-    destination(destination),
+Path::Path(const cellar::Vec2i& source, const cellar::Vec2i& destination) :
     source(source),
+    destination(destination),
     nodes()
 {
 }
 
-Citizen::Citizen(const cellar::Vec3f& pos) :
-    state(Citizen::HOME),
-    position( pos ),
+Citizen::Citizen() :
+    state(Citizen::AT_HOME),
+    position(0.0f, 0.0f, 0.0f),
     direction(1.0f, 0.0f, 0.0f),
-    housePos(0, 0),
+    homePos(0, 0),
     workPos(0, 0),
-    currentPath(),
-    walkSpeed(1.0f)
+    homeToWorkPath(),
+    walkingSpeed(1.0f)
 {
 }

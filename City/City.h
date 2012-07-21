@@ -12,11 +12,11 @@
 #include "Sky.h"
 #include "Sun.h"
 #include "Ground.h"
-#include "Bridge.h"
 #include "Land.h"
 #include "Junction.h"
 #include "Street.h"
-#include "Visual.h"
+#include "Bridge.h"
+#include "Description.h"
 
 
 class City
@@ -28,12 +28,12 @@ public:
     std::vector<Citizen>& citizens();
     Sky& sky();
     Sun& sun();
-    Ground& ground();
-    std::vector<Bridge>& bridges();
+    Ground& ground();    
     cellar::PGrid<Land>& lands();
-    cellar::PGrid<Junction>& junctions();    
+    cellar::PGrid<Junction>& junctions();
+    std::vector<Bridge>& bridges();
     cellar::Calendar& calendar();
-    Visual& visual();
+    Description& description();
 
     void reset();
     void setup();
@@ -51,11 +51,11 @@ private:
     Sky _sky;
     Sun _sun;
     Ground _ground;
-    std::vector<Bridge> _bridges;
     cellar::PGrid<Land> _lands;
-    cellar::PGrid<Junction> _junctions;    
+    cellar::PGrid<Junction> _junctions;
+    std::vector<Bridge> _bridges;
     cellar::Calendar _calendar;
-    Visual _visual;
+    Description _description;
 };
 
 
@@ -86,11 +86,6 @@ inline Ground& City::ground()
     return _ground;
 }
 
-inline std::vector<Bridge>& City::bridges()
-{
-    return _bridges;
-}
-
 inline cellar::PGrid<Land>& City::lands()
 {
     return _lands;
@@ -101,14 +96,19 @@ inline cellar::PGrid<Junction>& City::junctions()
     return _junctions;
 }
 
+inline std::vector<Bridge>& City::bridges()
+{
+    return _bridges;
+}
+
 inline cellar::Calendar& City::calendar()
 {
     return _calendar;
 }
 
-inline Visual& City::visual()
+inline Description& City::description()
 {
-    return _visual;
+    return _description;
 }
 
 #endif // CITY_H
