@@ -32,8 +32,10 @@ public:
     State         state;
     cellar::Vec3f position;
     cellar::Vec3f direction;
-    cellar::Vec2i homePos;
-    cellar::Vec2i workPos;
+    cellar::Vec2i homePos;      //Vec3i(MapX,  MapY)
+    cellar::Vec3i homeRoom;     //Vec3i(BuildingX, BuildingY, Floor)
+    cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
+    cellar::Vec3i workRoom;     //Vec3i(BuildingX, BuildingY, Floor)
     Path          homeToWorkPath;
     float         walkingSpeed;
 

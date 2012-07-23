@@ -90,18 +90,17 @@ void CitizensComponent::update()
 
     Mat4f mat;
 
-    for(size_t i=0; i<_city.citizens().size(); ++i)
+    for(CitizenIterator cit = _city.citizens().begin();
+        cit != _city.citizens().end();
+        ++cit)
     {
-        Citizen& citizen = _city.citizens()[i];
+        Citizen& citizen = (*cit).second;
 
-        if(citizen.state == Citizen::AT_HOME)
-        {
-            mat.loadIdentity();
-            mat.translate(citizen.position.x(),
-                          citizen.position.y(),
-                          citizen.position.z());
+        mat.loadIdentity();
+        mat.translate(citizen.position.x(),
+                      citizen.position.y(),
+                      citizen.position.z());
 
-            _modelMats.push_back( mat );
-        }
+        _modelMats.push_back( mat );
     }
 }

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 
 #include <DateAndTime/Calendar.h>
 #include <DataStructure/PGrid.h>
@@ -18,6 +19,12 @@
 #include "Bridge.h"
 #include "Description.h"
 
+typedef std::vector<Bridge>        BridgeContainer;
+typedef BridgeContainer::iterator  BridgeIterator;
+
+typedef std::map<int, Citizen>     CitizenContainer;
+typedef CitizenContainer::iterator CitizenIterator;
+
 
 class City
 {
@@ -25,13 +32,13 @@ public:
     City(int width, int height);
 
     cellar::Vec2i  size() const;
-    std::vector<Citizen>& citizens();
     Sky& sky();
     Sun& sun();
     Ground& ground();    
     cellar::PGrid<Land>& lands();
     cellar::PGrid<Junction>& junctions();
-    std::vector<Bridge>& bridges();
+    BridgeContainer&  bridges();
+    CitizenContainer& citizens();
     cellar::Calendar& calendar();
     Description& description();
 
@@ -47,13 +54,13 @@ protected:
 
 private:
     cellar::Vec2i _size;
-    std::vector<Citizen> _citizens;
     Sky _sky;
     Sun _sun;
     Ground _ground;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;
-    std::vector<Bridge> _bridges;
+    BridgeContainer  _bridges;
+    CitizenContainer _citizens;
     cellar::Calendar _calendar;
     Description _description;
 };
@@ -64,11 +71,6 @@ private:
 inline cellar::Vec2i City::size() const
 {
     return _size;
-}
-
-inline std::vector<Citizen>& City::citizens()
-{
-    return _citizens;
 }
 
 inline Sky& City::sky()
@@ -96,9 +98,14 @@ inline cellar::PGrid<Junction>& City::junctions()
     return _junctions;
 }
 
-inline std::vector<Bridge>& City::bridges()
+inline BridgeContainer &City::bridges()
 {
     return _bridges;
+}
+
+inline CitizenContainer& City::citizens()
+{
+    return _citizens;
 }
 
 inline cellar::Calendar& City::calendar()

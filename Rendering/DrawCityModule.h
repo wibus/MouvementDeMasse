@@ -22,10 +22,10 @@ class BridgesComponent;
 class DrawCityModule
 {
 public:
-    DrawCityModule(City& city);
+    DrawCityModule();
     ~DrawCityModule();
 
-    void setup();
+    void setup(City& city);
     void draw();
     void update();
 
@@ -33,13 +33,14 @@ public:
     void updateModelViewMatrix(const cellar::Matrix4x4<float>& view);
 
 protected:
+    void setupShaders();
     void updateShaders();
     void updateShadersProjectionMatrix();
     void updateShadersModelViewMatrix();
 
-    City&   _city;
-    Ground& _ground;
-    Description& _description;
+    City*   _city;
+    Ground* _ground;
+    Description* _description;
 
     // Shaders
     cellar::GLShaderProgram _minimalistShader;

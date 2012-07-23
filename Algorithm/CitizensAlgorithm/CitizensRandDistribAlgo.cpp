@@ -50,13 +50,17 @@ void CitizensRandDistribAlgo::setup(City &city)
         ctz.homeToWorkPath = homeToWorkPath;
         ctz.walkingSpeed = walkingSpeed;
 
-        _city->citizens().push_back( ctz );
+        _city->citizens().insert(make_pair(ctz.cid, ctz));
     }
 }
+
 
 void CitizensRandDistribAlgo::update()
 {
 }
+
+
+// Helper Methods
 
 Vec2i CitizensRandDistribAlgo::findRandomAccessibleLand(Land::Type type)
 {
