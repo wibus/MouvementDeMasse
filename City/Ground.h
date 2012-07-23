@@ -1,8 +1,8 @@
 #ifndef GROUND_H
 #define GROUND_H
 
-#include <MathsAndPhysics/Vector.h>
-#include <DataStructures/Grid.h>
+#include <DataStructure/Vector.h>
+#include <DataStructure/Grid.h>
 #include <Misc/CellarUtils.h>
 
 

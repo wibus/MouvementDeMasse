@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <MathsAndPhysics/Matrix.h>
+#include <DataStructure/Matrix.h>
 
 #include "AbstractComponent.h"
 
@@ -19,6 +19,8 @@ public:
     void update();
 
 protected:
+    static const int _CITIZEN_NB_BUFFS = 2;
+    unsigned int _citizennBuffs[_CITIZEN_NB_BUFFS];
     unsigned int _citizenVao;
     unsigned int _citizenTex;
     int _citizenNbElems;

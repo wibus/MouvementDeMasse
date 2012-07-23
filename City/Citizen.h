@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 
 class Path

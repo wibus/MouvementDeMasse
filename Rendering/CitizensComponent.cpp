@@ -9,17 +9,20 @@ using namespace cellar;
 
 CitizensComponent::CitizensComponent(City &city, cellar::GLShaderProgram &shader) :
     AbstractComponent(city, shader),
+    _citizennBuffs(),
     _citizenVao(0),
     _citizenTex(0),
     _citizenNbElems(0),
     _modelMats()
 {
     glGenVertexArrays(1, &_citizenVao);
+    glGenBuffers(_CITIZEN_NB_BUFFS, _citizennBuffs);
 }
 
 CitizensComponent::~CitizensComponent()
 {
     glDeleteVertexArrays(1, &_citizenVao);
+    glDeleteBuffers(_CITIZEN_NB_BUFFS, _citizennBuffs);
     GLToolkit::deleteTextureId(_citizenTex);
 }
 
@@ -50,17 +53,13 @@ void CitizensComponent::setup()
 
     glBindVertexArray( _citizenVao );
 
-    const int NB_BUFFERS = 2;
-    GLuint buffers[NB_BUFFERS];
-    glGenBuffers(NB_BUFFERS, buffers);
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * _citizenNbElems, positions.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, _citizennBuffs[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), positions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors[0]) * _citizenNbElems, colors.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, _citizennBuffs[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors[0]) * colors.size(), colors.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(color_loc);
     glVertexAttribPointer(color_loc, 4, GL_FLOAT, 0, 0, 0);
 

@@ -11,6 +11,7 @@ using namespace cellar;
 
 SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
     AbstractComponent(city, shader),
+    _skyBuffs(),
     _skyVao(0),
     _cloudsTex(0),
     _daySkyTex(0),
@@ -19,6 +20,7 @@ SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
     _skyNbSlices(3)
 {
     glGenVertexArrays(1, &_skyVao);
+    glGenBuffers(_SKY_NB_BUFFS, _skyBuffs);
 
     _cloudsTex = GLToolkit::genTextureId(_city.sky().cloudsImage());
 
@@ -35,6 +37,7 @@ SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
 SkyComponent::~SkyComponent()
 {
     glDeleteVertexArrays(1, &_skyVao);
+    glDeleteBuffers(_SKY_NB_BUFFS, _skyBuffs);
     GLToolkit::deleteTextureId(_cloudsTex);
     GLToolkit::deleteTextureId(_daySkyTex);
     GLToolkit::deleteTextureId(_nightSkyTex);
@@ -71,12 +74,9 @@ void SkyComponent::setupSky()
     //VAO setup
     glBindVertexArray(_skyVao);
 
-    unsigned int buffers[1];
-    glGenBuffers(1, buffers);
-
     int position_loc = _shader.getAttributeLocation("position_att");
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, _skyBuffs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), positions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);

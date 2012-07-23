@@ -4,7 +4,7 @@
 using namespace std;
 
 #include <Misc/CellarUtils.h>
-#include <MathsAndPhysics/Noise.h>
+#include <Algorithm/Noise.h>
 using namespace cellar;
 
 HeightByNoiseAlgo::HeightByNoiseAlgo()

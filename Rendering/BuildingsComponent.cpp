@@ -9,8 +9,10 @@ using namespace cellar;
 
 BuildingsComponent::BuildingsComponent(City &city, GLShaderProgram &shader) :
     AbstractComponent(city, shader),
+    _buildingBuffs(),
     _buildingWallsVao(0),
     _buildingNbElems(16),
+    _roofBuffs(),
     _roofVao(0),
     _roofNbElems(),
     _roofTex(0),
@@ -24,9 +26,13 @@ BuildingsComponent::BuildingsComponent(City &city, GLShaderProgram &shader) :
     _commerceSpec(0),
     _commercePos(),
     _commerceNbStories()
-{
+{    
     glGenVertexArrays(1, &_buildingWallsVao);
+    glGenBuffers(_BUILDING_NB_BUFFS, _buildingBuffs);
+
     glGenVertexArrays(1, &_roofVao);
+    glGenBuffers(_ROOF_NB_BUFFS, _roofBuffs);
+
 
     _roofTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/roofTex.bmp", false)
@@ -56,7 +62,9 @@ BuildingsComponent::BuildingsComponent(City &city, GLShaderProgram &shader) :
 BuildingsComponent::~BuildingsComponent()
 {
     glDeleteVertexArrays(1, &_buildingWallsVao);
+    glDeleteBuffers(_BUILDING_NB_BUFFS, _buildingBuffs);
     glDeleteVertexArrays(1, &_roofVao);
+    glDeleteBuffers(_ROOF_NB_BUFFS, _roofBuffs);
 
     GLToolkit::deleteTextureId(_roofTex);
     GLToolkit::deleteTextureId(_roofSpec);
@@ -169,28 +177,24 @@ void BuildingsComponent::setupBuidlindSides()
     }
 
 
-    // Ground VAO setup
+    // VAO setup
     glBindVertexArray(_buildingWallsVao);
-
-    const int nbAttributes = 3;
-    GLuint gBuffers[nbAttributes];
-    glGenBuffers(nbAttributes, gBuffers);
 
     int position_loc = _shader.getAttributeLocation("position_att");
     int normal_loc   = _shader.getAttributeLocation("normal_att");
     int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, _buildingBuffs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), positions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, _buildingBuffs[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(normals[0]) * normals.size(), normals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(normal_loc);
     glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[2]);
+    glBindBuffer(GL_ARRAY_BUFFER, _buildingBuffs[2]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords[0]) * texCoords.size(), texCoords.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(texCoord_loc);
     glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
@@ -226,19 +230,15 @@ void BuildingsComponent::setupRoofTop()
     // Ground VAO setup
     glBindVertexArray(_roofVao);
 
-    const int nbAttributes = 2;
-    GLuint gBuffers[nbAttributes];
-    glGenBuffers(nbAttributes, gBuffers);
-
     int position_loc = _shader.getAttributeLocation("position_att");
     int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, _roofBuffs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*positions) * _roofNbElems, positions, GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, gBuffers[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, _roofBuffs[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(*texCoords) * _roofNbElems, texCoords, GL_STATIC_DRAW);
     glEnableVertexAttribArray(texCoord_loc);
     glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
@@ -261,21 +261,6 @@ float BuildingsComponent::landHeight(int i, int j)
 void BuildingsComponent::draw()
 {
     _shader.pushThisProgram();
-
-    // Roof tops
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _roofSpec);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _roofTex);
-
-    glBindVertexArray(_roofVao);
-    glVertexAttrib3f(_shader.getAttributeLocation("normal_att"), 0,0,1);
-    for(size_t i=0; i<_roofPos.size(); ++i)
-    {
-        _shader.setVec3f("Translation", _roofPos[i] );
-        glDrawArrays(GL_TRIANGLE_FAN , 0, _roofNbElems);
-    }
-    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
 
 
     // Residential
@@ -314,6 +299,22 @@ void BuildingsComponent::draw()
     }
     _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
     _shader.setVec2f("RepeatFrom", Vec2f(1.0f, 1.0f));
+
+
+    // Roof tops
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _roofSpec);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _roofTex);
+
+    glBindVertexArray(_roofVao);
+    glVertexAttrib3f(_shader.getAttributeLocation("normal_att"), 0,0,1);
+    for(size_t i=0; i<_roofPos.size(); ++i)
+    {
+        _shader.setVec3f("Translation", _roofPos[i] );
+        glDrawArrays(GL_TRIANGLE_FAN , 0, _roofNbElems);
+    }
+    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
 
     _shader.popProgram();
 }

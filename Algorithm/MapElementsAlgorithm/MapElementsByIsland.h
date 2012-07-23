@@ -1,8 +1,8 @@
 #ifndef MAPELEMENTSBYISLAND_H
 #define MAPELEMENTSBYISLAND_H
 
-#include <DataStructures/Grid.h>
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Grid.h>
+#include <DataStructure/Vector.h>
 #include <stack>
 #include <vector>
 

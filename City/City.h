@@ -5,8 +5,8 @@
 #include <vector>
 
 #include <DateAndTime/Calendar.h>
-#include <DataStructures/PGrid.h>
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/PGrid.h>
+#include <DataStructure/Vector.h>
 
 #include "Citizen.h"
 #include "Sky.h"

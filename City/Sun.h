@@ -1,8 +1,8 @@
 #ifndef SUN_H
 #define SUN_H
 
-#include <MathsAndPhysics/Vector.h>
-#include <MathsAndPhysics/Matrix4x4.h>
+#include <DataStructure/Vector.h>
+#include <DataStructure/Matrix.h>
 
 class Sun
 {

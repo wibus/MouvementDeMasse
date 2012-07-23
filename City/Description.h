@@ -1,7 +1,7 @@
 #ifndef DESCRIPTION_H
 #define DESCRIPTION_H
 
-#include <MathsAndPhysics/Matrix4x4.h>
+#include <DataStructure/Matrix.h>
 #include <Graphics/Light/Light3D.h>
 
 

@@ -1,7 +1,7 @@
 #ifndef BRIDGE_H
 #define BRIDGE_H
 
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 class Bridge
 {

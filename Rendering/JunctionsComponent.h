@@ -14,6 +14,8 @@ public:
     void draw();
 
 protected:
+    static const int _JUNCTIONS_NB_BUFFS = 2;
+    unsigned int _junctionsBuffs[_JUNCTIONS_NB_BUFFS];
     unsigned int _junctionsVao;
     unsigned int _junctionsTex;
     int          _junctionsNbElems;

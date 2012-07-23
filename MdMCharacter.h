@@ -6,7 +6,7 @@
 #include <DateAndTime/Calendar.h>
 #include <Graphics/Camera/Camera.h>
 #include <Graphics/Camera/CameraManFree.h>
-#include <DesignPatterns/SpecificObserver.h>
+#include <DesignPattern/SpecificObserver.h>
 #include <Text/2D/Text.h>
 #include <Characters/AbstractCharacter.h>
 

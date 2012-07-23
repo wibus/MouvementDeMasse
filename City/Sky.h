@@ -1,9 +1,9 @@
 #ifndef SKY_H
 #define SKY_H
 
-#include <DataStructures/Grid.h>
+#include <DataStructure/Grid.h>
 #include <Graphics/Image.h>
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 
 class Sky

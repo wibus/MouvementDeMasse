@@ -1,7 +1,7 @@
 #ifndef MDMTYPES_H
 #define MDMTYPES_H
 
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 
 enum CardinalDirection{EAST, WEST, NORTH, SOUTH, NB_DIRECTIONS, DIRECTION_ERROR};

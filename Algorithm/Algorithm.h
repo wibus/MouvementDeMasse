@@ -1,7 +1,7 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 #include "City/City.h"
 

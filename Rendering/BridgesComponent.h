@@ -2,7 +2,7 @@
 #define BRIDGESCOMPONENT_H
 
 #include <vector>
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 #include "AbstractComponent.h"
 
@@ -17,7 +17,9 @@ public:
     void draw();
 
 protected:
-    unsigned int _bridgeVao;
+    static const int _BRIDGE_NB_BUFFS = 3;
+    unsigned int _bridgeBuffs[_BRIDGE_NB_BUFFS];
+    unsigned int _bridgeVao;    
     unsigned int _bridgeTex;
     int _bridgeNbElems;
 };

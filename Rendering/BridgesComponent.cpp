@@ -12,11 +12,13 @@ using namespace cellar;
 
 BridgesComponent::BridgesComponent(City& city, cellar::GLShaderProgram& shader) :
     AbstractComponent(city, shader),
-    _bridgeVao(0),
+    _bridgeBuffs(),
+    _bridgeVao(0),    
     _bridgeTex(0),
     _bridgeNbElems(0)
 {
     glGenVertexArrays(1, &_bridgeVao);
+    glGenBuffers(_BRIDGE_NB_BUFFS, _bridgeBuffs);
 
     _bridgeTex = GLToolkit::genTextureId(
         getImageBank().getImage("resources/textures/bridgeTex.bmp", true)
@@ -26,6 +28,7 @@ BridgesComponent::BridgesComponent(City& city, cellar::GLShaderProgram& shader) 
 BridgesComponent::~BridgesComponent()
 {
     glDeleteVertexArrays(1, &_bridgeVao);
+    glDeleteBuffers(_BRIDGE_NB_BUFFS, _bridgeBuffs);
     GLToolkit::deleteTextureId(_bridgeTex);
 }
 
@@ -161,28 +164,25 @@ void BridgesComponent::setup()
 
     _bridgeNbElems = positions.size();
 
+
     // Setup Vao
     glBindVertexArray( _bridgeVao );
-
-    const int NB_BUFFS = 3;
-    GLuint buffers[NB_BUFFS];
-    glGenBuffers(NB_BUFFS, buffers);
 
     int position_loc = _shader.getAttributeLocation("position_att");
     int normal_loc   = _shader.getAttributeLocation("normal_att");
     int texCoord_loc = _shader.getAttributeLocation("texCoord_att");
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, _bridgeBuffs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), positions.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(position_loc);
     glVertexAttribPointer(position_loc, 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[3]);
+    glBindBuffer(GL_ARRAY_BUFFER, _bridgeBuffs[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(normals[0]) * normals.size(), normals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(normal_loc);
     glVertexAttribPointer(normal_loc, 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
+    glBindBuffer(GL_ARRAY_BUFFER, _bridgeBuffs[2]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords[0]) * texCoords.size(), texCoords.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(texCoord_loc);
     glVertexAttribPointer(texCoord_loc, 2, GL_FLOAT, 0, 0, 0);
