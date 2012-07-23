@@ -14,7 +14,12 @@ Path::Path(const cellar::Vec2i& source, const cellar::Vec2i& destination) :
 {
 }
 
+
+int Citizen::__nextId = 0;
+int Citizen::__assigneId() {return __nextId++;}
+
 Citizen::Citizen() :
+    cid(__assigneId()),
     state(Citizen::AT_HOME),
     position(0.0f, 0.0f, 0.0f),
     direction(1.0f, 0.0f, 0.0f),

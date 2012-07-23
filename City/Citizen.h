@@ -28,6 +28,7 @@ public:
 
     Citizen();
 
+    int           cid;
     State         state;
     cellar::Vec3f position;
     cellar::Vec3f direction;
@@ -35,6 +36,10 @@ public:
     cellar::Vec2i workPos;
     Path          homeToWorkPath;
     float         walkingSpeed;
+
+private:
+    static int __assigneId();
+    static int __nextId;
 };
 
 #endif // CITIZEN_H
