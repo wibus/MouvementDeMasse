@@ -24,7 +24,9 @@ Citizen::Citizen() :
     position(0.0f, 0.0f, 0.0f),
     direction(1.0f, 0.0f, 0.0f),
     homePos(0, 0),
+    homeRoom(0, 0, 0),
     workPos(0, 0),
+    workRoom(0, 0, 0),
     homeToWorkPath(),
     walkingSpeed(1.0f)
 {

@@ -21,7 +21,7 @@ using namespace scaena;
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
     _city( new City(64, 48) ),
-    _drawCityModule( new DrawCityModule(*_city) ),
+    _drawCityModule( new DrawCityModule() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
     _mapElemAlgo(    new MapElementsDepthFirst() ),
     _citizensAlgo(   new CitizensRandDistribAlgo() ),
@@ -105,9 +105,9 @@ void MdMCharacter::endStep(const StageTime &)
 
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
-    _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
-
     _drawCityModule->draw();
+
+    _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );    
     _fpsText.draw();
     _upsText.draw();
     _dateText.draw();
@@ -160,5 +160,5 @@ void MdMCharacter::setAlgorithms()
     _citizensAlgo->setup( *_city );
 
     // Rendering
-    _drawCityModule->setup();
+    _drawCityModule->setup( *_city );
 }

@@ -9,8 +9,15 @@
 class Path
 {
 public:
-    enum NodeType {LAND, JUNCTION, METRO, BUS_STOP, NB_NODES};
-    typedef std::vector< std::pair<NodeType, cellar::Vec2i> > NodeVector;
+    enum NodeType {LAND, JUNCTION, BRIDGE_END, METRO, BUS_STOP, NB_NODES};
+    struct Node
+    {
+        Node(NodeType type, const cellar::Vec2i& pos) : type(type), pos(pos) {}
+        NodeType type;
+        cellar::Vec2i pos;
+    };
+    typedef std::vector< Node >  NodeVector;
+    typedef NodeVector::iterator NodeIterator;
 
     Path();
     Path(const cellar::Vec2i& source, const cellar::Vec2i& destination);
@@ -32,8 +39,10 @@ public:
     State         state;
     cellar::Vec3f position;
     cellar::Vec3f direction;
-    cellar::Vec2i homePos;
-    cellar::Vec2i workPos;
+    cellar::Vec2i homePos;      //Vec3i(MapX,  MapY)
+    cellar::Vec3i homeRoom;     //Vec3i(BuildingX, BuildingY, Floor)
+    cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
+    cellar::Vec3i workRoom;     //Vec3i(BuildingX, BuildingY, Floor)
     Path          homeToWorkPath;
     float         walkingSpeed;
 

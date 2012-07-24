@@ -7,13 +7,13 @@ using namespace cellar;
 
 City::City(int width, int height):
     _size(  width, height),
-    _citizens(),
     _sky(128, 128),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
     _ground(   width+1, height+1),    
     _lands(    width,   height),
     _junctions(width+1, height+1),
     _bridges(),
+    _citizens(),
     _calendar(),
     _description()
 {
@@ -23,9 +23,8 @@ void City::reset()
 {
     resetJunctions();
     resetLands();
-
-    _citizens.clear();
     _bridges.clear();
+    _citizens.clear();
 }
 
 bool City::load(const string &)

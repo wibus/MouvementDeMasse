@@ -1,5 +1,6 @@
 #include "CitizensEqualAlgo.h"
 
+using namespace std;
 using namespace cellar;
 
 
@@ -21,7 +22,7 @@ void CitizensEqualAlgo::setup(City &city)
                 ctz.position(i, j, _ground->heightAt(i, j));
                 ctz.walkingSpeed = (0.8f + randomRange(-0.5f, 0.5f)) * _city->description().unitPerMeter;
 
-                _city->citizens().push_back(ctz);
+                _city->citizens().insert(make_pair(ctz.cid, ctz));
             }
         }
     }
