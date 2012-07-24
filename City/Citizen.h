@@ -9,8 +9,15 @@
 class Path
 {
 public:
-    enum NodeType {LAND, JUNCTION, METRO, BUS_STOP, NB_NODES};
-    typedef std::vector< std::pair<NodeType, cellar::Vec2i> > NodeVector;
+    enum NodeType {LAND, JUNCTION, BRIDGE_END, METRO, BUS_STOP, NB_NODES};
+    struct Node
+    {
+        Node(NodeType type, const cellar::Vec2i& pos) : type(type), pos(pos) {}
+        NodeType type;
+        cellar::Vec2i pos;
+    };
+    typedef std::vector< Node >  NodeVector;
+    typedef NodeVector::iterator NodeIterator;
 
     Path();
     Path(const cellar::Vec2i& source, const cellar::Vec2i& destination);

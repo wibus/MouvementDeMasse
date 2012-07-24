@@ -105,9 +105,9 @@ void MdMCharacter::endStep(const StageTime &)
 
 void MdMCharacter::draw(const scaena::StageTime &time)
 {
-    _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
-
     _drawCityModule->draw();
+
+    _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );    
     _fpsText.draw();
     _upsText.draw();
     _dateText.draw();

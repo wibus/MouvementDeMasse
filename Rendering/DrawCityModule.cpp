@@ -92,6 +92,7 @@ void DrawCityModule::setup(City &city)
     _description = &city.description();
 
     setupShaders();
+    update();
 
     for(size_t i=0; i<_components.size(); ++i)
         delete _components[i];
