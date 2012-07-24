@@ -180,32 +180,33 @@ bool CitizensRandDistribAlgo::homeToWorkPathByDijkstra(Path& path, const Vec2i& 
         nodes.front().lastNodes.push_back(nodes.front().curNode);
 
         // Take out the node position and known nodes list
-        Path::Node&       curNode    = nodes.front().curNode;
-        Path::NodeVector& lastNodes  = nodes.front().lastNodes;
+        Path::Node&       cNode    = nodes.front().curNode;
+        Path::NodeVector& lNodes  = nodes.front().lastNodes;
+
 
         // For all cardinal directions
         for(int d=0; d<NB_DIRECTIONS; ++d)
         {
             // If there is a street connecting to a junction in that direction
-            if(_city->junctions().get(curNode.pos)->getStreet(_cardinalDirections[d]) != 0x0)
+            if(_city->junctions().get(cNode.pos)->getStreet(_cardinalDirections[d]) != 0x0)
             {
-                Path::Node next(Path::JUNCTION, curNode.pos + toVec(_cardinalDirections[d]));
+                Path::Node next(Path::JUNCTION, cNode.pos + toVec(_cardinalDirections[d]));
 
                 // If the next node is unknown
                 if(juncs.get(next.pos) == UKN_TKN)
                 {
                     // Copy the current node and mark the next has known
-                    nodes.push(DijkstraNode(next, lastNodes));
+                    nodes.push(DijkstraNode(next, lNodes));
                     juncs.set(next.pos, KNW_TKN);
                 }
 
                 // If the next node is the destination node
                 else if(juncs.get(next.pos) == DST_TKN)
                 {
-                    lastNodes.push_back( next );
+                    lNodes.push_back( next );
 
                     // Set this lastNodes vector to be the chosen path
-                    path.nodes = lastNodes;
+                    path.nodes = lNodes;
 
                     // Get out of the algorithm
                     // and show that it has found the destination
@@ -217,31 +218,31 @@ bool CitizensRandDistribAlgo::homeToWorkPathByDijkstra(Path& path, const Vec2i& 
             }
         }
 
-        if(bridgeExt.find(curNode.pos) != bridgeExt.end())
+        if(bridgeExt.find(cNode.pos) != bridgeExt.end())
         {
             BridgeIterator bIt = _city->bridges().begin();
             for(;bIt != _city->bridges().end(); ++bIt)
             {
-                if(bIt->isAnEnd(curNode.pos))
+                if(bIt->isAnEnd(cNode.pos))
                 {
-                    lastNodes.end()->type = Path::BRIDGE_END;
-                    Path::Node next(Path::BRIDGE_END, bIt->otherEnd(curNode.pos));
+                    lNodes.back().type = Path::BRIDGE_END;
+                    Path::Node next(Path::BRIDGE_END, bIt->otherEnd(cNode.pos));
 
                     // If the next node is unknown
                     if(juncs.get(next.pos) == UKN_TKN)
                     {
                         // Copy the current node and mark the next has known
-                        nodes.push(DijkstraNode(next, lastNodes));
+                        nodes.push(DijkstraNode(next, lNodes));
                         juncs.set(next.pos, KNW_TKN);
                     }
 
                     // If the next node is the destination node
                     else if(juncs.get(next.pos) == DST_TKN)
                     {
-                        lastNodes.push_back( next );
+                        lNodes.push_back( next );
 
                         // Set this lastNodes vector to be the chosen path
-                        path.nodes = lastNodes;
+                        path.nodes = lNodes;
 
                         // Get out of the algorithm
                         // and show that it has found the destination
