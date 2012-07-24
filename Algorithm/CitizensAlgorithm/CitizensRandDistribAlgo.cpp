@@ -32,7 +32,7 @@ void CitizensRandDistribAlgo::setup(City &city)
 
     int nbCitizens = 0;
     if(nbResidentialLands != 0  &&  nbCommercialLands !=0)
-        nbCitizens = (nbResidentialLands + nbCommercialLands) * 2;
+        nbCitizens = (nbResidentialLands + nbCommercialLands);
 
     for(int c=0; c<nbCitizens; ++c)
     {
@@ -123,29 +123,19 @@ bool CitizensRandDistribAlgo::isAccessible(const Vec2i& pos)
 
 Vec2i CitizensRandDistribAlgo::randomAccessPointTo(const Vec2i& pos)
 {
-    Vec2f landPos(pos.x() + 0.5f, pos.y() + 0.5f);
-    Vec2f streetDir(0.5f, 0.0f);
-    Vec2f cornerDir;
-    Vec2f corner;
-    Vec2i juncPos;
+    Vec2i offsets[] = {
+        Vec2i(0, 0),
+        Vec2i(1, 0),
+        Vec2i(1, 1),
+        Vec2i(0, 1)
+    };
 
-    int turnOffset = randomRange(0, 4);
-    for(int i=0; i<turnOffset; ++i) streetDir.rotateQuarterCCW();
+    int turn = randomRange(0, 4);
 
-    cornerDir = streetDir;
-    cornerDir.rotateQuarterCW();
-    corner = landPos + streetDir + cornerDir;
-    juncPos(round(corner.x()), round(corner.y()));
+    while(_city->junctions().get(pos + offsets[turn])->type() == Junction::GRASS)
+        turn = (turn + 1) % 4;
 
-    while(_city->junctions().get(juncPos)->type() == Junction::GRASS)
-    {
-        streetDir.rotateQuarterCCW();
-        cornerDir.rotateQuarterCCW();
-        corner = landPos + streetDir + cornerDir;
-        juncPos(round(corner.x()), round(corner.y()));
-    }
-
-    return juncPos;
+    return pos + offsets[turn];
 }
 
 

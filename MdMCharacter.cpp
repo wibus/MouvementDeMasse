@@ -55,6 +55,8 @@ void MdMCharacter::enterStage()
     setAlgorithms();
     stage().camera().refresh();
     _city->calendar().start();
+
+    _city->save("TestSave.xml");
 }
 
 void MdMCharacter::beginStep(const StageTime &time)

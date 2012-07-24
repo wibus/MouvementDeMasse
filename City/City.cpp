@@ -2,6 +2,11 @@
 
 #include <cmath>
 using namespace std;
+
+#include <QFile>
+#include <QTextStream>
+#include <QXmlStreamWriter>
+
 using namespace cellar;
 
 
@@ -27,14 +32,35 @@ void City::reset()
     _citizens.clear();
 }
 
-bool City::load(const string &)
+bool City::load(const string& fileName)
 {
     return false;
 }
 
-bool City::save(const string &)
+bool City::save(const string& fileName)
 {
-    return false;
+    QString xmlDoc;
+    QXmlStreamWriter xmlWriter(&xmlDoc);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+
+    xmlWriter.writeStartElement("city");
+    xmlWriter.writeStartElement("size");
+    xmlWriter.writeAttribute("width", QString::number(_size.x()));
+    xmlWriter.writeAttribute("height", QString::number(_size.y()));
+    xmlWriter.writeEndElement(); // size
+    xmlWriter.writeEndElement(); // city
+
+    xmlWriter.writeEndDocument();
+
+
+    QFile file(fileName.c_str());
+    file.open(QIODevice::WriteOnly);
+    QTextStream stream(&file);
+    stream << xmlDoc;
+    file.close();
+
+    return true;
 }
 
 void City::update()

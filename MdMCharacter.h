@@ -15,6 +15,7 @@ class DrawCityModule;
 class HeightsAlgorithm;
 class MapElementsAlgorithm;
 class CitizensAlgorithm;
+class SaveAndLoadAlgorithm;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
