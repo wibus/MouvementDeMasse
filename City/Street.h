@@ -2,7 +2,7 @@
 #define STREET_H
 
 #include <cassert>
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 class Street
 {

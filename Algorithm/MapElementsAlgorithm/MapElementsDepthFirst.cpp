@@ -126,7 +126,7 @@ void MapElementsDepthFirst::setup(City& city)
                 int landType = randomRange(0, (int) Land::NB_TYPES);
 
                 lands->get(i, j)->setType((Land::Type) landType);
-                lands->get(i, j)->setNbStories(2+randomRange(0, 6));
+                lands->get(i, j)->setNbStories(2+randomRange(0, Land::maxNbStories()-2));
             }
         }
     }

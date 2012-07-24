@@ -14,8 +14,10 @@ public:
     void draw();
 
 protected:
+    static const int _WATER_NB_BUFFS = 1;
+    unsigned int _waterBuffs[_WATER_NB_BUFFS];
     unsigned int _waterVao;
-    const int _waterNbElems;
+    const int _WATER_NB_ELEMS;
 };
 
 #endif // WATERCOMPONENT_H

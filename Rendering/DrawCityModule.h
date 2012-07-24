@@ -6,14 +6,17 @@
 
 class City;
 class Ground;
-class Visual;
+class Description;
+
 class AbstractComponent;
 class SkyComponent;
 class GroundComponent;
+class WaterComponent;
+class CitizensComponent;
 class JunctionsComponent;
 class StreetsComponent;
 class BuildingsComponent;
-class WaterComponent;
+class BridgesComponent;
 
 
 class DrawCityModule
@@ -36,21 +39,24 @@ protected:
 
     City&   _city;
     Ground& _ground;
-    Visual& _visual;
+    Description& _description;
 
     // Shaders
+    cellar::GLShaderProgram _minimalistShader;
     cellar::GLShaderProgram _skyShader;
     cellar::GLShaderProgram _groundShader;
-    cellar::GLShaderProgram _infrastructShader;
     cellar::GLShaderProgram _waterShader;
+    cellar::GLShaderProgram _infrastructShader;
 
     std::vector<AbstractComponent*> _components;
     SkyComponent*       _skyComponent;
     GroundComponent*    _groundComponent;
+    WaterComponent*     _waterComponent;
+    CitizensComponent*  _citizensComponent;
     JunctionsComponent* _junctionsComponent;
     StreetsComponent*   _streetsComponent;
     BuildingsComponent* _buildingsComponent;
-    WaterComponent*     _waterComponent;    
+    BridgesComponent*   _bridgesComponent;
 };
 
 

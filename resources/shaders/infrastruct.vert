@@ -1,10 +1,9 @@
 #version 120
 
 uniform mat4 ProjectionMatrix;
-uniform mat4 ModelViewMatrix;
+uniform mat4 ViewMatrix;
 uniform mat3 NormalMatrix;
 uniform vec3 Translation;
-uniform float StructureHeight;
 
 attribute vec3 position_att;
 attribute vec3 normal_att;
@@ -16,10 +15,10 @@ varying vec2 texCoord;
 
 void main(void)
 {
-    vec3 movedPos = vec3(position_att.xy, position_att.z*StructureHeight) + Translation;
-    eyeVec = ModelViewMatrix * vec4(movedPos, 1.0);
+    vec3 movedPos = position_att + Translation;
+    eyeVec = ViewMatrix * vec4(movedPos, 1.0);
     gl_Position = ProjectionMatrix * eyeVec;
 
     normal = NormalMatrix * normal_att;
-    texCoord = vec2(texCoord_att.s, texCoord_att.t * StructureHeight);
+    texCoord = texCoord_att;
 }

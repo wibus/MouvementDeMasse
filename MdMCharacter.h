@@ -6,15 +6,15 @@
 #include <DateAndTime/Calendar.h>
 #include <Graphics/Camera/Camera.h>
 #include <Graphics/Camera/CameraManFree.h>
-#include <DesignPatterns/SpecificObserver.h>
+#include <DesignPattern/SpecificObserver.h>
 #include <Text/2D/Text.h>
 #include <Characters/AbstractCharacter.h>
 
 class City;
 class DrawCityModule;
-class CitizensAlgorithm;
 class HeightsAlgorithm;
 class MapElementsAlgorithm;
+class CitizensAlgorithm;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
@@ -44,9 +44,9 @@ private:
 
     City* _city;
     DrawCityModule* _drawCityModule;
-    CitizensAlgorithm*    _citizensAlgo;
     HeightsAlgorithm*     _heightsAlgo;
     MapElementsAlgorithm* _mapElemAlgo;
+    CitizensAlgorithm*    _citizensAlgo;
 
     cellar::CameraManFree _camMan;
     prop::twoD::Text _dateText;

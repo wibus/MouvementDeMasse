@@ -1,7 +1,7 @@
 #ifndef MAPELEMENTSDEPTHFIRST_H
 #define MAPELEMENTSDEPTHFIRST_H
 
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 #include <stack>
 
 #include "MapElementsAlgorithm.h"

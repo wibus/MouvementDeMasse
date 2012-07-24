@@ -13,7 +13,7 @@ using namespace scaena;
 #include "MdMCharacter.h"
 #include "City/City.h"
 #include "Rendering/DrawCityModule.h"
-#include "Algorithm/CitizensAlgorithm/CitizensEqualAlgo.h"
+#include "Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
@@ -22,9 +22,9 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
     _city( new City(64, 48) ),
     _drawCityModule( new DrawCityModule(*_city) ),
-    _citizensAlgo( new CitizensEqualAlgo() ),
-    _heightsAlgo(  new HeightByNoiseAlgo() ),
-    _mapElemAlgo(  new MapElementsDepthFirst() ),
+    _heightsAlgo(    new HeightByNoiseAlgo() ),
+    _mapElemAlgo(    new MapElementsDepthFirst() ),
+    _citizensAlgo(   new CitizensRandDistribAlgo() ),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()
@@ -37,7 +37,7 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
 
-    _city->calendar().setClock(Calendar::Clock(Calendar::Clock::MINUTE));
+    _city->calendar().setClock(Calendar::Clock(Calendar::Clock::SECOND));
     _city->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
 }
 
@@ -62,6 +62,7 @@ void MdMCharacter::beginStep(const StageTime &time)
     updateCamera( time.elapsedTime() );
 
     _city->update();
+    _citizensAlgo->update();
     _drawCityModule->update();
 
     _dateText.setText(_city->calendar().date().toString(true, true));

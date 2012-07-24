@@ -1,7 +1,7 @@
 #version 120
 
-uniform mat3 View;
-uniform mat4 Projection;
+uniform mat4 ProjectionMatrix;
+uniform mat3 ViewMatrix;
 
 attribute vec3 position_att;
 attribute vec2 texCoord_att;
@@ -13,6 +13,6 @@ varying vec3 fragDir;
 void main(void)
 {
     position    = position_att;
-    fragDir     = View * position;
-    gl_Position = Projection * vec4(fragDir, 1.0);
+    fragDir     = ViewMatrix * position;
+    gl_Position = ProjectionMatrix * vec4(fragDir, 1.0);
 }

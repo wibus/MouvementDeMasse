@@ -2,7 +2,7 @@
 #define BUILDINGSCOMPONENT_H
 
 #include <vector>
-#include <MathsAndPhysics/Vector.h>
+#include <DataStructure/Vector.h>
 
 #include "AbstractComponent.h"
 
@@ -22,9 +22,14 @@ protected:
     void setupBuidlindSides();
     void setupRoofTop();
 
+    static const int _BUILDING_NB_BUFFS = 3;
+    unsigned int _buildingBuffs[_BUILDING_NB_BUFFS];
     unsigned int _buildingWallsVao;
-    int          _buildingNbElems;
+    const int    _buildingNbElems;
+    std::vector< std::vector<unsigned int> > _buildingIndices;
 
+    static const int _ROOF_NB_BUFFS = 3;
+    unsigned int _roofBuffs[_ROOF_NB_BUFFS];
     unsigned int _roofVao;
     int          _roofNbElems;
     unsigned int _roofTex;
@@ -33,13 +38,13 @@ protected:
 
     unsigned int _apartmentTex;
     unsigned int _apartmentSpec;
-    std::vector< cellar::Vec3f > _apartmentsPos;
-    std::vector< float > _apartmentTexScaleCoeff;
+    std::vector< cellar::Vec3f > _apartmentPos;
+    std::vector< int >           _apartmentNbStories;
 
     unsigned int _commerceTex;
     unsigned int _commerceSpec;
     std::vector< cellar::Vec3f > _commercePos;
-    std::vector< float > _commerceTexScaleCoeff;
+    std::vector< int >           _commerceNbStories;
 };
 
 #endif // BUILDINGSCOMPONENT_H

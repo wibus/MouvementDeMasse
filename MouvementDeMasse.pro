@@ -68,11 +68,14 @@ SOURCES += \
     Algorithm/MapElementsAlgorithm/MapElementsByIsland.cpp \
     Rendering/BuildingsComponent.cpp \
     City/Sky.cpp \
-    City/Visual.cpp \
     City/Citizen.cpp \
     Algorithm/CitizensAlgorithm/CitizensAlgorithm.cpp \
     Algorithm/CitizensAlgorithm/CitizensEqualAlgo.cpp \
-    City/Bridge.cpp
+    Rendering/BridgesComponent.cpp \
+    City/Bridge.cpp \
+    Rendering/CitizensComponent.cpp \
+    Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.cpp \
+    City/Description.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -100,17 +103,18 @@ HEADERS += \
     Rendering/BuildingsComponent.h \
     Rendering/AbstractComponent.h \
     City/Sky.h \
-    City/Visual.h \
     City/Citizen.h \
     Algorithm/CitizensAlgorithm/CitizensAlgorithm.h \
     Algorithm/CitizensAlgorithm/CitizensEqualAlgo.h \
-    City/Bridge.h
+    Rendering/BridgesComponent.h \
+    City/Bridge.h \
+    Rendering/CitizensComponent.h \
+    Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.h \
+    City/Description.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \
     resources/shaders/ground.frag \
-    resources/shaders/highPrecGround.vert \
-    resources/shaders/highPrecGround.frag \
     resources/shaders/water.vert \
     resources/shaders/water.frag \
     resources/shaders/infrastruct.frag \
@@ -130,6 +134,8 @@ OTHER_FILES += \
     resources/textures/apartSpec.bmp \
     resources/textures/apart.xcf \
     resources/fonts/Arial.flw \
-    resources/fonts/Arial.bmp
+    resources/fonts/Arial.bmp \
+    resources/shaders/minimalist.frag \
+    resources/shaders/minimalist.vert
 
 

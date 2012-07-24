@@ -1,14 +1,14 @@
-#ifndef VISUAL_H
-#define VISUAL_H
+#ifndef DESCRIPTION_H
+#define DESCRIPTION_H
 
-#include <MathsAndPhysics/Matrix4x4.h>
+#include <DataStructure/Matrix.h>
 #include <Graphics/Light/Light3D.h>
 
 
-class Visual
+class Description
 {
 public:
-    Visual();
+    Description();
 
     // Matrices
     cellar::Matrix4x4<float> projMat;
@@ -33,9 +33,17 @@ public:
     // Shininesses
     float waterShininess;
 
-    // Roads
+    // Sizes
+    float unitPerMeter;
+    float meterPerUnit;
+    float citizensHeight;
     float roadWidth;
-    float roadHalfWidth;
+    float bridgeWidth;
+    float bridgeHeight;
+    float storyHeight;
+
+    // Speeds
+    float normalWalkingSpeed;
 };
 
-#endif // VISUAL_H
+#endif // DESCRIPTION_H

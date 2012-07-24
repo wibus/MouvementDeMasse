@@ -18,6 +18,7 @@ struct DirectionnalLight
 
 uniform DirectionnalLight sun;
 uniform float Shininess;
+uniform vec2 RepeatFrom;
 uniform sampler2D TexUnit;
 uniform sampler2D SpecUnit;
 
@@ -36,9 +37,11 @@ vec4 NormalizedBlinnPhong(in vec3 N, in vec3 L, in vec3 V,
 
 void main(void)
 {
-    vec2 tex = vec2(texCoord.s, texCoord.t - floor(texCoord.t));
-    if(texCoord.t > 1.0 && tex.t < 0.5)
-        tex.t += 0.5;
+    vec2 tex = texCoord - floor(texCoord);
+    if(abs(texCoord.s) > 1.0 && tex.s < 0.5)
+        tex.s += RepeatFrom.s;
+    if(abs(texCoord.t) > 1.0 && tex.t < 0.5)
+        tex.t += RepeatFrom.t;
 
     vec4 color = texture2D(TexUnit, tex);
     vec4 specular = texture2D(SpecUnit, tex);

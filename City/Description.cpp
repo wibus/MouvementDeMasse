@@ -1,6 +1,6 @@
-#include "Visual.h"
+#include "Description.h"
 
-Visual::Visual() :
+Description::Description() :
     sunRadius(0.99994f),
     sunLight(),
     sunColor(     1.00, 0.90, 0.20, 1.00),
@@ -12,8 +12,14 @@ Visual::Visual() :
     mudColor(     0.20, 0.14, 0.01, 1.00),
     waterColor(   0.03, 0.03, 0.30, 0.42),
     waterShininess( 200.0f),
-    roadWidth(0.125f),
-    roadHalfWidth(roadWidth/2.0f)
+    unitPerMeter(1.0f/40.0f),
+    meterPerUnit(1.0f/unitPerMeter),
+    citizensHeight(1.8f * unitPerMeter),
+    roadWidth(     8.00f * unitPerMeter),
+    bridgeWidth(   2.0f*roadWidth),
+    bridgeHeight(  bridgeWidth),
+    storyHeight(   8.0f * unitPerMeter),
+    normalWalkingSpeed( 1.4f * unitPerMeter)
 {
     sunLight.direction(1.0f, 1.0f, 0.0f, 0.0f).normalize();
     sunLight.ambient = curSkyColor;

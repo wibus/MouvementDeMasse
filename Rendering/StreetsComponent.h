@@ -14,6 +14,8 @@ public:
     void draw();
 
 protected:
+    static const int _STREETS_NB_BUFFS = 3;
+    unsigned int _streetsBuffs[_STREETS_NB_BUFFS];
     unsigned int _streetsVao;
     unsigned int _streetsTex;
     int          _streetsNbElems;
