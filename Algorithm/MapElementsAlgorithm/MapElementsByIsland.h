@@ -35,6 +35,7 @@ private:
     void bridgeIslands();
     void bridgeTwoIslands(int firstIsland, int secondIsland);
     void landIslands();
+    float slope (const cellar::Vec2i& endA, const cellar::Vec2i& endB);
     bool isJunctionInBounds(cellar::Vec2i position);
     bool isJunctionAboveWater(cellar::Vec2i position);
     bool isLandInBounds(cellar::Vec2i position);

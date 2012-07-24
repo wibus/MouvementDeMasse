@@ -300,6 +300,17 @@ void MapElementsByIsland::landIslands()
 
 }
 
+float MapElementsByIsland::slope (const cellar::Vec2i& endA, const cellar::Vec2i& endB)
+{
+    float heightDiff = _city->ground().heightAt(endA) -
+                       _city->ground().heightAt(endB);
+
+    //float distance = cellar::Vec2f(endA - endB).length();
+    float distance = 0;
+
+    return heightDiff - distance;
+}
+
 bool MapElementsByIsland::isJunctionInBounds(Vec2i position)
 {
     return !(position.x() >= _mapSize.x() ||
