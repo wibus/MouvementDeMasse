@@ -276,8 +276,13 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
                        absolute(_islandEdges[firstIsland][bestJuncFirst].y() -
                                 _islandEdges[secondIsland][currPos].y());
         if (currDistance < bestDistance)
+        {
+            bestDistance = currDistance;
             bestJuncSecond = currPos;
+        }
     }
+
+    bestDistance = _mapSize.x() + _mapSize.y() + 1;
 
     for (uint currPos = 0; currPos < _islandEdges[firstIsland].size(); ++currPos)
     {
@@ -287,12 +292,43 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
                        absolute(_islandEdges[firstIsland][currPos].y() -
                                 _islandEdges[secondIsland][bestJuncSecond].y());
         if (currDistance < bestDistance)
+        {
+            bestDistance = currDistance;
             bestJuncFirst = currPos;
+        }
     }
 
     Vec2i endA(_islandEdges[firstIsland][bestJuncFirst]);
     Vec2i endB(_islandEdges[secondIsland][bestJuncSecond]);
     _city->bridges().push_back(Bridge(endA, endB));
+
+    Vec2i atob = endB - endA;
+    int horizontalDir = 0;
+    int verticalDir = 0;
+
+    if (atob.x() < 0)
+    {
+        horizontalDir = -1;
+    }
+    else
+    {
+        horizontalDir = 1;
+    }
+
+    if (atob.y() < 0)
+    {
+        verticalDir = -1;
+    }
+    else
+    {
+        verticalDir = 1;
+    }
+
+    Vec2i currPos = endA;
+    /*while (currPos != endB)
+    {
+        bool wait = true;
+    }*/
 }
 
 void MapElementsByIsland::landIslands()
@@ -305,10 +341,9 @@ float MapElementsByIsland::slope (const cellar::Vec2i& endA, const cellar::Vec2i
     float heightDiff = _city->ground().heightAt(endA) -
                        _city->ground().heightAt(endB);
 
-    //float distance = cellar::Vec2f(endA - endB).length();
-    float distance = 0;
+    float distance = cellar::Vec2f(endA - endB).length();
 
-    return heightDiff - distance;
+    return heightDiff / distance;
 }
 
 bool MapElementsByIsland::isJunctionInBounds(Vec2i position)
