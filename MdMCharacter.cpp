@@ -20,10 +20,10 @@ using namespace scaena;
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _city( new City(64, 48) ),
+    _city( new City(32, 32) ),
     _drawCityModule( new DrawCityModule() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
-    _mapElemAlgo(    new MapElementsDepthFirst() ),
+    _mapElemAlgo(    new MapElementsByIsland() ),
     _citizensAlgo(   new CitizensRandDistribAlgo() ),
     _camMan( stage.camera() ),
     _fpsText(),
