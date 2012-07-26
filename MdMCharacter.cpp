@@ -55,8 +55,6 @@ void MdMCharacter::enterStage()
     setAlgorithms();
     stage().camera().refresh();
     _city->calendar().start();
-
-    _city->save("TestSave.xml");
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -143,6 +141,16 @@ void MdMCharacter::setCity(City* city)
 {
     delete _city;
     _city = city;
+}
+
+bool MdMCharacter::saveCity(const std::string& fileName)
+{
+    return _city->save( fileName );
+}
+
+bool MdMCharacter::loadCity(const std::string& fileName)
+{
+    return _city->load( fileName );
 }
 
 void MdMCharacter::setAlgorithms()

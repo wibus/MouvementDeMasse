@@ -38,6 +38,8 @@ public:
     // City manip
     City& city();
     void setCity(City* city);
+    bool saveCity(const std::string& fileName);
+    bool loadCity(const std::string& fileName);
 
 private:
     void setAlgorithms();

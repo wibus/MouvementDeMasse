@@ -1,10 +1,15 @@
 #include "MainWindow.h"
 #include <QVBoxLayout>
+#include <QFileDialog>
+
+#include <Plays/AbstractPlay.h>
+#include <Acts/AbstractAct.h>
+
 
 MainWindow::MainWindow(scaena::QGLStage *stage) :
     _stage(stage),
     _menuBar(new QMenuBar()),
-    _city(0x0)
+    _character(0x0)
 {
     resize(800, 624);
 
@@ -41,16 +46,37 @@ MainWindow::MainWindow(scaena::QGLStage *stage) :
 
 void MainWindow::saveCity()
 {
-    if(_city == 0x0)
-        cacheCity();
+    if(_character == 0x0)
+        cacheCharacter();
+
+    QString fileName = QFileDialog::getSaveFileName(
+        this, "Save City", "./", "XML files (*.xml)");
+
+    if(fileName.isEmpty())
+        return;
+    if(!fileName.endsWith(".xml"))
+        fileName.append(".xml");
+
+    _character->saveCity(fileName.toStdString());
 }
 
 void MainWindow::loadCity()
 {
-    if(_city == 0x0)
-        cacheCity();
+    if(_character == 0x0)
+        cacheCharacter();
+
+    QString fileName = QFileDialog::getOpenFileName(
+        this, "Load City", "./", "XML files (*.xml)");
+
+    if(fileName.isEmpty())
+        return;
+
+    _character->loadCity(fileName.toStdString());
 }
 
-void MainWindow::cacheCity()
+void MainWindow::cacheCharacter()
 {
+    _character =  static_cast<MdMCharacter*>(&(
+        _stage->play().currentAct().getCharacter("MdMCharacter")
+    ));
 }

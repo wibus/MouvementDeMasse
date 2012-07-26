@@ -5,7 +5,7 @@
 #include <QMenuBar>
 
 #include <Stages/QGLStage.h>
-#include <City/City.h>
+#include <MdMCharacter.h>
 
 
 class MainWindow : public QWidget
@@ -22,11 +22,11 @@ public slots:
 signals:
 
 private:
-    void cacheCity();
+    void cacheCharacter();
 
     scaena::QGLStage* _stage;
     QMenuBar* _menuBar;
-    City* _city;
+    MdMCharacter* _character;
 };
 
 #endif // MAINWINDOW_H
