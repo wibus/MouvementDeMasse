@@ -54,8 +54,6 @@ void MainWindow::saveCity()
 
     if(fileName.isEmpty())
         return;
-    if(!fileName.endsWith(".xml"))
-        fileName.append(".xml");
 
     _character->saveCity(fileName.toStdString());
 }

@@ -11,6 +11,8 @@ public:
 
     virtual void setTime(unsigned int hour, unsigned int minutes);
     cellar::Vec4f direction() const;
+    cellar::Vec4f midnightDirection() const;
+    cellar::Vec3f rotationAxis() const;
 
 protected:
     cellar::Vec4f _direction;
@@ -25,6 +27,16 @@ protected:
 inline cellar::Vec4f Sun::direction() const
 {
     return _direction;
+}
+
+inline cellar::Vec4f Sun::midnightDirection() const
+{
+    return _midnightDirection;
+}
+
+inline cellar::Vec3f Sun::rotationAxis() const
+{
+    return _rotationAxis;
 }
 
 #endif // SUN_H

@@ -8,7 +8,7 @@ Sky::Sky(int width, int height) :
     _cloudsGrid(width, height, 0.0f),
     _cloudsImage(new unsigned char[width*height*4], width, height, Image::RGBA),
     _cloudyness(0.5f),
-    _cloudCompactness(0.4f)
+    _compactness(0.4f)
 {
     float nsx = randomRange(-10.0f, 10.0f);
     float nsy = randomRange(-10.0f, 10.0f);
@@ -30,7 +30,7 @@ Sky::Sky(int width, int height) :
                     pow(clamp(_cloudyness - depth,
                               0.0f,
                               1.0f),
-                        _cloudCompactness);
+                        _compactness);
 
             _cloudsImage.setColorAt(i, j,
                 RGBAColor(255, 255, 255, compact * 255));

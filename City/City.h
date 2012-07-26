@@ -32,14 +32,14 @@ public:
     City(int width, int height);
 
     cellar::Vec2i  size() const;
+    cellar::Calendar& calendar();
     Sky& sky();
     Sun& sun();
     Ground& ground();    
     cellar::PGrid<Land>& lands();
     cellar::PGrid<Junction>& junctions();
     BridgeContainer&  bridges();
-    CitizenContainer& citizens();
-    cellar::Calendar& calendar();
+    CitizenContainer& citizens();    
     Description& description();
 
     void reset();
@@ -54,14 +54,14 @@ protected:
 
 private:
     cellar::Vec2i _size;
+    cellar::Calendar _calendar;
     Sky _sky;
     Sun _sun;
     Ground _ground;
     cellar::PGrid<Land> _lands;
     cellar::PGrid<Junction> _junctions;
     BridgeContainer  _bridges;
-    CitizenContainer _citizens;
-    cellar::Calendar _calendar;
+    CitizenContainer _citizens;    
     Description _description;
 };
 
@@ -71,6 +71,11 @@ private:
 inline cellar::Vec2i City::size() const
 {
     return _size;
+}
+
+inline cellar::Calendar& City::calendar()
+{
+    return _calendar;
 }
 
 inline Sky& City::sky()
@@ -106,11 +111,6 @@ inline BridgeContainer &City::bridges()
 inline CitizenContainer& City::citizens()
 {
     return _citizens;
-}
-
-inline cellar::Calendar& City::calendar()
-{
-    return _calendar;
 }
 
 inline Description& City::description()

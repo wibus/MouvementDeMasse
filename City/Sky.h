@@ -16,14 +16,16 @@ public:
     cellar::Grid<float>& cloudsGrid();
     cellar::Image& cloudsImage();
     float cloudyness() const;
+    float compactness() const;
 
     void setCloudyness(float zeroTOone);
+    void setCompactness(float compact);
 
 private:
     cellar::Grid<float>  _cloudsGrid;
     cellar::Image        _cloudsImage;
     float _cloudyness;
-    float _cloudCompactness;
+    float _compactness;
 };
 
 
@@ -44,9 +46,19 @@ inline float Sky::cloudyness() const
     return _cloudyness;
 }
 
+inline float Sky::compactness() const
+{
+    return _compactness;
+}
+
 inline void Sky::setCloudyness(float zeroTOone)
 {
     _cloudyness = zeroTOone;
+}
+
+inline void Sky::setCompactness(float compact)
+{
+    _compactness = compact;
 }
 
 #endif // SKY_H
