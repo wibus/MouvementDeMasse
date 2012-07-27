@@ -48,6 +48,7 @@ bool City::save(const string& fileName)
 
     QString xmlFileName       = filePrefix + ".xml";
     QString heightMapFileName = filePrefix + "_heightMap.bmp";
+    QString skyMapFileName    = filePrefix + "_skyMap.bmp";
 
 
     // The XML configuration file
@@ -76,6 +77,7 @@ bool City::save(const string& fileName)
             xml.writeAttribute("hres", QString::number(_sky.cloudsGrid().height()));
             xml.writeAttribute("cloudyness",  QString::number(_sky.cloudyness()));
             xml.writeAttribute("compactness", QString::number(_sky.compactness()));
+            xml.writeAttribute("mapUrl", skyMapFileName);
         xml.writeEndElement(); //sky
 
         xml.writeStartElement("sun");
@@ -200,6 +202,25 @@ bool City::save(const string& fileName)
     QTextStream stream(&file);
     stream << xmlDoc;
     file.close();
+
+    // Height Map
+    float amplitude = maxVal(absolute(_ground.minHeight()),
+                             absolute(_ground.maxHeight()));
+    Image heightMap = Image(new unsigned char[_ground.width()*_ground.height()*3],
+                            _ground.width(), _ground.height(), Image::RGB);
+    for(unsigned int j=0; j<heightMap.height(); ++j)
+    {
+        for(unsigned int i=0; i<heightMap.width(); ++i)
+        {
+            float intensity = _ground.heightAt((int)i, (int)j) * 256 / amplitude;
+            heightMap.setColorAt(i, j, RGBAColor(                
+                (intensity <  0.0f ? 0  : absolute(intensity)),
+                255 - absolute(intensity),
+                (intensity >= 0.0f ? 0  : absolute(intensity))
+            ));
+        }
+    }
+    heightMap.saveBmp(heightMapFileName.toStdString());
 
     return true;
 }

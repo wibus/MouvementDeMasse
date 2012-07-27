@@ -25,6 +25,7 @@ int main(int argc, char** argv) try
     MainWindow window(stage);
     window.show();
 
+
     return getApplication().execute();    
 }
 catch(exception& e)

@@ -22,6 +22,7 @@ void HeightByNoiseAlgo::setup(City &city)
     float nsy = randomRange(-10.0f, 10.0f);
 
     for(int j=0; j< _mapSize.y(); ++j)
+    {
         for(int i=0; i< _mapSize.x(); ++i)
         {
             float xc = i/(float)_mapSize.x();
@@ -31,4 +32,5 @@ void HeightByNoiseAlgo::setup(City &city)
                 noisegen.noiseTile2d(xc + nsx, yc + nsy, 0.5f) * amplitude + middleHeight
             );
         }
+    }
 }
