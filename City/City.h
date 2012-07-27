@@ -52,6 +52,9 @@ protected:
     void resetJunctions();
     void resetLands();
 
+    bool saveHeightMap(const std::string& fileName);
+    bool saveSkyMap(const std::string& fileName);
+
 private:
     cellar::Vec2i _size;
     cellar::Calendar _calendar;

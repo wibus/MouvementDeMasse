@@ -50,7 +50,7 @@ void MainWindow::saveCity()
         cacheCharacter();
 
     QString fileName = QFileDialog::getSaveFileName(
-        this, "Save City", "./", "XML files (*.xml)");
+        this, "Save City", "./saves/", "XML files (*.xml)");
 
     if(fileName.isEmpty())
         return;
@@ -64,7 +64,7 @@ void MainWindow::loadCity()
         cacheCharacter();
 
     QString fileName = QFileDialog::getOpenFileName(
-        this, "Load City", "./", "XML files (*.xml)");
+        this, "Load City", "./saves/", "XML files (*.xml)");
 
     if(fileName.isEmpty())
         return;

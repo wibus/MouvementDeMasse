@@ -20,7 +20,7 @@ using namespace scaena;
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _city( new City(32, 32) ),
+    _city( new City(31, 33) ),
     _drawCityModule( new DrawCityModule() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
     _mapElemAlgo(    new MapElementsByIsland() ),

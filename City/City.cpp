@@ -42,9 +42,14 @@ bool City::save(const string& fileName)
 {
     // File names
     QFileInfo fileInfo( fileName.c_str() );
+    if( !fileInfo.exists() )
+        cout << fileInfo.fileName().toStdString() << endl;
     QString filePath   = fileInfo.path() + '/';
     QString filePrefix = fileInfo.fileName();
-    filePrefix.truncate(filePrefix.indexOf('.'));
+
+    int dotPos = filePrefix.indexOf('.');
+    if(dotPos != -1)
+        filePrefix.truncate( dotPos );
 
     QString xmlFileName       = filePrefix + ".xml";
     QString heightMapFileName = filePrefix + "_heightMap.bmp";
@@ -198,31 +203,65 @@ bool City::save(const string& fileName)
 
     // Files writings
     QFile file( filePath + xmlFileName );
-    file.open(QIODevice::WriteOnly);
+    if( !file.open(QIODevice::WriteOnly))
+        return false;
+
     QTextStream stream(&file);
     stream << xmlDoc;
     file.close();
 
-    // Height Map
+    if( !saveHeightMap((filePath + heightMapFileName).toStdString()))
+        return false;
+    if( !saveSkyMap((filePath + skyMapFileName).toStdString()))
+        return false;
+
+    return true;
+}
+
+bool City::saveHeightMap(const std::string& fileName)
+{
     float amplitude = maxVal(absolute(_ground.minHeight()),
                              absolute(_ground.maxHeight()));
     Image heightMap = Image(new unsigned char[_ground.width()*_ground.height()*3],
                             _ground.width(), _ground.height(), Image::RGB);
+
     for(unsigned int j=0; j<heightMap.height(); ++j)
     {
         for(unsigned int i=0; i<heightMap.width(); ++i)
         {
             float intensity = _ground.heightAt((int)i, (int)j) * 256 / amplitude;
-            heightMap.setColorAt(i, j, RGBAColor(                
-                (intensity <  0.0f ? 0  : absolute(intensity)),
-                255 - absolute(intensity),
-                (intensity >= 0.0f ? 0  : absolute(intensity))
+            unsigned char absIntensity = absolute(intensity);
+            bool underWater = intensity < 0.0f;
+            heightMap.setColorAt(i, j, RGBAColor(
+                absIntensity,
+                ( underWater ? 0  : 255 - absIntensity),
+                (!underWater ? 0  : 255 - absIntensity)
             ));
         }
     }
-    heightMap.saveBmp(heightMapFileName.toStdString());
 
-    return true;
+    return heightMap.saveBmp( fileName );
+}
+
+bool City::saveSkyMap(const std::string& fileName)
+{
+    Image skyMap = Image(new unsigned char[_sky.cloudsGrid().width()*_sky.cloudsGrid().height()*3],
+                         _sky.cloudsGrid().width(), _sky.cloudsGrid().height(), Image::RGB);
+
+    for(unsigned int j=0; j<skyMap.height(); ++j)
+    {
+        for(unsigned int i=0; i<skyMap.width(); ++i)
+        {
+            float intensity = (_sky.cloudsGrid().get(i, j) + 1.0f) * 0.5f * 256;
+            skyMap.setColorAt(i, j, RGBAColor(
+                intensity,
+                intensity,
+                128 + intensity /2.0f
+            ));
+        }
+    }
+
+    return skyMap.saveBmp( fileName );
 }
 
 void City::update()
