@@ -46,10 +46,8 @@ bool City::save(const string& fileName)
     QString filePrefix = fileInfo.fileName();
     filePrefix.truncate(filePrefix.indexOf('.'));
 
-    QString xmlFileName = filePrefix + ".xml";
+    QString xmlFileName       = filePrefix + ".xml";
     QString heightMapFileName = filePrefix + "_heightMap.bmp";
-    QString landsMapFileName = filePrefix + "_landsMap.bmp";
-    QString junctionsMapFileName = filePrefix + "_junctions.bmp";
 
 
     // The XML configuration file
@@ -97,25 +95,100 @@ bool City::save(const string& fileName)
         xml.writeStartElement("lands");
             xml.writeAttribute("width", QString::number(_lands.width()));
             xml.writeAttribute("height", QString::number(_lands.height()));
-            xml.writeAttribute("mapUrl", landsMapFileName);
+            xml.writeAttribute("maxNbStories", QString::number(Land::maxNbStories()));
+
+            for(int j=0; j<_lands.height(); ++j)
+            {
+                xml.writeStartElement("line");
+                xml.writeAttribute("y", QString::number(j));
+                for(int i=0; i<_lands.width(); ++i)
+                {
+                    xml.writeStartElement("land");
+                        xml.writeAttribute("pos", toString(Vec2i(i, j)).c_str());
+                        xml.writeAttribute("type", Land::TYPE_STRINGS[_lands.get(i, j)->type()].c_str());
+                        xml.writeAttribute("nbStories",   QString::number(_lands.get(i, j)->nbStories()));
+                        xml.writeAttribute("capacity",    QString::number(_lands.get(i, j)->capacity()));
+                        xml.writeAttribute("nbResidents", QString::number(_lands.get(i, j)->nbResidents()));
+                    xml.writeEndElement(); //land
+                }
+                xml.writeEndElement(); //line
+            }
         xml.writeEndElement(); //lands
 
         xml.writeStartElement("junctions");
             xml.writeAttribute("width", QString::number(_junctions.width()));
             xml.writeAttribute("height", QString::number(_junctions.height()));
-            xml.writeAttribute("mapUrl", junctionsMapFileName);
+
+            for(int j=0; j<_junctions.height(); ++j)
+            {
+                xml.writeStartElement("line");
+                xml.writeAttribute("y", QString::number(j));
+                for(int i=0; i<_junctions.width(); ++i)
+                {
+                    xml.writeStartElement("junction");
+                        xml.writeAttribute("pos", toString(Vec2i(i, j)).c_str());
+                        xml.writeAttribute("type", Junction::TYPE_STRINGS[_junctions.get(i, j)->type()].c_str());
+                        for(int d=0; d<NB_DIRECTIONS; ++d)
+                        {
+                            if(_junctions.get(i, j)->getStreet( INT_TO_CARDINAL_DIRECTION[d] ) != 0x0)
+                            {
+                                xml.writeStartElement("street");
+                                xml.writeAttribute("direction", CARDINAL_DIRECTION_STRINGS[d].c_str());
+                                xml.writeEndElement(); //street
+                            }
+                        }
+                    xml.writeEndElement(); //land
+                }
+                xml.writeEndElement(); //line
+            }
         xml.writeEndElement(); //junctions
 
         xml.writeStartElement("bridges");
             xml.writeAttribute("nb", QString::number(_bridges.size()));
-            for(size_t b=0; b<_bridges.size(); ++b)
+            for(BridgeIterator b=_bridges.begin(); b!=_bridges.end(); ++b)
             {
                 xml.writeStartElement("bridge");
-                    xml.writeAttribute("endA", toString(_bridges[b].endA()).c_str());
-                    xml.writeAttribute("endB", toString(_bridges[b].endB()).c_str());
+                    xml.writeAttribute("endA", toString( b->endA() ).c_str());
+                    xml.writeAttribute("endB", toString( b->endB() ).c_str());
                 xml.writeEndElement();
             }
         xml.writeEndElement(); //bridges
+
+
+        xml.writeStartElement("citizens");
+            xml.writeAttribute("nb", QString::number(_citizens.size()));
+            for(CitizenIterator c=_citizens.begin(); c!=_citizens.end(); ++c)
+            {
+                Citizen& ctz = c->second;
+
+                xml.writeStartElement("citizen");
+                    xml.writeAttribute("id",    QString::number(ctz.cid));
+                    xml.writeAttribute("state", Citizen::STATE_STRINGS[ctz.state].c_str());
+                    xml.writeAttribute("walkingSpeed", QString::number(ctz.walkingSpeed));
+                    xml.writeAttribute("position", toString(ctz.position).c_str());
+                    xml.writeAttribute("direction", toString(ctz.direction).c_str());
+                    xml.writeAttribute("homePos", toString(ctz.homePos).c_str());
+                    xml.writeAttribute("homeRoom", toString(ctz.homeRoom).c_str());
+                    xml.writeAttribute("workPos", toString(ctz.workPos).c_str());
+                    xml.writeAttribute("workRoom", toString(ctz.workRoom).c_str());
+
+                    xml.writeStartElement("path");
+                        xml.writeAttribute("name", "Home to Work path");
+                        xml.writeAttribute("src", toString(ctz.homeToWorkPath.source).c_str());
+                        xml.writeAttribute("dst", toString(ctz.homeToWorkPath.destination).c_str());
+                        xml.writeAttribute("nbNodes", QString::number(ctz.homeToWorkPath.nodes.size()));
+                        for(Path::NodeIterator n=ctz.homeToWorkPath.nodes.begin();
+                            n != ctz.homeToWorkPath.nodes.end(); ++n)
+                        {
+                            xml.writeStartElement("node");
+                                xml.writeAttribute("type", Path::NODE_TYPE_STRINGS[n->type].c_str());
+                                xml.writeAttribute("position", toString(n->pos).c_str());
+                            xml.writeEndElement(); //node
+                        }
+                    xml.writeEndElement(); //path
+                xml.writeEndElement(); //citizen
+            }
+        xml.writeEndElement(); //citizens
     xml.writeEndElement(); // city
 
     xml.writeEndDocument();

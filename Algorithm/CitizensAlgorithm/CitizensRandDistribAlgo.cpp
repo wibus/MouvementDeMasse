@@ -47,7 +47,7 @@ void CitizensRandDistribAlgo::setup(City &city)
 
 
         // Construct the path between the house and the work
-        Path homeToWorkPath(workPos, homePos);
+        Path homeToWorkPath(homePos, workPos);
         homeToWorkPathByDijkstra( homeToWorkPath, homeAccessPoint, workAccessPoint);
 
         // Set the citizen walking speed

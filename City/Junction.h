@@ -1,7 +1,8 @@
 #ifndef JUNCTION_H
 #define JUNCTION_H
 
-#include<memory>
+#include <memory>
+#include <vector>
 
 #include "MdMTypes.h"
 
@@ -15,23 +16,27 @@ public:
     Junction();
     virtual ~Junction();
 
-    void attach(const std::shared_ptr<Street>& street, CardinalDirection direction);
+    Type type() const;
     std::shared_ptr<Street> getStreet(CardinalDirection direction);
+    std::vector< std::shared_ptr<Street> > getOtherStreets(CardinalDirection direction);
 
     void setType(Type type);
-    Type type() const;
+    void attach(const std::shared_ptr<Street>& street, CardinalDirection direction);
+
+
+    static const std::string TYPE_STRINGS[NB_TYPES];
 
 private:
-    std::shared_ptr<Street> _streets[NB_DIRECTIONS];
     Type _type;
+    std::shared_ptr<Street> _streets[NB_DIRECTIONS];    
 };
 
 
 
 // Implementation //
-inline void Junction::attach(const std::shared_ptr<Street> &street, CardinalDirection direction)
+inline Junction::Type Junction::type() const
 {
-    _streets[direction] = street;
+    return _type;
 }
 
 inline std::shared_ptr<Street> Junction::getStreet(CardinalDirection direction)
@@ -44,9 +49,9 @@ inline void Junction::setType(Type type)
     _type = type;
 }
 
-inline Junction::Type Junction::type() const
+inline void Junction::attach(const std::shared_ptr<Street> &street, CardinalDirection direction)
 {
-    return _type;
+    _streets[direction] = street;
 }
 
 #endif // JUNCTION_H

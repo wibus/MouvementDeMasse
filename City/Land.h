@@ -1,6 +1,9 @@
 #ifndef LAND_H
 #define LAND_H
 
+#include <string>
+
+
 class Land
 {
 public:
@@ -14,22 +17,24 @@ public:
 
     void setNbStories(int stories);
     int nbStories() const;
+    static void setMaxNbStories(int nb);
     static int maxNbStories();
 
     void setCapacity(int capacity);
     int capacity() const;
 
-    void increasePeople();
-    void decreasePeople();
-    int nbOfPeople() const;
+    void increaseResidents();
+    void decreaseResidents();
+    int  nbResidents() const;
+
+    static const std::string TYPE_STRINGS[NB_TYPES];
 
 private:
+    static int _maxNbStories;
     Type _type;
     int _nbStories;
-    static const int _NB_MAX_STORIES = 8;
-
     int _capacity;
-    int _nbOfPeople;
+    int _nbResidents;
 };
 
 
@@ -55,9 +60,14 @@ inline int Land::nbStories() const
     return _nbStories;
 }
 
+inline void Land::setMaxNbStories(int nb)
+{
+    _maxNbStories = nb;
+}
+
 inline int Land::maxNbStories()
 {
-    return _NB_MAX_STORIES;
+    return _maxNbStories;
 }
 
 inline void Land::setCapacity(int capacity)
@@ -70,19 +80,19 @@ inline int Land::capacity() const
     return _capacity;
 }
 
-inline void Land::increasePeople()
+inline void Land::increaseResidents()
 {
-    ++_nbOfPeople;
+    ++_nbResidents;
 }
 
-inline void Land::decreasePeople()
+inline void Land::decreaseResidents()
 {
-    --_nbOfPeople;
+    --_nbResidents;
 }
 
-inline int Land::nbOfPeople() const
+inline int Land::nbResidents() const
 {
-    return _nbOfPeople;
+    return _nbResidents;
 }
 
 

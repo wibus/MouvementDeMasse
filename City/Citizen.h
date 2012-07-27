@@ -9,7 +9,7 @@
 class Path
 {
 public:
-    enum NodeType {LAND, JUNCTION, BRIDGE_END, METRO, BUS_STOP, NB_NODES};
+    enum NodeType {LAND, JUNCTION, BRIDGE_END, METRO, BUS_STOP, NB_NODE_TYPES};
     struct Node
     {
         Node(NodeType type, const cellar::Vec2i& pos) : type(type), pos(pos) {}
@@ -25,6 +25,8 @@ public:
     cellar::Vec2i source;
     cellar::Vec2i destination;    
     NodeVector    nodes;
+
+    static const std::string NODE_TYPE_STRINGS[NB_NODE_TYPES];
 };
 
 
@@ -37,6 +39,7 @@ public:
 
     int           cid;
     State         state;
+    float         walkingSpeed;
     cellar::Vec3f position;
     cellar::Vec3f direction;
     cellar::Vec2i homePos;      //Vec3i(MapX,  MapY)
@@ -44,7 +47,9 @@ public:
     cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
     cellar::Vec3i workRoom;     //Vec3i(BuildingX, BuildingY, Floor)
     Path          homeToWorkPath;
-    float         walkingSpeed;
+
+
+    const static std::string STATE_STRINGS[NB_STATES];
 
 private:
     static int __assigneId();
