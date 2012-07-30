@@ -2,6 +2,8 @@
 using namespace std;
 
 #include <Misc/CellarUtils.h>
+#include <Misc/Log.h>
+#include <DateAndTime/Timer.h>
 using namespace cellar;
 
 #include <StageEvents/StageTime.h>
@@ -20,7 +22,7 @@ using namespace scaena;
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _city( new City(31, 33) ),
+    _city( new City(64, 60) ),
     _drawCityModule( new DrawCityModule() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
     _mapElemAlgo(    new MapElementsByIsland() ),
@@ -155,6 +157,10 @@ bool MdMCharacter::loadCity(const std::string& fileName)
 
 void MdMCharacter::setAlgorithms()
 {
+    Timer timer;
+    timer.start();
+    getLog().postMessage(new Message('I', false, "Start city algorithms", "MdMCharacter"));
+
     _city->reset();
     _city->ground().setMinHeight(-3.5f);
     _city->ground().setMaxHeight( 4.0f);
@@ -162,13 +168,17 @@ void MdMCharacter::setAlgorithms()
 
     // Height algorithm
     _heightsAlgo->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Height algo finished.", "MdMCharacter"));
 
     // Map elements
     _mapElemAlgo->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Map Elements algo finished.", "MdMCharacter"));
 
     // Citizens
     _citizensAlgo->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Citizens algo finished.", "MdMCharacter"));
 
     // Rendering
     _drawCityModule->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Draw module finished.", "MdMCharacter"));
 }

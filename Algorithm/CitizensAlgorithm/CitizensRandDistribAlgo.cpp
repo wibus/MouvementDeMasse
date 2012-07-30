@@ -1,7 +1,9 @@
 #include "CitizensRandDistribAlgo.h"
 
 #include <queue>
-#include <set>
+#include <vector>
+#include <stack>
+#include <algorithm>
 using namespace std;
 
 #include <Misc/CellarUtils.h>
@@ -16,39 +18,48 @@ void CitizensRandDistribAlgo::setup(City &city)
 {
     CitizensAlgorithm::setup( city );
 
-    // Count the number of accessible Commercial and Residential lands
-    int nbResidentialLands = 0;
-    int nbCommercialLands = 0;
+
+    vector<Vec2i> residential;
+    vector<Vec2i> commercial;
+    Land* land;
     for(int j=0; j<_city->lands().height(); ++j)
     {
         for(int i=0; i<_city->lands().width(); ++i)
         {
-            if(_city->lands().get(i, j)->type() != Land::RESIDENTIAL &&
-                    isAccessible(Vec2i(i, j))) ++ nbResidentialLands;
-            if(_city->lands().get(i, j)->type() != Land::COMMERCIAL &&
-                    isAccessible(Vec2i(i, j))) ++ nbCommercialLands;
+            Vec2i pos(i, j);
+            land = _city->lands().get(i, j);
+            if(land->type() == Land::RESIDENTIAL && isAccessible(pos))
+                residential.push_back( pos );
+            else if(land->type() == Land::COMMERCIAL && isAccessible(pos))
+                commercial.push_back( pos );
         }
     }
 
+
     int nbCitizens = 0;
-    if(nbResidentialLands != 0  &&  nbCommercialLands !=0)
-        nbCitizens = (nbResidentialLands + nbCommercialLands);
+    if(residential.size() != 0  &&  commercial.size() !=0)
+        nbCitizens = (residential.size() + commercial.size());
+    else
+        return;
+
+
+    initializeAStarStructures();
 
     for(int c=0; c<nbCitizens; ++c)
     {
-        // Randomly find a home that have a junction nearby
-        Vec2i homePos = findRandomAccessibleLand(Land::RESIDENTIAL);
+        // Randomly find a home that have a junction nearby        
+        Vec2i homePos = residential[ randomRange((size_t)0, residential.size()) ];
         Vec2i homeAccessPoint = randomAccessPointTo(homePos);
 
 
         // Randomly find a work that have a junction nearby
-        Vec2i workPos = findRandomAccessibleLand(Land::COMMERCIAL);
+        Vec2i workPos = commercial[ randomRange((size_t)0, commercial.size()) ];
         Vec2i workAccessPoint = randomAccessPointTo(workPos);
 
 
         // Construct the path between the house and the work
         Path homeToWorkPath(homePos, workPos);
-        homeToWorkPathByDijkstra( homeToWorkPath, homeAccessPoint, workAccessPoint);
+        homeToWorkPathByAStar(homeToWorkPath, homeAccessPoint, workAccessPoint);
 
         // Set the citizen walking speed
         Calendar::Clock::TimeJump timeJump = _city->calendar().clock().timeJump;
@@ -69,6 +80,8 @@ void CitizensRandDistribAlgo::setup(City &city)
 
         _city->citizens().insert(make_pair(ctz.cid, ctz));
     }
+
+    cleanAStarStructures();
 }
 
 
@@ -76,41 +89,6 @@ void CitizensRandDistribAlgo::update()
 {
 }
 
-
-// Helper Methods
-
-Vec2i CitizensRandDistribAlgo::findRandomAccessibleLand(Land::Type type)
-{
-    bool landFound = false;
-    Vec2i landPos(randomRange(0, _city->lands().width()),
-                  randomRange(0, _city->lands().height()));
-
-    while(!landFound)
-    {
-        while(_city->lands().get(landPos)->type() != type)
-            advancePos(landPos);
-
-        if(isAccessible( landPos ))
-            landFound = true;
-        else
-            advancePos(landPos);
-    }
-
-    return landPos;
-}
-
-void CitizensRandDistribAlgo::advancePos(Vec2i& pos)
-{
-    ++pos[0];
-    if(pos[0] >= _city->lands().width())
-    {
-        pos[0] = 0;
-
-        ++pos[1];
-        if(pos[1] >= _city->lands().height())
-            pos[1] = 0;
-    }
-}
 
 bool CitizensRandDistribAlgo::isAccessible(const Vec2i& pos)
 {
@@ -150,15 +128,6 @@ struct DijkstraNode
 
 bool CitizensRandDistribAlgo::homeToWorkPathByDijkstra(Path& path, const Vec2i& src, const Vec2i& dst)
 {
-    // Bridge cache
-    set<Vec2i> bridgeExt;
-    for(size_t b=0; b<_city->bridges().size(); ++b)
-    {
-        bridgeExt.insert(_city->bridges()[b].endA());
-        bridgeExt.insert(_city->bridges()[b].endB());
-    }
-
-
     // Helper grid //
     // 0 : Not visited
     // 1 : Visited
@@ -218,7 +187,7 @@ bool CitizensRandDistribAlgo::homeToWorkPathByDijkstra(Path& path, const Vec2i& 
             }
         }
 
-        if(bridgeExt.find(cNode.pos) != bridgeExt.end())
+        if(_bridgeEnds.find(cNode.pos) != _bridgeEnds.end())
         {
             BridgeIterator bIt = _city->bridges().begin();
             for(;bIt != _city->bridges().end(); ++bIt)
@@ -263,4 +232,144 @@ bool CitizensRandDistribAlgo::homeToWorkPathByDijkstra(Path& path, const Vec2i& 
     // If the algorithm reach this point,
     // it has not found the destination from the source given in parameters
     return false;
+}
+
+
+bool CitizensRandDistribAlgo::homeToWorkPathByAStar(Path& path, const Vec2i& src, const Vec2i& dst)
+{
+    float inf = _city->size().x() * _city->size().y();
+
+    for(int j=0; j<_aStarGrid.height(); ++j)
+        for(int i=0; i<_aStarGrid.width(); ++i)
+            _aStarGrid.set(i, j, AStarNode(AStarNode::NOT_VISITED, dist(Vec2i(i, j), dst), inf,
+                                     Path::Node(Path::BUS_STOP, Vec2i(i, j)),
+                                     Path::Node(Path::BUS_STOP, Vec2i(-1, -1))));
+
+    vector< AStarNode > priority;
+    priority.push_back( _aStarGrid.get(src) );
+
+    while( !priority.empty() )
+    {
+        // Pop the nearest node
+        make_heap(priority.begin(), priority.end());
+        pop_heap( priority.begin(), priority.end());
+        AStarNode curAsNode = priority.back();
+        Vec2i     curPos    = curAsNode.node.pos;
+        priority.pop_back();
+
+
+        _aStarGrid.get(curPos).status = AStarNode::VISITED;
+        if(curPos == dst)
+        {
+            stack< AStarNode > revPath;
+            revPath.push( curAsNode );
+            while(revPath.top().node.pos != src)
+                revPath.push( _aStarGrid.get(revPath.top().last.pos) );
+
+            while( !revPath.empty() )
+            {
+                path.nodes.push_back( revPath.top().node );
+                revPath.pop();
+            }
+
+            return true;
+        }
+
+
+        vector<Path::Node>& candidates = _nodesToBeConsidered.get(curPos);
+
+        for(size_t c=0; c<candidates.size(); ++c)
+        {
+            AStarNode& nextAsNode = _aStarGrid.get(candidates[c].pos);
+            nextAsNode.node.type  = candidates[c].type;
+            Vec2i nextPos         = candidates[c].pos;
+            float distToSrc       = curAsNode.distToSrc + dist(curPos, nextPos);
+
+            if(nextAsNode.status == AStarNode::VISITED)
+                continue;
+
+            else if(nextAsNode.status == AStarNode::IN_QUEUE)
+            {
+                if(distToSrc < nextAsNode.distToSrc)
+                {
+                    nextAsNode.distToSrc = distToSrc;
+                    nextAsNode.last      = curAsNode.node;
+
+                    for(size_t i=0; i<priority.size(); ++i)
+                        if(priority[i].node.pos == nextPos)
+                        {
+                            priority[i].distToSrc = distToSrc;
+                            priority[i].node.type = nextAsNode.node.type;
+                            priority[i].last      = curAsNode.node;
+                            break;
+                        }
+                }
+            }
+
+            else if(nextAsNode.status == AStarNode::NOT_VISITED)
+            {
+                AStarNode& newNode = _aStarGrid.get( nextPos );
+                newNode.status    = AStarNode::IN_QUEUE;
+                newNode.distToSrc = distToSrc;
+                newNode.node      = nextAsNode.node;
+                newNode.last      = curAsNode.node;
+                priority.push_back( newNode );
+            }
+        }
+
+        // End of that node
+    }
+
+    return false;
+}
+
+void CitizensRandDistribAlgo::initializeAStarStructures()
+{
+    for(size_t b=0; b<_city->bridges().size(); ++b)
+    {
+        _bridgeEnds.insert(_city->bridges()[b].endA());
+        _bridgeEnds.insert(_city->bridges()[b].endB());
+    }
+
+    _aStarGrid = Grid< AStarNode >(_city->junctions().width(),
+                                   _city->junctions().height());
+
+    _nodesToBeConsidered = Grid< vector<Path::Node> >(_city->junctions().width(),
+                                                           _city->junctions().height());
+    for(int j=0; j<_nodesToBeConsidered.height(); ++j)
+    {
+        for(int i=0; i<_nodesToBeConsidered.width(); ++i)
+        {
+            Vec2i pos(i, j);
+
+            // Junctions
+            std::vector< std::shared_ptr<Street> > streets =
+                _city->junctions().get(i, j)->getOtherStreets(NB_DIRECTIONS);
+
+            for(size_t s=0; s<streets.size(); ++s)
+                _nodesToBeConsidered.get(i, j).push_back(
+                    Path::Node(Path::JUNCTION, streets[s]->oppositeJunction(pos))
+                );
+
+
+            // Bridge ends
+            if(_bridgeEnds.find(pos) != _bridgeEnds.end())
+                for(BridgeIterator bit = _city->bridges().begin(); bit != _city->bridges().end(); ++bit)
+                    if(bit->isAnEnd(pos))
+                    {
+
+                        _nodesToBeConsidered.get(i, j).push_back(
+                            Path::Node(Path::BRIDGE_END, bit->otherEnd(pos))
+                        );
+                        break;
+                    }
+        }
+    }
+}
+
+void CitizensRandDistribAlgo::cleanAStarStructures()
+{
+    _bridgeEnds.clear();
+    _aStarGrid = Grid< AStarNode >(0, 0);
+    _nodesToBeConsidered = Grid< std::vector<Path::Node> >(0, 0);
 }
