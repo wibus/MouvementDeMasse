@@ -40,7 +40,7 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     stage.camera().registerObserver( *this );
 
     _city->calendar().setClock(Calendar::Clock(Calendar::Clock::SECOND));
-    _city->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
+    _city->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 11, 0, 0));
 }
 
 MdMCharacter::~MdMCharacter()

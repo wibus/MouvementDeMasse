@@ -203,7 +203,7 @@ void DrawCityModule::update()
 void DrawCityModule::updateShaders()
 {
     static Vec2f shift(0.0f, 0.0f);
-    shift[1] += 0.0004;
+    shift[1] += 0.0008;
 
     _skyShader.pushThisProgram();
     _skyShader.setVec4f("SkyColor", _description->curSkyColor);

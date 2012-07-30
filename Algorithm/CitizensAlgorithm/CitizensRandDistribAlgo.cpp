@@ -51,7 +51,6 @@ void CitizensRandDistribAlgo::setup(City &city)
         Vec2i homePos = residential[ randomRange((size_t)0, residential.size()) ];
         Vec2i homeAccessPoint = randomAccessPointTo(homePos);
 
-
         // Randomly find a work that have a junction nearby
         Vec2i workPos = commercial[ randomRange((size_t)0, commercial.size()) ];
         Vec2i workAccessPoint = randomAccessPointTo(workPos);
@@ -60,6 +59,7 @@ void CitizensRandDistribAlgo::setup(City &city)
         // Construct the path between the house and the work
         Path homeToWorkPath(homePos, workPos);
         homeToWorkPathByAStar(homeToWorkPath, homeAccessPoint, workAccessPoint);
+
 
         // Set the citizen walking speed
         Calendar::Clock::TimeJump timeJump = _city->calendar().clock().timeJump;
@@ -234,6 +234,25 @@ bool CitizensRandDistribAlgo::homeToWorkPathByDijkstra(Path& path, const Vec2i& 
     return false;
 }
 
+
+AStarNode::AStarNode() :
+    status(NOT_VISITED),
+    distToDst(0.0f),
+    distToSrc(0.0f),
+    node(Path::Node(Path::JUNCTION, cellar::Vec2i(0, 0))),
+    last(Path::Node(Path::JUNCTION, cellar::Vec2i(0, 0)))
+{
+}
+
+AStarNode::AStarNode(Status status, float distToDst, float distToSrc,
+                     Path::Node node, Path::Node last) :
+    status(status),
+    distToDst(distToDst),
+    distToSrc(distToSrc),
+    node(node),
+    last(last)
+{
+}
 
 bool CitizensRandDistribAlgo::homeToWorkPathByAStar(Path& path, const Vec2i& src, const Vec2i& dst)
 {

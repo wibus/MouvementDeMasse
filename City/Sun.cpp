@@ -11,9 +11,9 @@ Sun::Sun(const cellar::Vec4f& midnightDirection, const cellar::Vec3f& rotationAx
 {
 }
 
-void Sun::setTime(unsigned int hour, unsigned int minutes)
+void Sun::setTime(unsigned int hour, unsigned int minutes, unsigned int seconds)
 {
-    float angle = 2.0f * PI * (hour + minutes/60.0f) / 24.0f;
+    float angle = 2.0f * PI * (hour + (minutes + seconds/60.0f)/60.0f)/24.0f;
 
     _rotationMatrix.loadIdentity();
     _rotationMatrix.rotate(

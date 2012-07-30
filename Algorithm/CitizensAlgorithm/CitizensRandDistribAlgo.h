@@ -6,7 +6,6 @@
 #include "CitizensAlgorithm.h"
 
 
-
 struct AStarNode
 {
     enum Status {NOT_VISITED, IN_QUEUE, VISITED, NB_STATUS};
@@ -16,22 +15,10 @@ struct AStarNode
     Path::Node node;
     Path::Node last;
 
-    AStarNode() :
-        status(NOT_VISITED),
-        distToDst(0.0f),
-        distToSrc(0.0f),
-        node(Path::Node(Path::JUNCTION, cellar::Vec2i(0, 0))),
-        last(Path::Node(Path::JUNCTION, cellar::Vec2i(0, 0)))
-    {}
-    AStarNode(Status status, float distToDst, float distToSrc, Path::Node node, Path::Node last) :
-        status(status),
-        distToDst(distToDst),
-        distToSrc(distToSrc),
-        node(node),
-        last(last)
-    {}
-
-    inline bool operator<(const AStarNode& node) {return (distToDst + distToSrc) > (node.distToDst + distToSrc);}
+    AStarNode();
+    AStarNode(Status status, float distToDst, float distToSrc,
+              Path::Node node, Path::Node last);
+    bool operator<(const AStarNode& node);
 };
 
 
@@ -65,6 +52,11 @@ protected:
 inline float CitizensRandDistribAlgo::dist(const cellar::Vec2i& p1, const cellar::Vec2i &p2)
 {
     return cellar::Vec2f(p1).distanceTo(p2);
+}
+
+inline bool AStarNode::operator<(const AStarNode& node)
+{
+    return (distToDst + distToSrc) > (node.distToDst + distToSrc);
 }
 
 #endif // CITIZENSRANDDISTRIBALGO_H

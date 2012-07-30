@@ -52,6 +52,7 @@ protected:
     void resetJunctions();
     void resetLands();
 
+    bool saveDescription(const std::string& fileName);
     bool saveHeightMap(const std::string& fileName);
     bool saveSkyMap(const std::string& fileName);
 
