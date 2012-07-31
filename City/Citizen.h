@@ -34,26 +34,27 @@ class Citizen
 {
 public:
     enum State {AT_HOME, WORKING, SHOPING, MOVING, NB_STATES};
+    typedef int Id;
+    static const Id NO_ID = -1;
 
     Citizen();
 
-    int           cid;
+    Id            id()          const {return _id;}
     State         state;
     float         walkingSpeed;
     cellar::Vec3f position;
     cellar::Vec3f direction;
     cellar::Vec2i homePos;      //Vec3i(MapX,  MapY)
-    cellar::Vec3i homeRoom;     //Vec3i(BuildingX, BuildingY, Floor)
     cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
-    cellar::Vec3i workRoom;     //Vec3i(BuildingX, BuildingY, Floor)
     Path          homeToWorkPath;
 
 
     const static std::string STATE_STRINGS[NB_STATES];
 
 private:
-    static int __assigneId();
-    static int __nextId;
+    Id _id;
+    static Id __assigneId();
+    static Id __nextId;
 };
 
 #endif // CITIZEN_H

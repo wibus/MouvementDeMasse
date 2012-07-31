@@ -1,7 +1,7 @@
 #ifndef MAPELEMENTSBYISLAND_H
 #define MAPELEMENTSBYISLAND_H
 
-#include <DataStructure/Grid.h>
+#include <DataStructure/Grid2D.h>
 #include <DataStructure/Vector.h>
 #include <stack>
 #include <vector>
@@ -25,7 +25,7 @@ public:
 protected:
     std::stack<cellar::Vec2i> _junctionsStack;
     int _nbIslands;
-    cellar::Grid<int> _islandIdentifiers;
+    cellar::Grid2D<int> _islandIdentifiers;
     std::vector<std::vector<cellar::Vec2i> > _islandEdges;
 
 private:

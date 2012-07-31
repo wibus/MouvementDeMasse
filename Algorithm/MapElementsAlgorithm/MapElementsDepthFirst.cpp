@@ -116,7 +116,7 @@ void MapElementsDepthFirst::setup(City& city)
 
 
     // Add some lands.
-    PGrid<Land>* lands = &_city->lands();
+    PGrid2D<Land>* lands = &_city->lands();
     for (int j = 0; j < lands->height(); ++j)
     {
         for (int i = 0; i < lands->width(); ++i)

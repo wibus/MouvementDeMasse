@@ -6,7 +6,7 @@
 #include <map>
 
 #include <DateAndTime/Calendar.h>
-#include <DataStructure/PGrid.h>
+#include <DataStructure/PGrid2D.h>
 #include <DataStructure/Vector.h>
 
 #include "Citizen.h"
@@ -36,8 +36,8 @@ public:
     Sky& sky();
     Sun& sun();
     Ground& ground();    
-    cellar::PGrid<Land>& lands();
-    cellar::PGrid<Junction>& junctions();
+    cellar::PGrid2D<Land>& lands();
+    cellar::PGrid2D<Junction>& junctions();
     BridgeContainer&  bridges();
     CitizenContainer& citizens();    
     Description& description();
@@ -62,8 +62,8 @@ private:
     Sky _sky;
     Sun _sun;
     Ground _ground;
-    cellar::PGrid<Land> _lands;
-    cellar::PGrid<Junction> _junctions;
+    cellar::PGrid2D<Land> _lands;
+    cellar::PGrid2D<Junction> _junctions;
     BridgeContainer  _bridges;
     CitizenContainer _citizens;    
     Description _description;
@@ -97,12 +97,12 @@ inline Ground& City::ground()
     return _ground;
 }
 
-inline cellar::PGrid<Land>& City::lands()
+inline cellar::PGrid2D<Land>& City::lands()
 {
     return _lands;
 }
 
-inline cellar::PGrid<Junction>& City::junctions()
+inline cellar::PGrid2D<Junction>& City::junctions()
 {
     return _junctions;
 }

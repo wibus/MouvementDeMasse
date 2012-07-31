@@ -42,8 +42,8 @@ protected:
     float dist(const cellar::Vec2i& p1, const cellar::Vec2i& p2);
 
     std::set< cellar::Vec2i > _bridgeEnds;
-    cellar::Grid< AStarNode > _aStarGrid;
-    cellar::Grid< std::vector<Path::Node> > _nodesToBeConsidered;
+    cellar::Grid2D< AStarNode > _aStarGrid;
+    cellar::Grid2D< std::vector<Path::Node> > _nodesToBeConsidered;
 };
 
 

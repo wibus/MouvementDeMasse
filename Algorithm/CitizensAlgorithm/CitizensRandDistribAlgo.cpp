@@ -78,7 +78,7 @@ void CitizensRandDistribAlgo::setup(City &city)
         ctz.homeToWorkPath = homeToWorkPath;
         ctz.walkingSpeed = walkingSpeed;
 
-        _city->citizens().insert(make_pair(ctz.cid, ctz));
+        _city->citizens().insert(make_pair(ctz.id(), ctz));
     }
 
     cleanAStarStructures();
@@ -135,7 +135,7 @@ bool CitizensRandDistribAlgo::homeToWorkPathByDijkstra(Path& path, const Vec2i& 
     const int UKN_TKN = 0;
     const int KNW_TKN = 1;
     const int DST_TKN = 2;
-    Grid<int> juncs(_mapSize.x()+1, _mapSize.y()+1, UKN_TKN);
+    Grid2D<int> juncs(_mapSize.x()+1, _mapSize.y()+1, UKN_TKN);
     juncs.set(src, KNW_TKN);
     juncs.set(dst, DST_TKN);
 
@@ -350,10 +350,10 @@ void CitizensRandDistribAlgo::initializeAStarStructures()
         _bridgeEnds.insert(_city->bridges()[b].endB());
     }
 
-    _aStarGrid = Grid< AStarNode >(_city->junctions().width(),
+    _aStarGrid = Grid2D< AStarNode >(_city->junctions().width(),
                                    _city->junctions().height());
 
-    _nodesToBeConsidered = Grid< vector<Path::Node> >(_city->junctions().width(),
+    _nodesToBeConsidered = Grid2D< vector<Path::Node> >(_city->junctions().width(),
                                                            _city->junctions().height());
     for(int j=0; j<_nodesToBeConsidered.height(); ++j)
     {
@@ -389,6 +389,6 @@ void CitizensRandDistribAlgo::initializeAStarStructures()
 void CitizensRandDistribAlgo::cleanAStarStructures()
 {
     _bridgeEnds.clear();
-    _aStarGrid = Grid< AStarNode >(0, 0);
-    _nodesToBeConsidered = Grid< std::vector<Path::Node> >(0, 0);
+    _aStarGrid = Grid2D< AStarNode >(0, 0);
+    _nodesToBeConsidered = Grid2D< std::vector<Path::Node> >(0, 0);
 }

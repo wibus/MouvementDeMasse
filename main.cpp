@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std;
 
+#include <DataStructure/PGrid3D.h>
+
 #include <ScaenaApplication/Application.h>
 #include <Stages/QGLStage.h>
 using namespace scaena;
@@ -9,6 +11,12 @@ using namespace scaena;
 #include "MdMPlay.h"
 #include "Ui/MainWindow.h"
 
+class Test
+{
+public:
+    Test() {cout << "C";}
+    ~Test() {cout << "D";}
+};
 
 int main(int argc, char** argv) try
 {

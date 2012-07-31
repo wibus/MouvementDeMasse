@@ -174,15 +174,13 @@ bool City::save(const string& fileName)
                 Citizen& ctz = c->second;
 
                 xml.writeStartElement("citizen");
-                    xml.writeAttribute("id",    QString::number(ctz.cid));
+                    xml.writeAttribute("id",    QString::number(ctz.id()));
                     xml.writeAttribute("state", Citizen::STATE_STRINGS[ctz.state].c_str());
                     xml.writeAttribute("walkingSpeed", QString::number(ctz.walkingSpeed));
                     xml.writeAttribute("position", toString(ctz.position).c_str());
                     xml.writeAttribute("direction", toString(ctz.direction).c_str());
                     xml.writeAttribute("homePos", toString(ctz.homePos).c_str());
-                    xml.writeAttribute("homeRoom", toString(ctz.homeRoom).c_str());
                     xml.writeAttribute("workPos", toString(ctz.workPos).c_str());
-                    xml.writeAttribute("workRoom", toString(ctz.workRoom).c_str());
 
                     xml.writeStartElement("path");
                         xml.writeAttribute("name", "Home to Work path");

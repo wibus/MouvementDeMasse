@@ -1,7 +1,9 @@
 #ifndef LAND_H
 #define LAND_H
 
+#include <set>
 #include <string>
+#include "Citizen.h"
 
 
 class Land
@@ -12,20 +14,20 @@ public:
     Land();
     virtual ~Land();
 
-    void setType(Type type);
     Type type() const;
-
-    void setNbStories(int stories);
     int nbStories() const;
-    static void setMaxNbStories(int nb);
-    static int maxNbStories();
-
-    void setCapacity(int capacity);
     int capacity() const;
+    int nbResidents() const;
+    bool isEmpty() const;
+    bool isFull() const;
 
-    void increaseResidents();
-    void decreaseResidents();
-    int  nbResidents() const;
+    void setType(Type type);
+    void setNbStories(int nb);
+    bool allocateRoom(Citizen::Id id);
+    bool deallocateRoom(Citizen::Id id);
+
+    static int  maxNbStories();
+    static void setMaxNbStories(int nb);
 
     static const std::string TYPE_STRINGS[NB_TYPES];
 
@@ -34,31 +36,66 @@ private:
     Type _type;
     int _nbStories;
     int _capacity;
-    int _nbResidents;
+    std::set<Citizen::Id> _residents;
+
+
+    static const int NB_ROOMS_BY_STORY;
 };
 
 
 
 // Implementation //
-inline void Land::setType(Type type)
-{
-    _type = type;
-}
-
 inline Land::Type Land::type() const
 {
     return _type;
-}
-
-inline void Land::setNbStories(int stories)
-{
-    _nbStories = stories;
 }
 
 inline int Land::nbStories() const
 {
     return _nbStories;
 }
+
+inline int Land::capacity() const
+{
+    return NB_ROOMS_BY_STORY * _nbStories;
+}
+
+inline int Land::nbResidents() const
+{
+    return _residents.size();
+}
+
+inline bool Land::isEmpty() const
+{
+    return _residents.empty();
+}
+
+inline bool Land::isFull() const
+{
+    return (int)_residents.size() == capacity();
+}
+
+inline void Land::setType(Type type)
+{
+    _type = type;
+}
+
+inline void Land::setNbStories(int nb)
+{
+    _nbStories = nb;
+}
+
+inline bool Land::allocateRoom(Citizen::Id id)
+{
+    if(isFull()) return false;
+    return _residents.insert(id).second;
+}
+
+inline bool Land::deallocateRoom(Citizen::Id id)
+{
+    return _residents.erase(id);
+}
+
 
 inline void Land::setMaxNbStories(int nb)
 {
@@ -68,31 +105,6 @@ inline void Land::setMaxNbStories(int nb)
 inline int Land::maxNbStories()
 {
     return _maxNbStories;
-}
-
-inline void Land::setCapacity(int capacity)
-{
-    _capacity = capacity;
-}
-
-inline int Land::capacity() const
-{
-    return _capacity;
-}
-
-inline void Land::increaseResidents()
-{
-    ++_nbResidents;
-}
-
-inline void Land::decreaseResidents()
-{
-    --_nbResidents;
-}
-
-inline int Land::nbResidents() const
-{
-    return _nbResidents;
 }
 
 
