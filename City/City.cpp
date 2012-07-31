@@ -70,12 +70,12 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); // size
 
         xml.writeStartElement("calendar");
-            xml.writeAttribute("year",   QString::number(_calendar.date().year));
-            xml.writeAttribute("month",  QString::number(_calendar.date().month));
-            xml.writeAttribute("day",    QString::number(_calendar.date().day));
-            xml.writeAttribute("hour",   QString::number(_calendar.date().hour));
-            xml.writeAttribute("minute", QString::number(_calendar.date().minute));
-            xml.writeAttribute("second", QString::number(_calendar.date().second));
+            xml.writeAttribute("year",   QString::number(_calendar.dateAndTime().year));
+            xml.writeAttribute("month",  QString::number(_calendar.dateAndTime().month));
+            xml.writeAttribute("day",    QString::number(_calendar.dateAndTime().day));
+            xml.writeAttribute("hour",   QString::number(_calendar.dateAndTime().hour));
+            xml.writeAttribute("minute", QString::number(_calendar.dateAndTime().minute));
+            xml.writeAttribute("second", QString::number(_calendar.dateAndTime().second));
         xml.writeEndElement(); //size
 
         xml.writeStartElement("visual_description");
@@ -174,15 +174,13 @@ bool City::save(const string& fileName)
                 Citizen& ctz = c->second;
 
                 xml.writeStartElement("citizen");
-                    xml.writeAttribute("id",    QString::number(ctz.cid));
+                    xml.writeAttribute("id",    QString::number(ctz.id()));
                     xml.writeAttribute("state", Citizen::STATE_STRINGS[ctz.state].c_str());
                     xml.writeAttribute("walkingSpeed", QString::number(ctz.walkingSpeed));
                     xml.writeAttribute("position", toString(ctz.position).c_str());
                     xml.writeAttribute("direction", toString(ctz.direction).c_str());
                     xml.writeAttribute("homePos", toString(ctz.homePos).c_str());
-                    xml.writeAttribute("homeRoom", toString(ctz.homeRoom).c_str());
                     xml.writeAttribute("workPos", toString(ctz.workPos).c_str());
-                    xml.writeAttribute("workRoom", toString(ctz.workRoom).c_str());
 
                     xml.writeStartElement("path");
                         xml.writeAttribute("name", "Home to Work path");
@@ -332,9 +330,7 @@ bool City::saveSkyMap(const std::string& fileName)
 void City::update()
 {
     _calendar.tic();
-    _sun.setTime(_calendar.date().hour,
-                 _calendar.date().minute,
-                 _calendar.date().second);
+    _sun.setTime(_calendar.dateAndTime());
     _sky.update();
 }
 

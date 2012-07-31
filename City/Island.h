@@ -32,7 +32,7 @@ inline void Island::setIslandId(int id)
     _islandId = id;
 }
 
-inline int Island::getIslandId()
+inline int Island::getIslandId() const
 {
     return _islandId;
 }

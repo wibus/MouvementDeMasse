@@ -2,7 +2,7 @@
 #define GROUND_H
 
 #include <DataStructure/Vector.h>
-#include <DataStructure/Grid.h>
+#include <DataStructure/Grid2D.h>
 #include <Misc/CellarUtils.h>
 
 
@@ -39,7 +39,7 @@ private:
     float _minHeight;
     float _maxHeight;
     float _waterHeight;
-    cellar::Grid<float> _heights;
+    cellar::Grid2D<float> _heights;
 };
 
 

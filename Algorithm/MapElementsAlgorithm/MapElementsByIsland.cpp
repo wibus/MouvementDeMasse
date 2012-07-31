@@ -20,13 +20,13 @@ MapElementsByIsland::~MapElementsByIsland()
 void MapElementsByIsland::setup(City &city)
 {
     _junctionsStack = stack<cellar::Vec2i>();
-    _islandIdentifiers = Grid<int>();
+    _islandIdentifiers = Grid2D<int>();
     _islandEdges = std::vector<std::vector<cellar::Vec2i> >();
 
     MapElementsAlgorithm::setup(city);
 
     _nbIslands = 0;
-    _islandIdentifiers = Grid<int>(_mapSize.x(),
+    _islandIdentifiers = Grid2D<int>(_mapSize.x(),
                                    _mapSize.y(),
                                    -1);
 
@@ -464,7 +464,7 @@ void MapElementsByIsland::landIslands()
 
 
     // Add some lands.
-    PGrid<Land>* lands = &_city->lands();
+    PGrid2D<Land>* lands = &_city->lands();
     for (int j = 0; j < lands->height(); ++j)
     {
         for (int i = 0; i < lands->width(); ++i)

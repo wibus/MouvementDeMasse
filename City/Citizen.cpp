@@ -27,16 +27,14 @@ const std::string Citizen::STATE_STRINGS[Citizen::NB_STATES] = {
     "AT_HOME", "WORKING", "SHOPING", "MOVING"
 };
 
-Citizen::Citizen() :
-    cid(__assigneId()),
+Citizen::Citizen() :    
     state(Citizen::AT_HOME),
     walkingSpeed(1.0f),
     position(0.0f, 0.0f, 0.0f),
     direction(1.0f, 0.0f, 0.0f),
     homePos(0, 0),
-    homeRoom(0, 0, 0),
     workPos(0, 0),
-    workRoom(0, 0, 0),
-    homeToWorkPath()
+    homeToWorkPath(),
+    _id(__assigneId())
 {
 }
