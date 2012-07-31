@@ -75,7 +75,8 @@ SOURCES += \
     City/Bridge.cpp \
     Rendering/CitizensComponent.cpp \
     Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.cpp \
-    City/Description.cpp
+    City/Description.cpp \
+    City/Island.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -110,7 +111,8 @@ HEADERS += \
     City/Bridge.h \
     Rendering/CitizensComponent.h \
     Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.h \
-    City/Description.h
+    City/Description.h \
+    City/Island.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \
@@ -137,5 +139,11 @@ OTHER_FILES += \
     resources/fonts/Arial.bmp \
     resources/shaders/minimalist.frag \
     resources/shaders/minimalist.vert
+
+
+
+
+
+
 
 

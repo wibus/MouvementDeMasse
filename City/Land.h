@@ -15,6 +15,9 @@ public:
     void setType(Type type);
     Type type() const;
 
+    void setIslandIdentifier(int islandIdentifier);
+    int getIslandIdentifier() const;
+
     void setNbStories(int stories);
     int nbStories() const;
     static void setMaxNbStories(int nb);
@@ -32,6 +35,7 @@ public:
 private:
     static int _maxNbStories;
     Type _type;
+    int _islandIdentifier;
     int _nbStories;
     int _capacity;
     int _nbResidents;
@@ -48,6 +52,16 @@ inline void Land::setType(Type type)
 inline Land::Type Land::type() const
 {
     return _type;
+}
+
+inline void Land::setIslandIdentifier(int islandIdentifier)
+{
+    _islandIdentifier = islandIdentifier;
+}
+
+inline int Land::getIslandIdentifier() const
+{
+    return _islandIdentifier;
 }
 
 inline void Land::setNbStories(int stories)

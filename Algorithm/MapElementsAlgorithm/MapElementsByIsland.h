@@ -31,6 +31,7 @@ protected:
 private:
     void findAndExploreIslands();
     void exploreOneIsland(cellar::Vec2i postion, cellar::Vec2i direction);
+    void setLandsToIslands();
     void roadOneIsland(int index);
     void bridgeIslands();
     void bridgeTwoIslands(int firstIsland, int secondIsland);

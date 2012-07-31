@@ -9,6 +9,7 @@ int Land::_maxNbStories = 8;
 
 Land::Land():
     _type(GRASS),
+    _islandIdentifier(-1),
     _nbStories(1),
     _capacity(1),
     _nbResidents(0)
