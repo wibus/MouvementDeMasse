@@ -70,12 +70,12 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); // size
 
         xml.writeStartElement("calendar");
-            xml.writeAttribute("year",   QString::number(_calendar.date().year));
-            xml.writeAttribute("month",  QString::number(_calendar.date().month));
-            xml.writeAttribute("day",    QString::number(_calendar.date().day));
-            xml.writeAttribute("hour",   QString::number(_calendar.date().hour));
-            xml.writeAttribute("minute", QString::number(_calendar.date().minute));
-            xml.writeAttribute("second", QString::number(_calendar.date().second));
+            xml.writeAttribute("year",   QString::number(_calendar.dateAndTime().year));
+            xml.writeAttribute("month",  QString::number(_calendar.dateAndTime().month));
+            xml.writeAttribute("day",    QString::number(_calendar.dateAndTime().day));
+            xml.writeAttribute("hour",   QString::number(_calendar.dateAndTime().hour));
+            xml.writeAttribute("minute", QString::number(_calendar.dateAndTime().minute));
+            xml.writeAttribute("second", QString::number(_calendar.dateAndTime().second));
         xml.writeEndElement(); //size
 
         xml.writeStartElement("visual_description");
@@ -332,9 +332,7 @@ bool City::saveSkyMap(const std::string& fileName)
 void City::update()
 {
     _calendar.tic();
-    _sun.setTime(_calendar.date().hour,
-                 _calendar.date().minute,
-                 _calendar.date().second);
+    _sun.setTime(_calendar.dateAndTime());
     _sky.update();
 }
 

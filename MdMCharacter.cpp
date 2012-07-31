@@ -40,7 +40,7 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     stage.camera().registerObserver( *this );
 
     _city->calendar().setClock(Calendar::Clock(Calendar::Clock::SECOND));
-    _city->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 11, 0, 0));
+    _city->calendar().setDate(Calendar::DateAndTime(2000, Calendar::JANUARY, 1, 11, 0, 0));
 }
 
 MdMCharacter::~MdMCharacter()
@@ -67,7 +67,7 @@ void MdMCharacter::beginStep(const StageTime &time)
     _citizensAlgo->update();
     _drawCityModule->update();
 
-    _dateText.setText(_city->calendar().date().toString(true, true));
+    _dateText.setText(_city->calendar().dateAndTime().toString());
     _upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
