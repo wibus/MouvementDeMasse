@@ -2,8 +2,10 @@
 #define CITIZEN_H
 
 #include <vector>
+#include <list>
 
 #include <DataStructure/Vector.h>
+#include <DateAndTime/Calendar.h>
 
 
 class Path
@@ -30,6 +32,45 @@ public:
 };
 
 
+class Schedule
+{
+public :
+    struct Event
+    {
+        enum Type {GOTO_HOME, AT_HOME, GOTO_WORK, AT_WORK, NB_EVENTS};
+
+        Event() : type(AT_HOME), time() {}
+        Event(Type type, const cellar::Calendar::Time& time) : type(type), time(time) {}
+        inline bool operator< (const Event& e) {return time < e.time;}
+
+        Type type;
+        cellar::Calendar::Time time;
+
+        const static std::string EVENT_STRINGS[NB_EVENTS];
+    };
+
+    Schedule();
+
+    bool addEvent(const Event& e);
+    bool deleteEvent(const cellar::Calendar::Time& time);
+    void clearEvents();
+    Event currentEnvent(const cellar::Calendar::Time& time) const;
+
+    void setDayShift(const cellar::Calendar::Time &workHomeTravelTime);
+    void setAfternoonShift(const cellar::Calendar::Time &workHomeTravelTime);
+    void setNightShift(const cellar::Calendar::Time &workHomeTravelTime);
+
+    static cellar::Calendar::Time dayShiftBegin;
+    static cellar::Calendar::Time afternoonShiftBegin;
+    static cellar::Calendar::Time nightShiftBegin;
+
+private:
+    std::list<Event> _events;
+    typedef std::list<Event>::iterator EventIterator;
+    typedef std::list<Event>::const_iterator EventConstIterator;
+};
+
+
 class Citizen
 {
 public:
@@ -47,6 +88,7 @@ public:
     cellar::Vec2i homePos;      //Vec3i(MapX,  MapY)
     cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
     Path          homeToWorkPath;
+    Schedule      schedule;
 
 
     const static std::string STATE_STRINGS[NB_STATES];

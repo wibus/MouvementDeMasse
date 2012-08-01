@@ -33,15 +33,14 @@ public:
 
     static const std::string TYPE_STRINGS[NB_TYPES];
 
-private:
-    static int _maxNbStories;
-    Type _type;
-    int _islandIdentifier;
+private:    
+    Type _type;    
     int _nbStories;
     int _capacity;
+    int _islandIdentifier;
     std::set<Citizen::Id> _residents;
 
-
+    static int _maxNbStories;
     static const int NB_ROOMS_BY_STORY;
 };
 

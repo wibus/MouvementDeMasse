@@ -43,17 +43,39 @@ void CitizensRandDistribAlgo::setup(City &city)
         return;
 
 
+    Calendar::Clock::TimeJump timeJump = _city->calendar().clock().timeJump;
+    float normWalkSp = _description->normalWalkingSpeed *
+                       (timeJump == Calendar::Clock::MINUTE ? 60.0f : 1.0f);
+
     initializeAStarStructures();
 
     for(int c=0; c<nbCitizens; ++c)
     {
-        // Randomly find a home that have a junction nearby        
-        Vec2i homePos = residential[ randomRange((size_t)0, residential.size()) ];
+        Citizen ctz;
+
+        // Randomly find a home that have a junction nearby
+        int homeIdx = randomRange((size_t)0, residential.size());
+        Vec2i homePos = residential[ homeIdx ];
         Vec2i homeAccessPoint = randomAccessPointTo(homePos);
+        Land* home = _city->lands().get( homePos );
+        home->allocateRoom( ctz.id() );
+        if(home->isFull())
+        {
+            residential[homeIdx] = residential[residential.size()-1];
+            residential.pop_back();
+        }
 
         // Randomly find a work that have a junction nearby
-        Vec2i workPos = commercial[ randomRange((size_t)0, commercial.size()) ];
+        int workIdx = randomRange((size_t)0, commercial.size());
+        Vec2i workPos = commercial[ workIdx ];
         Vec2i workAccessPoint = randomAccessPointTo(workPos);
+        Land* work = _city->lands().get( workPos );
+        work->allocateRoom( ctz.id() );
+        if(work->isFull())
+        {
+            commercial[workIdx] = commercial[commercial.size()-1];
+            commercial.pop_back();
+        }
 
 
         // Construct the path between the house and the work
@@ -61,22 +83,14 @@ void CitizensRandDistribAlgo::setup(City &city)
         homeToWorkPathByAStar(homeToWorkPath, homeAccessPoint, workAccessPoint);
 
 
-        // Set the citizen walking speed
-        Calendar::Clock::TimeJump timeJump = _city->calendar().clock().timeJump;
-        float normWalkSp = _description->normalWalkingSpeed *
-                           (timeJump == Calendar::Clock::MINUTE ? 60.0f : 1.0f);
-        float walkingSpeed = normWalkSp + randomRange(-normWalkSp/3.0f, normWalkSp/3.0f);
-
-
         // Build The citizen
-        Citizen ctz;
         ctz.state = Citizen::AT_HOME;
         ctz.position = vec3<float>(homePos, _ground->heightAt(homePos) + randomRange(1.0f, 2.0f)) + Vec3f(0.5f, 0.5f, 0.0f);
         ctz.direction(0.0f, 0.0f, 0.0f);
         ctz.homePos = homePos;
         ctz.workPos = workPos;
         ctz.homeToWorkPath = homeToWorkPath;
-        ctz.walkingSpeed = walkingSpeed;
+        ctz.walkingSpeed = normWalkSp + randomRange(-normWalkSp/3.0f, normWalkSp/3.0f);
 
         _city->citizens().insert(make_pair(ctz.id(), ctz));
     }
@@ -278,6 +292,7 @@ bool CitizensRandDistribAlgo::homeToWorkPathByAStar(Path& path, const Vec2i& src
 
 
         _aStarGrid.get(curPos).status = AStarNode::VISITED;
+
         if(curPos == dst)
         {
             stack< AStarNode > revPath;
