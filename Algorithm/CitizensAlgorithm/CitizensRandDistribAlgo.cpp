@@ -43,9 +43,7 @@ void CitizensRandDistribAlgo::setup(City &city)
         return;
 
 
-    Calendar::Clock::TimeJump timeJump = _city->calendar().clock().timeJump;
-    float normWalkSp = _description->normalWalkingSpeed *
-                       (timeJump == Calendar::Clock::MINUTE ? 60.0f : 1.0f);
+    float normWalkSp = _description->normalWalkingSpeed * _city->timeJump().toSeconds();
 
     initializeAStarStructures();
 
@@ -91,6 +89,20 @@ void CitizensRandDistribAlgo::setup(City &city)
         ctz.workPos = workPos;
         ctz.homeToWorkPath = homeToWorkPath;
         ctz.walkingSpeed = normWalkSp + randomRange(-normWalkSp/3.0f, normWalkSp/3.0f);
+
+
+        // Shifts : [0, 4] = Day; [5, 7] = Afternoon; [8, 9] = Night
+        int shift = randomRange(0, 10);
+        Time workHomeTravelTime;
+        workHomeTravelTime.fromSeconds(ctz.homeToWorkPath.lenght / ctz.walkingSpeed);
+
+        if(inRange(shift, 0, 4))
+            ctz.schedule.setDayShift( workHomeTravelTime );
+        else if(inRange(shift, 5, 7))
+            ctz.schedule.setAfternoonShift( workHomeTravelTime );
+        else
+            ctz.schedule.setNightShift( workHomeTravelTime );
+
 
         _city->citizens().insert(make_pair(ctz.id(), ctz));
     }
@@ -295,10 +307,15 @@ bool CitizensRandDistribAlgo::homeToWorkPathByAStar(Path& path, const Vec2i& src
 
         if(curPos == dst)
         {
+            path.lenght = 0.0f;
             stack< AStarNode > revPath;
             revPath.push( curAsNode );
             while(revPath.top().node.pos != src)
-                revPath.push( _aStarGrid.get(revPath.top().last.pos) );
+            {
+                Vec2i prevNode = revPath.top().last.pos;
+                path.lenght += dist(prevNode, revPath.top().node.pos);
+                revPath.push( _aStarGrid.get(prevNode) );
+            }
 
             while( !revPath.empty() )
             {

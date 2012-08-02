@@ -12,5 +12,4 @@ CitizensAlgorithm::~CitizensAlgorithm()
 void CitizensAlgorithm::setup(City& city)
 {
     Algorithm::setup( city );
-    _calendar = &city.calendar();
 }

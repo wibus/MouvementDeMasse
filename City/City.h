@@ -32,7 +32,8 @@ public:
     City(int width, int height);
 
     cellar::Vec2i  size() const;
-    cellar::Calendar& calendar();
+    cellar::DateAndTime& dateAndTime();
+    cellar::DateAndTime& timeJump();
     Sky& sky();
     Sun& sun();
     Ground& ground();    
@@ -58,7 +59,8 @@ protected:
 
 private:
     cellar::Vec2i _size;
-    cellar::Calendar _calendar;
+    cellar::DateAndTime _dateAndTime;
+    cellar::DateAndTime _timeJump;
     Sky _sky;
     Sun _sun;
     Ground _ground;
@@ -77,9 +79,14 @@ inline cellar::Vec2i City::size() const
     return _size;
 }
 
-inline cellar::Calendar& City::calendar()
+inline cellar::DateAndTime& City::dateAndTime()
 {
-    return _calendar;
+    return _dateAndTime;
+}
+
+inline cellar::DateAndTime& City::timeJump()
+{
+    return _timeJump;
 }
 
 inline Sky& City::sky()

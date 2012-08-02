@@ -38,9 +38,6 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
                              Vec3f(_city->size().x() / 2, _city->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
-
-    _city->calendar().setClock(Calendar::Clock(Calendar::Clock::SECOND));
-    _city->calendar().setDate(Calendar::DateAndTime(2000, Calendar::JANUARY, 1, 11, 0, 0));
 }
 
 MdMCharacter::~MdMCharacter()
@@ -56,7 +53,6 @@ void MdMCharacter::enterStage()
 {
     setAlgorithms();
     stage().camera().refresh();
-    _city->calendar().start();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -67,7 +63,7 @@ void MdMCharacter::beginStep(const StageTime &time)
     _citizensAlgo->update();
     _drawCityModule->update();
 
-    _dateText.setText(_city->calendar().dateAndTime().toString());
+    _dateText.setText(_city->dateAndTime().toString());
     _upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
@@ -117,7 +113,6 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 
 void MdMCharacter::exitStage()
 {
-    _city->calendar().stop();
 }
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)

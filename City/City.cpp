@@ -13,7 +13,8 @@ using namespace cellar;
 
 City::City(int width, int height):
     _size(  width, height),
-    _calendar(),
+    _dateAndTime(2000, JANUARY, 0, 11, 0, 0),
+    _timeJump(0, 0, 0, 0, 0, 5),
     _sky(128, 128),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
     _ground(   width+1, height+1),    
@@ -70,12 +71,12 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); // size
 
         xml.writeStartElement("calendar");
-            xml.writeAttribute("year",   QString::number(_calendar.dateAndTime().year));
-            xml.writeAttribute("month",  QString::number(_calendar.dateAndTime().month));
-            xml.writeAttribute("day",    QString::number(_calendar.dateAndTime().day));
-            xml.writeAttribute("hour",   QString::number(_calendar.dateAndTime().hour));
-            xml.writeAttribute("minute", QString::number(_calendar.dateAndTime().minute));
-            xml.writeAttribute("second", QString::number(_calendar.dateAndTime().second));
+            xml.writeAttribute("year",   QString::number(_dateAndTime.year));
+            xml.writeAttribute("month",  QString::number(_dateAndTime.month));
+            xml.writeAttribute("day",    QString::number(_dateAndTime.day));
+            xml.writeAttribute("hour",   QString::number(_dateAndTime.hour));
+            xml.writeAttribute("minute", QString::number(_dateAndTime.minute));
+            xml.writeAttribute("second", QString::number(_dateAndTime.second));
         xml.writeEndElement(); //size
 
         xml.writeStartElement("visual_description");
@@ -329,8 +330,8 @@ bool City::saveSkyMap(const std::string& fileName)
 
 void City::update()
 {
-    _calendar.tic();
-    _sun.setTime(_calendar.dateAndTime());
+    _dateAndTime += _timeJump;
+    _sun.setTime(_dateAndTime);
     _sky.update();
 }
 

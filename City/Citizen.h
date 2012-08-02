@@ -24,6 +24,7 @@ public:
     Path();
     Path(const cellar::Vec2i& source, const cellar::Vec2i& destination);
 
+    float lenght;
     cellar::Vec2i source;
     cellar::Vec2i destination;    
     NodeVector    nodes;
@@ -40,11 +41,11 @@ public :
         enum Type {GOTO_HOME, AT_HOME, GOTO_WORK, AT_WORK, NB_EVENTS};
 
         Event() : type(AT_HOME), time() {}
-        Event(Type type, const cellar::Calendar::Time& time) : type(type), time(time) {}
+        Event(Type type, const cellar::Time& time) : type(type), time(time) {}
         inline bool operator< (const Event& e) {return time < e.time;}
 
         Type type;
-        cellar::Calendar::Time time;
+        cellar::Time time;
 
         const static std::string EVENT_STRINGS[NB_EVENTS];
     };
@@ -52,17 +53,17 @@ public :
     Schedule();
 
     bool addEvent(const Event& e);
-    bool deleteEvent(const cellar::Calendar::Time& time);
+    bool deleteEvent(const cellar::Time& time);
     void clearEvents();
-    Event currentEnvent(const cellar::Calendar::Time& time) const;
+    Event currentEnvent(const cellar::Time& time) const;
 
-    void setDayShift(const cellar::Calendar::Time &workHomeTravelTime);
-    void setAfternoonShift(const cellar::Calendar::Time &workHomeTravelTime);
-    void setNightShift(const cellar::Calendar::Time &workHomeTravelTime);
+    void setDayShift(const cellar::Time &workHomeTravelTime);
+    void setAfternoonShift(const cellar::Time &workHomeTravelTime);
+    void setNightShift(const cellar::Time &workHomeTravelTime);
 
-    static cellar::Calendar::Time dayShiftBegin;
-    static cellar::Calendar::Time afternoonShiftBegin;
-    static cellar::Calendar::Time nightShiftBegin;
+    static cellar::Time dayShiftBegin;
+    static cellar::Time afternoonShiftBegin;
+    static cellar::Time nightShiftBegin;
 
 private:
     std::list<Event> _events;

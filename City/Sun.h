@@ -10,7 +10,7 @@ class Sun
 public:
     Sun(const cellar::Vec4f& midnightDirection, const cellar::Vec3f& rotationAxis);
 
-    virtual void setTime(const cellar::Calendar::Time& time);
+    virtual void setTime(const cellar::Time& time);
     cellar::Vec4f direction() const;
     cellar::Vec4f midnightDirection() const;
     cellar::Vec3f rotationAxis() const;

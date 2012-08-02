@@ -8,6 +8,7 @@ const std::string Path::NODE_TYPE_STRINGS[Path::NB_NODE_TYPES] = {
 };
 
 Path::Path() :
+    lenght(0.0f),
     source(),
     destination(),
     nodes()
@@ -15,6 +16,7 @@ Path::Path() :
 }
 
 Path::Path(const cellar::Vec2i& source, const cellar::Vec2i& destination) :
+    lenght(0.0f),
     source(source),
     destination(destination),
     nodes()
@@ -27,9 +29,9 @@ const std::string Schedule::Event::EVENT_STRINGS[NB_EVENTS]= {
     "GOTO_HOME", "AT_HOME", "GOTO_WORK", "AT_WORK"
 };
 
-Calendar::Time Schedule::dayShiftBegin       = Calendar::Time(8,  0, 0);
-Calendar::Time Schedule::afternoonShiftBegin = Calendar::Time(16, 0, 0);
-Calendar::Time Schedule::nightShiftBegin     = Calendar::Time(0,  0, 0);
+Time Schedule::dayShiftBegin       = Time(8,  0, 0);
+Time Schedule::afternoonShiftBegin = Time(16, 0, 0);
+Time Schedule::nightShiftBegin     = Time(0,  0, 0);
 
 
 Schedule::Schedule() :
@@ -45,7 +47,7 @@ bool Schedule::addEvent(const Event& e)
     return true;
 }
 
-bool Schedule::deleteEvent(const cellar::Calendar::Time& time)
+bool Schedule::deleteEvent(const cellar::Time& time)
 {
     EventIterator it = _events.begin();
     for(;it != _events.end(); ++it)
@@ -64,7 +66,7 @@ void Schedule::clearEvents()
     _events.clear();
 }
 
-Schedule::Event Schedule::currentEnvent(const cellar::Calendar::Time& time) const
+Schedule::Event Schedule::currentEnvent(const cellar::Time& time) const
 {
     Event e = _events.back();
 
@@ -79,7 +81,7 @@ Schedule::Event Schedule::currentEnvent(const cellar::Calendar::Time& time) cons
 }
 
 
-void Schedule::setDayShift(const Calendar::Time& workHomeTravelTime)
+void Schedule::setDayShift(const Time& workHomeTravelTime)
 {
     clearEvents();
     addEvent(Event(Event::GOTO_WORK, dayShiftBegin - workHomeTravelTime));
@@ -88,7 +90,7 @@ void Schedule::setDayShift(const Calendar::Time& workHomeTravelTime)
     addEvent(Event(Event::AT_HOME,   afternoonShiftBegin + workHomeTravelTime));
 }
 
-void Schedule::setAfternoonShift(const Calendar::Time& workHomeTravelTime)
+void Schedule::setAfternoonShift(const Time& workHomeTravelTime)
 {
     clearEvents();
     addEvent(Event(Event::GOTO_WORK, afternoonShiftBegin - workHomeTravelTime));
@@ -97,7 +99,7 @@ void Schedule::setAfternoonShift(const Calendar::Time& workHomeTravelTime)
     addEvent(Event(Event::AT_HOME,   nightShiftBegin + workHomeTravelTime));
 }
 
-void Schedule::setNightShift(const Calendar::Time& workHomeTravelTime)
+void Schedule::setNightShift(const Time& workHomeTravelTime)
 {
     clearEvents();
     addEvent(Event(Event::GOTO_WORK, nightShiftBegin - workHomeTravelTime));

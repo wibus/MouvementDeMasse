@@ -11,12 +11,6 @@ using namespace scaena;
 #include "MdMPlay.h"
 #include "Ui/MainWindow.h"
 
-class Test
-{
-public:
-    Test() {cout << "C";}
-    ~Test() {cout << "D";}
-};
 
 int main(int argc, char** argv) try
 {
@@ -32,7 +26,6 @@ int main(int argc, char** argv) try
 
     MainWindow window(stage);
     window.show();
-
 
     return getApplication().execute();    
 }
