@@ -8,6 +8,15 @@
 #include <DateAndTime/Calendar.h>
 
 
+enum CitizenState {CITIZEN_GOTO_HOME, CITIZEN_AT_HOME,
+                   CITIZEN_GOTO_WORK, CITIZEN_AT_WORK, NB_CITIZEN_STATES};
+
+const std::string CITIZEN_STATE_STRINGS[NB_CITIZEN_STATES] = {
+    "CITIZEN_GOTO_HOME", "CITIZEN_AT_HOME",
+    "CITIZEN_GOTO_WORK", "CITIZEN_AT_WORK"
+};
+
+
 class Path
 {
 public:
@@ -38,16 +47,12 @@ class Schedule
 public :
     struct Event
     {
-        enum Type {GOTO_HOME, AT_HOME, GOTO_WORK, AT_WORK, NB_EVENTS};
-
-        Event() : type(AT_HOME), time() {}
-        Event(Type type, const cellar::Time& time) : type(type), time(time) {}
+        Event() : state(CITIZEN_AT_HOME), time() {}
+        Event(CitizenState state, const cellar::Time& time) : state(state), time(time) {}
         inline bool operator< (const Event& e) {return time < e.time;}
 
-        Type type;
+        CitizenState state;
         cellar::Time time;
-
-        const static std::string EVENT_STRINGS[NB_EVENTS];
     };
 
     Schedule();
@@ -65,8 +70,7 @@ public :
     static cellar::Time afternoonShiftBegin;
     static cellar::Time nightShiftBegin;
 
-private:
-    std::list<Event> _events;
+    std::list<Event> events;
     typedef std::list<Event>::iterator EventIterator;
     typedef std::list<Event>::const_iterator EventConstIterator;
 };
@@ -75,14 +79,13 @@ private:
 class Citizen
 {
 public:
-    enum State {AT_HOME, WORKING, SHOPING, MOVING, NB_STATES};
     typedef int Id;
     static const Id NO_ID = -1;
 
     Citizen();
 
     Id            id()          const {return _id;}
-    State         state;
+    CitizenState  curState;
     float         walkingSpeed;
     cellar::Vec3f position;
     cellar::Vec3f direction;
@@ -90,9 +93,6 @@ public:
     cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
     Path          homeToWorkPath;
     Schedule      schedule;
-
-
-    const static std::string STATE_STRINGS[NB_STATES];
 
 private:
     Id _id;

@@ -176,7 +176,7 @@ bool City::save(const string& fileName)
 
                 xml.writeStartElement("citizen");
                     xml.writeAttribute("id",    QString::number(ctz.id()));
-                    xml.writeAttribute("state", Citizen::STATE_STRINGS[ctz.state].c_str());
+                    xml.writeAttribute("state", CITIZEN_STATE_STRINGS[ctz.curState].c_str());
                     xml.writeAttribute("walkingSpeed", QString::number(ctz.walkingSpeed));
                     xml.writeAttribute("position", toString(ctz.position).c_str());
                     xml.writeAttribute("direction", toString(ctz.direction).c_str());

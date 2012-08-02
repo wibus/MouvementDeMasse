@@ -15,7 +15,7 @@ using namespace scaena;
 #include "MdMCharacter.h"
 #include "City/City.h"
 #include "Rendering/DrawCityModule.h"
-#include "Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.h"
+#include "Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
@@ -26,7 +26,7 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _drawCityModule( new DrawCityModule() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
     _mapElemAlgo(    new MapElementsByIsland() ),
-    _citizensAlgo(   new CitizensRandDistribAlgo() ),
+    _citizensAlgo(   new CitizensDistribByIsland() ),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()

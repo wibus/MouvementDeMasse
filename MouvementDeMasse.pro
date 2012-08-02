@@ -74,9 +74,9 @@ SOURCES += \
     Rendering/BridgesComponent.cpp \
     City/Bridge.cpp \
     Rendering/CitizensComponent.cpp \
-    Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.cpp \
     City/Description.cpp \
-    City/Island.cpp
+    City/Island.cpp \
+    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -110,9 +110,9 @@ HEADERS += \
     Rendering/BridgesComponent.h \
     City/Bridge.h \
     Rendering/CitizensComponent.h \
-    Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.h \
     City/Description.h \
-    City/Island.h
+    City/Island.h \
+    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \
