@@ -15,6 +15,11 @@ public:
 protected:
     float gotoWork(Citizen& ctz, float timeToMove);
     float gotoHome(Citizen& ctz, float timeToMove);
+    void placeCitizen(Citizen& ctz);
+
+    float _streetLength;
+    float _juncLengthBeg;
+    float _juncLengthEnd;
 };
 
 #endif // CITIZENSMOVEHOMEWORK_H
