@@ -76,7 +76,8 @@ SOURCES += \
     Rendering/CitizensComponent.cpp \
     City/Description.cpp \
     City/Island.cpp \
-    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.cpp
+    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.cpp \
+    Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -112,7 +113,8 @@ HEADERS += \
     Rendering/CitizensComponent.h \
     City/Description.h \
     City/Island.h \
-    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h
+    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h \
+    Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \

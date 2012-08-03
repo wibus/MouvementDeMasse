@@ -16,6 +16,7 @@ using namespace scaena;
 #include "City/City.h"
 #include "Rendering/DrawCityModule.h"
 #include "Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h"
+#include "Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
@@ -26,7 +27,8 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _drawCityModule( new DrawCityModule() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
     _mapElemAlgo(    new MapElementsByIsland() ),
-    _citizensAlgo(   new CitizensDistribByIsland() ),
+    _citizensDistribAlgo( new CitizensDistribByIsland() ),
+    _citizenMoveAlgo(     new CitizensMoveHomeWork() ),
     _camMan( stage.camera() ),
     _fpsText(),
     _upsText()
@@ -44,7 +46,7 @@ MdMCharacter::~MdMCharacter()
 {
     delete _city;
     delete _drawCityModule;
-    delete _citizensAlgo;
+    delete _citizensDistribAlgo;
     delete _heightsAlgo;
     delete _mapElemAlgo;
 }
@@ -60,7 +62,8 @@ void MdMCharacter::beginStep(const StageTime &time)
     updateCamera( time.elapsedTime() );
 
     _city->update();
-    _citizensAlgo->update();
+    _citizensDistribAlgo->update();
+    _citizenMoveAlgo->update();
     _drawCityModule->update();
 
     _dateText.setText(_city->dateAndTime().toString());
@@ -170,7 +173,8 @@ void MdMCharacter::setAlgorithms()
     getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Map Elements algo finished.", "MdMCharacter"));
 
     // Citizens
-    _citizensAlgo->setup( *_city );
+    _citizensDistribAlgo->setup( *_city );
+    _citizenMoveAlgo->setup( *_city );
     getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Citizens algo finished.", "MdMCharacter"));
 
     // Rendering

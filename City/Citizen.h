@@ -27,16 +27,32 @@ public:
         NodeType type;
         cellar::Vec2i pos;
     };
-    typedef std::vector< Node >  NodeVector;
-    typedef NodeVector::iterator NodeIterator;
+    typedef std::vector< Node >     NodeContainer;
+    typedef NodeContainer::iterator NodeIterator;
+    typedef NodeContainer::reverse_iterator NodeRevIterator;
 
     Path();
     Path(const cellar::Vec2i& source, const cellar::Vec2i& destination);
 
-    float lenght;
-    cellar::Vec2i source;
-    cellar::Vec2i destination;    
-    NodeVector    nodes;
+    void gotoEnd();
+    void gotoBegin();
+
+    void gotoNextNode();
+    bool isEndReached() const;
+
+    void gotoRevNextNode();
+    bool isRevEndReached() const;
+
+
+    float           lenght;
+    cellar::Vec2i   source;
+    cellar::Vec2i   destination;
+    NodeContainer   nodes;
+    NodeIterator    curNode;
+    NodeIterator    nextNode;
+    NodeRevIterator revCurNode;
+    NodeRevIterator    revNextNode;
+    float           nodeProgession;
 
     static const std::string NODE_TYPE_STRINGS[NB_NODE_TYPES];
 };
@@ -60,7 +76,8 @@ public :
     bool addEvent(const Event& e);
     bool deleteEvent(const cellar::Time& time);
     void clearEvents();
-    Event currentEnvent(const cellar::Time& time) const;
+    Event currentEvent(const cellar::Time& time) const;
+    Event nextEvent(const cellar::Time& time) const;
 
     void setDayShift(const cellar::Time &workHomeTravelTime);
     void setAfternoonShift(const cellar::Time &workHomeTravelTime);

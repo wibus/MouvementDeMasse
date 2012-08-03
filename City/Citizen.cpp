@@ -35,7 +35,12 @@ Path::Path() :
     lenght(0.0f),
     source(),
     destination(),
-    nodes()
+    nodes(),
+    curNode(),
+    nextNode(),
+    revCurNode(),
+    revNextNode(),
+    nodeProgession(0.0f)
 {
 }
 
@@ -43,8 +48,59 @@ Path::Path(const cellar::Vec2i& source, const cellar::Vec2i& destination) :
     lenght(0.0f),
     source(source),
     destination(destination),
-    nodes()
+    nodes(),
+    curNode(),
+    nextNode(),
+    revCurNode(),
+    revNextNode(),
+    nodeProgession(0.0f)
 {
+}
+
+void Path::gotoEnd()
+{
+    nodeProgession = 0.0f;
+    curNode     = nodes.end(); --curNode;
+    nextNode    = nodes.end();
+    revCurNode  = nodes.rbegin();
+    revNextNode = nodes.rbegin(); ++revNextNode;
+}
+
+void Path::gotoBegin()
+{
+    nodeProgession = 0.0f;
+    curNode     = nodes.begin();
+    nextNode    = nodes.begin(); ++nextNode;
+    revCurNode  = nodes.rend(); --revCurNode;
+    revNextNode = nodes.rend();
+}
+
+void Path::gotoNextNode()
+{
+    nodeProgession = 0.0f;
+    ++curNode;
+    ++nextNode;
+    --revCurNode;
+    --revNextNode;
+}
+
+bool Path::isEndReached() const
+{
+    return nextNode == nodes.end();
+}
+
+void Path::gotoRevNextNode()
+{
+    nodeProgession = 0.0f;
+    --curNode;
+    --nextNode;
+    ++revCurNode;
+    ++revNextNode;
+}
+
+bool Path::isRevEndReached() const
+{
+    return revNextNode == nodes.rend();
 }
 
 
@@ -81,7 +137,7 @@ void Schedule::clearEvents()
     events.clear();
 }
 
-Schedule::Event Schedule::currentEnvent(const cellar::Time& time) const
+Schedule::Event Schedule::currentEvent(const Time& time) const
 {
     Event e = events.back();
 
@@ -95,6 +151,18 @@ Schedule::Event Schedule::currentEnvent(const cellar::Time& time) const
     return e;
 }
 
+Schedule::Event Schedule::nextEvent(const Time& time) const
+{
+    Event e = events.front();
+
+    for(EventConstIterator it = events.begin();it != events.end(); ++it)
+    {
+        if(time < it->time)
+            return *it;
+    }
+
+    return e;
+}
 
 void Schedule::setDayShift(const Time& workHomeTravelTime)
 {

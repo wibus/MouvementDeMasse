@@ -49,7 +49,8 @@ private:
     DrawCityModule* _drawCityModule;
     HeightsAlgorithm*     _heightsAlgo;
     MapElementsAlgorithm* _mapElemAlgo;
-    CitizensAlgorithm*    _citizensAlgo;
+    CitizensAlgorithm*    _citizensDistribAlgo;
+    CitizensAlgorithm*    _citizenMoveAlgo;
 
     cellar::CameraManFree _camMan;
     prop::twoD::Text _dateText;

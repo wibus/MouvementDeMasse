@@ -126,6 +126,7 @@ void CitizensDistribByIsland::setup(City &city)
         // Construct the path between the house and the work
         Path homeToWorkPath(homePos, workPos);
         homeToWorkPathByAStar(homeToWorkPath, homeAccessPoint, workAccessPoint);
+        homeToWorkPath.gotoBegin();
 
 
         // Build The citizen
@@ -137,19 +138,8 @@ void CitizensDistribByIsland::setup(City &city)
         ctz.homeToWorkPath = homeToWorkPath;
         ctz.walkingSpeed = normWalkSp + randomRange(-normWalkSp/3.0f, normWalkSp/3.0f);
 
-
         // Shifts : [0, 4] = Day; [5, 7] = Afternoon; [8, 9] = Night
-        int shift = randomRange(0, 10);
-        Time workHomeTravelTime;
-        workHomeTravelTime.fromSeconds(ctz.homeToWorkPath.lenght / ctz.walkingSpeed);
-
-        if(inRange(shift, 0, 4))
-            ctz.schedule.setDayShift( workHomeTravelTime );
-        else if(inRange(shift, 5, 7))
-            ctz.schedule.setAfternoonShift( workHomeTravelTime );
-        else
-            ctz.schedule.setNightShift( workHomeTravelTime );
-
+        ctz.schedule.setDayShift( Time().fromSeconds(ctz.homeToWorkPath.lenght / ctz.walkingSpeed) );
 
         _city->citizens().insert(make_pair(ctz.id(), ctz));
     }
