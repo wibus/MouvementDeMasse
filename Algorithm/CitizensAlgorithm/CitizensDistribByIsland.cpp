@@ -81,18 +81,14 @@ void CitizensDistribByIsland::setup(City &city)
 
         }
     }
-
-
-    int nbCitizens = 0;
-    if(residential.size() != 0  &&  commercial.size() !=0)
-        nbCitizens = (residential.size() + commercial.size());
-    else
+    if(residential.size() == 0  ||  commercial.size() ==0)
         return;
 
 
+    initializeAStarStructures();
+    int nbCitizens = (residential.size() + commercial.size());
     float normWalkSp = _description->normalWalkingSpeed;
 
-    initializeAStarStructures();
 
     for(int c=0; c<nbCitizens; ++c)
     {
@@ -131,7 +127,7 @@ void CitizensDistribByIsland::setup(City &city)
 
         // Build The citizen
         ctz.curState = CITIZEN_AT_HOME;
-        ctz.position = vec3<float>(homePos, _ground->heightAt(homePos) + randomRange(1.0f, 2.0f)) + Vec3f(0.5f, 0.5f, 0.0f);
+        ctz.position(homePos.x() + 0.5f, homePos.y() + 0.5f, _ground->heightAt(homePos));
         ctz.direction(0.0f, 0.0f, 0.0f);
         ctz.homePos = homePos;
         ctz.workPos = workPos;
@@ -139,7 +135,11 @@ void CitizensDistribByIsland::setup(City &city)
         ctz.walkingSpeed = normWalkSp + randomRange(-normWalkSp/3.0f, normWalkSp/3.0f);
 
         // Shifts : [0, 4] = Day; [5, 7] = Afternoon; [8, 9] = Night
-        ctz.schedule.setDayShift( Time().fromSeconds(ctz.homeToWorkPath.lenght / ctz.walkingSpeed) );
+        int shift = randomRange(0, 10);
+        Time toGoWorking = Time().fromSeconds(ctz.homeToWorkPath.lenght / ctz.walkingSpeed);
+             if(shift < 5) ctz.schedule.setDayShift(       toGoWorking );
+        else if(shift < 8) ctz.schedule.setAfternoonShift( toGoWorking );
+        else               ctz.schedule.setNightShift(     toGoWorking );
 
         _city->citizens().insert(make_pair(ctz.id(), ctz));
     }

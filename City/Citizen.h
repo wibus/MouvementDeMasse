@@ -38,9 +38,11 @@ public:
     void gotoBegin();
 
     void gotoNextNode();
+    bool isBeginReached() const;
     bool isEndReached() const;
 
     void gotoRevNextNode();
+    bool isRevBeginReached() const;
     bool isRevEndReached() const;
 
 

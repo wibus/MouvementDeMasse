@@ -76,7 +76,8 @@ SOURCES += \
     Rendering/CitizensComponent.cpp \
     City/Description.cpp \
     City/Island.cpp \
-    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.cpp
+    Algorithm/CitizensAlgorithm/CitizensDistribByIsland.cpp \
+    Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.cpp
 
 HEADERS += \
     MdMPlay.h \
