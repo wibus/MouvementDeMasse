@@ -15,6 +15,22 @@ void CitizensMoveHomeWork::setup(City &city)
     _streetLength = 1.0f - _description->roadWidth;
     _juncLengthBeg = _description->roadWidth / 2.0f;
     _juncLengthEnd = 1.0f - _description->roadWidth / 2.0f;
+
+
+    CitizenIterator cit = _city->citizens().begin();
+    CitizenIterator citEnd = _city->citizens().end();
+
+    // Main loop (foreach citizens)
+    for(; cit != citEnd; ++cit)
+    {
+        Citizen& ctz = cit->second;
+        Schedule::Event evt = ctz.schedule.currentEvent(_city->dateAndTime());
+        if(evt.state == CITIZEN_GOTO_HOME || evt.state == CITIZEN_AT_HOME)
+            ctz.curState = CITIZEN_AT_HOME;
+        else if(evt.state == CITIZEN_GOTO_WORK || evt.state == CITIZEN_AT_WORK)
+            ctz.curState = CITIZEN_AT_WORK;
+        placeCitizenOnBuilding(ctz);
+    }
 }
 
 void CitizensMoveHomeWork::update()
@@ -225,20 +241,26 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
             endPos = path.revNextNode->pos;
         }
 
-        if(_juncLengthBeg <= path.nodeProgession && path.nodeProgession <= _juncLengthEnd)
+        Vec2f dir2d = endPos - begPos;
+        float totalLength    = dir2d.length();
+        float junctionLength = _description->roadWidth;
+        float junctionHalfLength = junctionLength / 2.0f;
+        float roadLength     = totalLength - junctionLength;
+        float walkedLength   = progression * totalLength;
+
+        if(junctionHalfLength <= walkedLength && walkedLength <= junctionHalfLength + roadLength)
         {
             float begHeight = _ground->heightAt(begPos);
             float endHeight = _ground->heightAt(endPos);
             float deltaz = endHeight - begHeight;
 
-            Vec2f dir2d = endPos - begPos;
-            float dist = dir2d.length() - 2*_juncLengthBeg;
-            float realStreetLength = Vec2f(dist, deltaz).length();
-            float streetProg = (path.nodeProgession - _juncLengthBeg) / _juncLengthEnd;
-            ctz.direction(dir2d.x(), dir2d.y(), deltaz/dist).normalize();
+            float realStreetLength = Vec2f(roadLength, deltaz).length();
+            float streetProg = (walkedLength - junctionHalfLength) / roadLength;
+            ctz.direction(dir2d.x(), dir2d.y(), deltaz/roadLength).normalize();
 
-            Vec2f right( (dir2d.normalize() * _description->roadWidth / 4.0f).rotateQuarterCW() );
-            ctz.position = vec3(right + begPos + dir2d*_juncLengthBeg, begHeight) + ctz.direction*streetProg*realStreetLength;
+            Vec2f right( (dir2d.normalize() * junctionLength / 4.0f).rotateQuarterCW() );
+            ctz.position = vec3(right + begPos + dir2d*junctionHalfLength, begHeight) +
+                           ctz.direction*streetProg*realStreetLength;
         }
         else
         {
@@ -261,13 +283,13 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
             float juncHeight;
             float juncProg;
             Vec2f juncPos;
-            Vec2f lastDir2d,  lastRight, lastRealPos,
+            Vec2f lastDir2d, lastRight, lastRealPos,
                   nextDir2d, nextRight, nextRealPos;
 
             if(progression < 0.5f)
             {
                 juncHeight = _ground->heightAt(begPos);
-                juncProg = (progression + _juncLengthBeg) / (2.0f*_juncLengthBeg);
+                juncProg = (walkedLength + junctionHalfLength) / junctionLength;
                 juncPos = begPos;
                 lastDir2d = begPos - prevPos;
                 nextDir2d = endPos - begPos;
@@ -275,11 +297,13 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
             else
             {
                 juncHeight = _ground->heightAt(endPos);
-                juncProg = ((progression-1.0f) + _juncLengthBeg) / (2.0f*_juncLengthBeg);
+                juncProg = ((walkedLength-totalLength) + junctionHalfLength) / junctionLength;
                 juncPos = endPos;
                 lastDir2d = endPos  - begPos;
                 nextDir2d = nextPos - endPos;
             }
+
+            juncProg = sqrt(juncProg); // Round corner
 
             float lastWeight = (1.0f - juncProg);
             float nextWeight = juncProg;
@@ -287,12 +311,12 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
             ctz.direction(dirInterpol.x(), dirInterpol.y(), 0.0f);
 
             lastDir2d.normalize();
-            lastDir2d *= _description->roadWidth/2.0f;
+            lastDir2d *= junctionHalfLength;
             lastRight = (lastDir2d / 2.0f).rotateQuarterCW();
             lastRealPos = -lastDir2d + lastRight;
 
             nextDir2d.normalize();
-            nextDir2d *= _description->roadWidth/2.0f;
+            nextDir2d *= junctionHalfLength;
             nextRight = (nextDir2d / 2.0f).rotateQuarterCW();
             nextRealPos = nextDir2d + nextRight;
 

@@ -126,8 +126,8 @@ void CitizensDistribByIsland::setup(City &city)
 
 
         // Build The citizen
-        ctz.curState = CITIZEN_AT_HOME;
-        ctz.position(homePos.x() + 0.5f, homePos.y() + 0.5f, _ground->heightAt(homePos));
+        ctz.curState = CITIZEN_AT_HOME; // Will be set in Move algorithm setup()
+        ctz.position(0, 0, 0);          // Will be set in Move algorithm setup()
         ctz.direction(0.0f, 0.0f, 0.0f);
         ctz.homePos = homePos;
         ctz.workPos = workPos;

@@ -15,14 +15,14 @@ varying vec3 fragDir;
 
 void main(void)
 {
-    vec4 color = SkyColor;
+    vec4 color = SkyColor;    
 
     // Position
     vec3 pos = normalize(position);
-    vec2 ceilCoord = pos.xy * length(pos.xy) / (pos.z+0.1) + TexShift;
+    vec2 ceilCoord = normalize(pos.xy) * length(pos.xy) / (pos.z+0.12) + TexShift;
 
     // Skyline
-    vec4 skylineColor = abs(pow(1.0 - position.z, 6.0)) * SkylineColor;
+    vec4 skylineColor = abs(pow(1.0 - pos.z, 6.0)) * SkylineColor;
     color += skylineColor;
 
     // Sun

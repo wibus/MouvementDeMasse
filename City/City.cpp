@@ -13,7 +13,7 @@ using namespace cellar;
 
 City::City(int width, int height):
     _size(  width, height),
-    _dateAndTime(2000, JANUARY, 0, 7, 00, 0),
+    _dateAndTime(2000, JANUARY, 0, 7, 30, 0),
     _timeJump(0, 0, 0, 0, 0, 1),
     _sky(128, 128),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
