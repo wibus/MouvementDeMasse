@@ -17,7 +17,6 @@ public:
     void draw();
 
 protected:
-    float landHeight(int i, int j);
     void setupPositions();
     void setupBuidlindSides();
     void setupRoofTop();

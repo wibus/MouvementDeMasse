@@ -18,9 +18,8 @@ protected:
     void placeCitizenOnRoad(Citizen& ctz);
     void placeCitizenOnBuilding(Citizen& ctz);
 
-    float _streetLength;
-    float _juncLengthBeg;
-    float _juncLengthEnd;
+    float _juncLength;
+    float _juncHalfLength;
 };
 
 #endif // CITIZENSMOVEHOMEWORK_H

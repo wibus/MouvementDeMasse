@@ -19,7 +19,7 @@ Description::Description() :
     bridgeWidth(   2.0f*roadWidth),
     bridgeHeight(  bridgeWidth),
     storyHeight(   8.0f * unitPerMeter),
-    normalWalkingSpeed( 1.4f * unitPerMeter)
+    normalWalkingSpeed( 1.4f * unitPerMeter) // real life = 1.4 m/s
 {
     sunLight.direction(1.0f, 1.0f, 0.0f, 0.0f).normalize();
     sunLight.ambient = curSkyColor;
