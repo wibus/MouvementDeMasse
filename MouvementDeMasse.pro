@@ -19,26 +19,20 @@ else:unix: LIBS += -L/usr/lib -lGLEW
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/release/ -lCellarWorkbench
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/debug/ -lCellarWorkbench
 else:unix:!macx:!symbian: LIBS += -L$$PWD/../Scaena-library/libCellarWorkbench/ -lCellarWorkbench
-
 INCLUDEPATH += $$PWD/../Scaena-library/libCellarWorkbench
 DEPENDPATH += $$PWD/../Scaena-library/libCellarWorkbench
 
-
-# Prop Room library
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom/release/ -lPropRoom
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom/debug/ -lPropRoom
-else:unix:!macx:!symbian: LIBS += -L$$PWD/../Scaena-library/libPropRoom/ -lPropRoom
-
-INCLUDEPATH += $$PWD/../Scaena-library/libPropRoom
-DEPENDPATH += $$PWD/../Scaena-library/libPropRoom
-
+# libPropRoom2D
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom2D/release/ -lPropRoom2D
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libPropRoom2D/debug/ -lPropRoom2D
+else:unix:!macx:!symbian: LIBS += -L$$PWD/../Scaena-library/libPropRoom2D/ -lPropRoom2D
+INCLUDEPATH += $$PWD/../Scaena-library/libPropRoom2D
+DEPENDPATH += $$PWD/../Scaena-library/libPropRoom2D
 
 # libScaena
-
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Scaena-library/libScaena/release/ -lScaena
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Scaena-library/libScaena/debug/ -lScaena
 else:unix:!macx:!symbian: LIBS += -L$$PWD/../Scaena-library/libScaena/ -lScaena
-
 INCLUDEPATH += $$PWD/../Scaena-library/libScaena
 DEPENDPATH += $$PWD/../Scaena-library/libScaena
 
@@ -137,5 +131,3 @@ OTHER_FILES += \
     resources/fonts/Arial.bmp \
     resources/shaders/minimalist.frag \
     resources/shaders/minimalist.vert
-
-
