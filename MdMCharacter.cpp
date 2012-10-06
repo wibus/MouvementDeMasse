@@ -29,12 +29,12 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _mapElemAlgo(    new MapElementsByIsland() ),
     _citizensDistribAlgo( new CitizensDistribByIsland() ),
     _citizenMoveAlgo(     new CitizensMoveHomeWork() ),
-    _camMan( stage.camera() ),
-    _fpsText(),
-    _upsText()
+    _camMan( stage.camera() )
+    //_fpsText(),
+    //_upsText()
 {
-    _fpsText.setPosition(5, 5);
-    _upsText.setPosition(5, 25);
+    //_fpsText.setPosition(5, 5);
+    //_upsText.setPosition(5, 25);
 
     stage.camera().setTripod(Vec3f(_city->size().x() / 2, 0, _city->ground().maxHeight()),
                              Vec3f(_city->size().x() / 2, _city->size().y() / 2, 0),
@@ -66,8 +66,8 @@ void MdMCharacter::beginStep(const StageTime &time)
     _citizenMoveAlgo->update();
     _drawCityModule->update();
 
-    _dateText.setText(_city->dateAndTime().toString());
-    _upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
+    //_dateText.setText(_city->dateAndTime().toString());
+    //_upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
 void MdMCharacter::updateCamera(float elapsedtime)
@@ -108,10 +108,10 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 {
     _drawCityModule->draw();
 
-    _fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );    
-    _fpsText.draw();
-    _upsText.draw();
-    _dateText.draw();
+    //_fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
+    //_fpsText.draw();
+    //_upsText.draw();
+    //_dateText.draw();
 }
 
 void MdMCharacter::exitStage()
@@ -120,8 +120,6 @@ void MdMCharacter::exitStage()
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)
 {
-    _dateText.setPosition(10, stage().height() - 20);
-
     if(msg.change == CameraMsg::PROJECTION)
     {
         _drawCityModule->updateProjectionMatrix( msg.camera.projectionMatrix() );

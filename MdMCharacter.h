@@ -7,7 +7,6 @@
 #include <Graphics/Camera/Camera.h>
 #include <Graphics/Camera/CameraManFree.h>
 #include <DesignPattern/SpecificObserver.h>
-#include <Text/2D/Text.h>
 #include <Characters/AbstractCharacter.h>
 
 class City;
@@ -53,9 +52,10 @@ private:
     CitizensAlgorithm*    _citizenMoveAlgo;
 
     cellar::CameraManFree _camMan;
-    prop::twoD::Text _dateText;
-    prop::twoD::Text _fpsText;
-    prop::twoD::Text _upsText;
+    // TODO: Put back the texts with new libPropRoom2D
+//    prop::twoD::Text _dateText;
+//    prop::twoD::Text _fpsText;
+//    prop::twoD::Text _upsText;
 
 
     // Deleted methods //
