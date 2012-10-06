@@ -66,7 +66,11 @@ void CitizensDistribByIsland::setup(City &city)
 
 
     vector<Vec2i> residential;
+    int residentialRooms = 0;
+
     vector<Vec2i> commercial;
+    int commercialRooms = 0;
+
     Land* land;
     for(int j=0; j<_city->lands().height(); ++j)
     {
@@ -75,18 +79,23 @@ void CitizensDistribByIsland::setup(City &city)
             Vec2i pos(i, j);
             land = _city->lands().get(i, j);
             if(land->type() == Land::RESIDENTIAL && isAccessible(pos))
+            {
                 residential.push_back( pos );
+                residentialRooms += land->capacity();
+            }
             else if(land->type() == Land::COMMERCIAL && isAccessible(pos))
+            {
                 commercial.push_back( pos );
-
+                commercialRooms += land->capacity();
+            }
         }
     }
-    if(residential.size() == 0  ||  commercial.size() ==0)
+    if(residentialRooms == 0  ||  commercialRooms ==0)
         return;
 
 
     initializeAStarStructures();
-    int nbCitizens = (residential.size() + commercial.size());
+    int nbCitizens = minVal(residentialRooms, commercialRooms) / 16;
     float normWalkSp = _description->normalWalkingSpeed;
 
 

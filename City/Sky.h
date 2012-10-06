@@ -22,8 +22,9 @@ public:
     void setCompactness(float compact);
 
 private:
+    cellar::Grid2D<float>  _colorsGrid;
     cellar::Grid2D<float>  _cloudsGrid;
-    cellar::Image        _cloudsImage;
+    cellar::Image          _cloudsImage;
     float _cloudyness;
     float _compactness;
 };
