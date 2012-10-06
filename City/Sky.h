@@ -1,7 +1,7 @@
 #ifndef SKY_H
 #define SKY_H
 
-#include <DataStructure/Grid.h>
+#include <DataStructure/Grid2D.h>
 #include <Graphics/Image.h>
 #include <DataStructure/Vector.h>
 
@@ -13,7 +13,7 @@ public:
 
     void update();
 
-    cellar::Grid<float>& cloudsGrid();
+    cellar::Grid2D<float>& cloudsGrid();
     cellar::Image& cloudsImage();
     float cloudyness() const;
     float compactness() const;
@@ -22,7 +22,7 @@ public:
     void setCompactness(float compact);
 
 private:
-    cellar::Grid<float>  _cloudsGrid;
+    cellar::Grid2D<float>  _cloudsGrid;
     cellar::Image        _cloudsImage;
     float _cloudyness;
     float _compactness;
@@ -31,7 +31,7 @@ private:
 
 
 // IMPLEMENTATION //
-inline cellar::Grid<float>& Sky::cloudsGrid()
+inline cellar::Grid2D<float>& Sky::cloudsGrid()
 {
     return _cloudsGrid;
 }

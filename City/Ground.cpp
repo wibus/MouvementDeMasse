@@ -51,3 +51,23 @@ float Ground::heightAt(float x, float y) const
 
     return heightAt(base) + bias.x()*dx + bias.y()*dy;
 }
+
+float Ground::landLowerCornerAt(int x, int y) const
+{
+    return minVal(minVal(minVal(
+        heightAt(x,   y),
+        heightAt(x+1, y)),
+        heightAt(x+1, y+1)),
+        heightAt(x,   y+1)
+    );
+}
+
+float Ground::landHigherCornerAt(int x, int y) const
+{
+    return maxVal(maxVal(maxVal(
+        heightAt(x,   y),
+        heightAt(x+1, y)),
+        heightAt(x+1, y+1)),
+        heightAt(x,   y+1)
+    );
+}

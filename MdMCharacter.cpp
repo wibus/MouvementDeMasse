@@ -2,6 +2,8 @@
 using namespace std;
 
 #include <Misc/CellarUtils.h>
+#include <Misc/Log.h>
+#include <DateAndTime/Timer.h>
 using namespace cellar;
 
 #include <StageEvents/StageTime.h>
@@ -13,18 +15,20 @@ using namespace scaena;
 #include "MdMCharacter.h"
 #include "City/City.h"
 #include "Rendering/DrawCityModule.h"
-#include "Algorithm/CitizensAlgorithm/CitizensRandDistribAlgo.h"
+#include "Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h"
+#include "Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.h"
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),
-    _city( new City(31, 33) ),
+    _city( new City(64, 60) ),
     _drawCityModule( new DrawCityModule() ),
     _heightsAlgo(    new HeightByNoiseAlgo() ),
     _mapElemAlgo(    new MapElementsByIsland() ),
-    _citizensAlgo(   new CitizensRandDistribAlgo() ),
+    _citizensDistribAlgo( new CitizensDistribByIsland() ),
+    _citizenMoveAlgo(     new CitizensMoveHomeWork() ),
     _camMan( stage.camera() )
     //_fpsText(),
     //_upsText()
@@ -36,16 +40,13 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
                              Vec3f(_city->size().x() / 2, _city->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
     stage.camera().registerObserver( *this );
-
-    _city->calendar().setClock(Calendar::Clock(Calendar::Clock::SECOND));
-    _city->calendar().setDate(Calendar::Date(2000, Calendar::Date::JANUARY, 1, 8, 0, 0));
 }
 
 MdMCharacter::~MdMCharacter()
 {
     delete _city;
     delete _drawCityModule;
-    delete _citizensAlgo;
+    delete _citizensDistribAlgo;
     delete _heightsAlgo;
     delete _mapElemAlgo;
 }
@@ -54,7 +55,6 @@ void MdMCharacter::enterStage()
 {
     setAlgorithms();
     stage().camera().refresh();
-    _city->calendar().start();
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -62,10 +62,11 @@ void MdMCharacter::beginStep(const StageTime &time)
     updateCamera( time.elapsedTime() );
 
     _city->update();
-    _citizensAlgo->update();
+    _citizensDistribAlgo->update();
+    _citizenMoveAlgo->update();
     _drawCityModule->update();
 
-    //_dateText.setText(_city->calendar().date().toString(true, true));
+    //_dateText.setText(_city->dateAndTime().toString());
     //_upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
@@ -115,7 +116,6 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 
 void MdMCharacter::exitStage()
 {
-    _city->calendar().stop();
 }
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)
@@ -153,6 +153,10 @@ bool MdMCharacter::loadCity(const std::string& fileName)
 
 void MdMCharacter::setAlgorithms()
 {
+    Timer timer;
+    timer.start();
+    getLog().postMessage(new Message('I', false, "Start city algorithms", "MdMCharacter"));
+
     _city->reset();
     _city->ground().setMinHeight(-3.5f);
     _city->ground().setMaxHeight( 4.0f);
@@ -160,13 +164,18 @@ void MdMCharacter::setAlgorithms()
 
     // Height algorithm
     _heightsAlgo->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Height algo finished.", "MdMCharacter"));
 
     // Map elements
     _mapElemAlgo->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Map Elements algo finished.", "MdMCharacter"));
 
     // Citizens
-    _citizensAlgo->setup( *_city );
+    _citizensDistribAlgo->setup( *_city );
+    _citizenMoveAlgo->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Citizens algo finished.", "MdMCharacter"));
 
     // Rendering
     _drawCityModule->setup( *_city );
+    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Draw module finished.", "MdMCharacter"));
 }

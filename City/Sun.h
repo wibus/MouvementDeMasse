@@ -1,6 +1,7 @@
 #ifndef SUN_H
 #define SUN_H
 
+#include <DateAndTime/Calendar.h>
 #include <DataStructure/Vector.h>
 #include <DataStructure/Matrix.h>
 
@@ -9,7 +10,7 @@ class Sun
 public:
     Sun(const cellar::Vec4f& midnightDirection, const cellar::Vec3f& rotationAxis);
 
-    virtual void setTime(unsigned int hour, unsigned int minutes);
+    virtual void setTime(const cellar::Time& time);
     cellar::Vec4f direction() const;
     cellar::Vec4f midnightDirection() const;
     cellar::Vec3f rotationAxis() const;

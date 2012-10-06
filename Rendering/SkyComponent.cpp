@@ -13,25 +13,15 @@ SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
     AbstractComponent(city, shader),
     _skyBuffs(),
     _skyVao(0),
+    _skyNbElems(0),
     _cloudsTex(0),
     _daySkyTex(0),
-    _nightSkyTex(0),
-    _skyNbStacks(2),
-    _skyNbSlices(3)
+    _nightSkyTex(0)
 {
     glGenVertexArrays(1, &_skyVao);
     glGenBuffers(_SKY_NB_BUFFS, _skyBuffs);
 
     _cloudsTex = GLToolkit::genTextureId(_city.sky().cloudsImage());
-
-    // Sphere Threading
-    int pointsByCircle = _skyNbSlices + 1;
-
-    for(int i=0; i<pointsByCircle * _skyNbStacks/2; ++i)
-    {
-        _skyIndices.push_back(i + pointsByCircle);
-        _skyIndices.push_back(i);
-    }
 }
 
 SkyComponent::~SkyComponent()
@@ -52,23 +42,14 @@ void SkyComponent::setupSky()
 {
     vector<Vec3f> positions;
 
-    for(int j=0; j<(_skyNbStacks+1)/2+1; ++j)
-    {
-        float jadv = static_cast<float>(j) / _skyNbStacks;
-        float p = jadv * PI;
-        float cosp = cos(p);
-        float sinp = sin(p);
+    const float r = 2.0f;
 
-        for(int i=0; i<_skyNbSlices+1; ++i)
-        {
-            float iadv = static_cast<float>(i) / _skyNbSlices;
-            float t = iadv * (2.0f*PI);
-            float cost = cos(t);
-            float sint = sin(t);
-
-            positions.push_back(Vec3f(cost * sinp, sint * sinp, cosp));
-        }
-    }
+    positions.push_back(Vec3f(0.0f,           0.0f,          r));
+    positions.push_back(Vec3f(r*cos(6*PI/3),  r*sin(6*PI/3), -r/2.0f));
+    positions.push_back(Vec3f(r*cos(4*PI/3),  r*sin(4*PI/3), -r/2.0f));
+    positions.push_back(Vec3f(r*cos(2*PI/3),  r*sin(2*PI/3), -r/2.0f));
+    positions.push_back(Vec3f(r*cos(0*PI/3),  r*sin(0*PI/3), -r/2.0f));
+    _skyNbElems = positions.size();
 
 
     //VAO setup
@@ -94,8 +75,7 @@ void SkyComponent::draw()
     _shader.pushThisProgram();
     glBindVertexArray(_skyVao);
     glBindTexture(GL_TEXTURE_2D, _cloudsTex);
-    glDrawElements(GL_TRIANGLE_STRIP, _skyIndices.size(),
-                   GL_UNSIGNED_INT,   _skyIndices.data());
+    glDrawArrays(GL_TRIANGLE_FAN, 0, _skyNbElems);
     _shader.popProgram();
 
     glDepthMask(true);

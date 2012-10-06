@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std;
 
+#include <DataStructure/PGrid3D.h>
+
 #include <ScaenaApplication/Application.h>
 #include <Stages/QGLStage.h>
 using namespace scaena;
@@ -24,7 +26,6 @@ int main(int argc, char** argv) try
 
     MainWindow window(stage);
     window.show();
-
 
     return getApplication().execute();    
 }

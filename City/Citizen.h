@@ -2,8 +2,19 @@
 #define CITIZEN_H
 
 #include <vector>
+#include <list>
 
 #include <DataStructure/Vector.h>
+#include <DateAndTime/Calendar.h>
+
+
+enum CitizenState {CITIZEN_GOTO_HOME, CITIZEN_AT_HOME,
+                   CITIZEN_GOTO_WORK, CITIZEN_AT_WORK, NB_CITIZEN_STATES};
+
+const std::string CITIZEN_STATE_STRINGS[NB_CITIZEN_STATES] = {
+    "CITIZEN_GOTO_HOME", "CITIZEN_AT_HOME",
+    "CITIZEN_GOTO_WORK", "CITIZEN_AT_WORK"
+};
 
 
 class Path
@@ -16,44 +27,96 @@ public:
         NodeType type;
         cellar::Vec2i pos;
     };
-    typedef std::vector< Node >  NodeVector;
-    typedef NodeVector::iterator NodeIterator;
+    typedef std::vector< Node >     NodeContainer;
+    typedef NodeContainer::iterator NodeIterator;
+    typedef NodeContainer::reverse_iterator NodeRevIterator;
 
     Path();
     Path(const cellar::Vec2i& source, const cellar::Vec2i& destination);
 
-    cellar::Vec2i source;
-    cellar::Vec2i destination;    
-    NodeVector    nodes;
+    void gotoEnd();
+    void gotoBegin();
+
+    void gotoNextNode();
+    bool isBeginReached() const;
+    bool isEndReached() const;
+
+    void gotoRevNextNode();
+    bool isRevBeginReached() const;
+    bool isRevEndReached() const;
+
+
+    float           lenght;
+    cellar::Vec2i   source;
+    cellar::Vec2i   destination;
+    NodeContainer   nodes;
+    NodeIterator    curNode;
+    NodeIterator    nextNode;
+    NodeRevIterator revCurNode;
+    NodeRevIterator    revNextNode;
+    float           nodeProgession;
 
     static const std::string NODE_TYPE_STRINGS[NB_NODE_TYPES];
+};
+
+
+class Schedule
+{
+public :
+    struct Event
+    {
+        Event() : state(CITIZEN_AT_HOME), time() {}
+        Event(CitizenState state, const cellar::Time& time) : state(state), time(time) {}
+        inline bool operator< (const Event& e) {return time < e.time;}
+
+        CitizenState state;
+        cellar::Time time;
+    };
+
+    Schedule();
+
+    bool addEvent(const Event& e);
+    bool deleteEvent(const cellar::Time& time);
+    void clearEvents();
+    Event currentEvent(const cellar::Time& time) const;
+    Event nextEvent(const cellar::Time& time) const;
+
+    void setDayShift(const cellar::Time &workHomeTravelTime);
+    void setAfternoonShift(const cellar::Time &workHomeTravelTime);
+    void setNightShift(const cellar::Time &workHomeTravelTime);
+
+    static cellar::Time dayShiftBegin;
+    static cellar::Time afternoonShiftBegin;
+    static cellar::Time nightShiftBegin;
+
+    std::list<Event> events;
+    typedef std::list<Event>::iterator EventIterator;
+    typedef std::list<Event>::const_iterator EventConstIterator;
 };
 
 
 class Citizen
 {
 public:
-    enum State {AT_HOME, WORKING, SHOPING, MOVING, NB_STATES};
+    typedef int Id;
+    static const Id NO_ID = -1;
 
     Citizen();
 
-    int           cid;
-    State         state;
+    Id            id()          const {return _id;}
+    CitizenState  curState;
     float         walkingSpeed;
     cellar::Vec3f position;
     cellar::Vec3f direction;
     cellar::Vec2i homePos;      //Vec3i(MapX,  MapY)
-    cellar::Vec3i homeRoom;     //Vec3i(BuildingX, BuildingY, Floor)
     cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
-    cellar::Vec3i workRoom;     //Vec3i(BuildingX, BuildingY, Floor)
     Path          homeToWorkPath;
-
-
-    const static std::string STATE_STRINGS[NB_STATES];
+    Schedule      schedule;
 
 private:
-    static int __assigneId();
-    static int __nextId;
+    Id _id;
+    static Id __assigneId();
+    static Id __nextId;
 };
 
 #endif // CITIZEN_H

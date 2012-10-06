@@ -2,7 +2,7 @@
 #define GROUND_H
 
 #include <DataStructure/Vector.h>
-#include <DataStructure/Grid.h>
+#include <DataStructure/Grid2D.h>
 #include <Misc/CellarUtils.h>
 
 
@@ -25,6 +25,10 @@ public:
     float heightAt(const cellar::Vec2i& pos) const;
     float heightAt(float x, float y) const;
     float heightAt(const cellar::Vec2f& pos) const;
+    float landLowerCornerAt(int x, int y) const;
+    float landLowerCornerAt(const cellar::Vec2i& pos) const;
+    float landHigherCornerAt(int x, int y) const;
+    float landHigherCornerAt(const cellar::Vec2i& pos) const;
 
     void setHeightAt(int x, int y, float height);
     void setHeightAt(const cellar::Vec2i& pos, float height);
@@ -39,7 +43,7 @@ private:
     float _minHeight;
     float _maxHeight;
     float _waterHeight;
-    cellar::Grid<float> _heights;
+    cellar::Grid2D<float> _heights;
 };
 
 
@@ -100,6 +104,16 @@ inline float Ground::heightAt(const cellar::Vec2i& pos) const
 inline float Ground::heightAt(const cellar::Vec2f& pos) const
 {
     return heightAt(pos.x(), pos.y());
+}
+
+inline float Ground::landLowerCornerAt(const cellar::Vec2i& pos) const
+{
+    return landLowerCornerAt(pos.x(), pos.y());
+}
+
+inline float Ground::landHigherCornerAt(const cellar::Vec2i& pos) const
+{
+    return landHigherCornerAt(pos.x(), pos.y());
 }
 
 inline void Ground::setHeightAt(int x, int y, float height)

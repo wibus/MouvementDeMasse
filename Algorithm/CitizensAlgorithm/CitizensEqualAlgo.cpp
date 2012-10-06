@@ -22,7 +22,7 @@ void CitizensEqualAlgo::setup(City &city)
                 ctz.position(i, j, _ground->heightAt(i, j));
                 ctz.walkingSpeed = (0.8f + randomRange(-0.5f, 0.5f)) * _city->description().unitPerMeter;
 
-                _city->citizens().insert(make_pair(ctz.cid, ctz));
+                _city->citizens().insert(make_pair(ctz.id(), ctz));
             }
         }
     }
@@ -36,7 +36,7 @@ void CitizensEqualAlgo::update()
     {
         Citizen& ctz = _city->citizens()[c];
 
-        if(ctz.state == Citizen::AT_HOME)
+        if(ctz.curState == CITIZEN_AT_HOME)
         {
             Vec2i pos(round(ctz.position.x()),  round(ctz.position.y()));
             Vec2i dir(round(ctz.direction.x()), round(ctz.direction.y()));
@@ -51,7 +51,7 @@ void CitizensEqualAlgo::update()
             right.rotateQuarterCW();
             Vec2f rightSide = Vec2f(right) * roadQuarterWidth;
 
-            ctz.state = Citizen::MOVING;
+            ctz.curState = CITIZEN_GOTO_WORK;
             ctz.direction(dir.x(), dir.y(), 0.0f);
             ctz.homeToWorkPath.destination = pos + dir;
             ctz.position(pos.x() + rightSide.x(),
@@ -64,7 +64,7 @@ void CitizensEqualAlgo::update()
             ctz.position.setZ( _ground->heightAt(ctz.position.x(), ctz.position.y()));
 
             if(vec2(ctz.position).distanceTo(Vec2f(ctz.homeToWorkPath.destination)) < ctz.walkingSpeed + roadQuarterWidth)
-                ctz.state = Citizen::AT_HOME;
+                ctz.curState = CITIZEN_AT_HOME;
         }
     }
 }

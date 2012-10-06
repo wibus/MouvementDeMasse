@@ -16,9 +16,6 @@ public :
 
     virtual void setup(City& city);
     virtual void update() = 0;
-
-protected:
-    cellar::Calendar* _calendar;
 };
 
 #endif // CITIZENSALGORITHM_H

@@ -97,7 +97,7 @@ void BuildingsComponent::setupPositions()
             if(_city.lands().get(i,j)->type() == Land::GRASS)
                 continue;
 
-            Vec3f pos = Vec3f(i, j, landHeight(i, j));
+            Vec3f pos = Vec3f(i, j, _ground.landLowerCornerAt(i, j));
             float height = _city.lands().get(i,j)->nbStories() * _description.storyHeight;
 
             _roofPos.push_back(Vec3f(pos.x(), pos.y(), pos.z() + height));
@@ -246,16 +246,6 @@ void BuildingsComponent::setupRoofTop()
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
-}
-
-float BuildingsComponent::landHeight(int i, int j)
-{
-    return minVal(minVal(minVal(
-        _ground.heightAt(i,   j),
-        _ground.heightAt(i+1, j)),
-        _ground.heightAt(i+1, j+1)),
-        _ground.heightAt(i,   j+1)
-    );
 }
 
 void BuildingsComponent::draw()

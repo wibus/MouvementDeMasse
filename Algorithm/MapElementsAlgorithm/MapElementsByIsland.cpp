@@ -20,17 +20,18 @@ MapElementsByIsland::~MapElementsByIsland()
 void MapElementsByIsland::setup(City &city)
 {
     _junctionsStack = stack<cellar::Vec2i>();
-    _islandIdentifiers = Grid<int>();
+    _islandIdentifiers = Grid2D<int>();
     _islandEdges = std::vector<std::vector<cellar::Vec2i> >();
 
     MapElementsAlgorithm::setup(city);
 
     _nbIslands = 0;
-    _islandIdentifiers = Grid<int>(_mapSize.x(),
+    _islandIdentifiers = Grid2D<int>(_mapSize.x(),
                                    _mapSize.y(),
                                    -1);
 
     findAndExploreIslands();
+    setLandsToIslands();
     bridgeIslands();
     landIslands();
 }
@@ -185,6 +186,33 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
             _islandIdentifiers.set(position, -2);
 
             positions.pop_back();
+        }
+    }
+}
+
+void MapElementsByIsland::setLandsToIslands()
+{
+    int currIslandIdentifier = -1;
+    for (int j = 0; j < _mapSize.y() - 1; j++)
+    {
+        for (int i = 0; i < _mapSize.x() - 1; i++)
+        {
+            if (!isJunctionAboveWater(Vec2i(i, j)))
+            {
+                currIslandIdentifier = - 1;
+            }
+            else if (_islandIdentifiers.get(i, j) != - 1)
+            {
+                currIslandIdentifier = _islandIdentifiers.get(i, j);
+            }
+            else
+            {
+                _islandIdentifiers.set(Vec2i(i, j), currIslandIdentifier);
+            }
+            if (isLandAboveWater(Vec2i(i, j)))
+            {
+                _city->lands().get(Vec2i(i, j))->setIslandIdentifier(currIslandIdentifier);
+            }
         }
     }
 }
@@ -436,12 +464,12 @@ void MapElementsByIsland::landIslands()
 
 
     // Add some lands.
-    PGrid<Land>* lands = &_city->lands();
+    PGrid2D<Land>* lands = &_city->lands();
     for (int j = 0; j < lands->height(); ++j)
     {
         for (int i = 0; i < lands->width(); ++i)
         {
-            if (_city->ground().heightAt(i, j) > 0)
+            if (_city->lands().get(Vec2i(i, j))->getIslandIdentifier() != -1)
             {
                 int landType = randomRange(0, (int) Land::NB_TYPES);
 

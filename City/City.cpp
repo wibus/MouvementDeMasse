@@ -13,7 +13,8 @@ using namespace cellar;
 
 City::City(int width, int height):
     _size(  width, height),
-    _calendar(),
+    _dateAndTime(2000, JANUARY, 0, 7, 30, 0),
+    _timeJump(0, 0, 0, 0, 0, 1),
     _sky(128, 128),
     _sun(Vec4f(-1, -1, 2, 0), Vec3f(-1.0, -1.0, -0.5)),
     _ground(   width+1, height+1),    
@@ -52,6 +53,7 @@ bool City::save(const string& fileName)
         filePrefix.truncate( dotPos );
 
     QString xmlFileName       = filePrefix + ".xml";
+    QString descriptFileName  = "Visual_description.xml";
     QString heightMapFileName = filePrefix + "_heightMap.bmp";
     QString skyMapFileName    = filePrefix + "_skyMap.bmp";
 
@@ -69,13 +71,17 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); // size
 
         xml.writeStartElement("calendar");
-            xml.writeAttribute("year",   QString::number(_calendar.date().year));
-            xml.writeAttribute("month",  QString::number(_calendar.date().month));
-            xml.writeAttribute("day",    QString::number(_calendar.date().day));
-            xml.writeAttribute("hour",   QString::number(_calendar.date().hour));
-            xml.writeAttribute("minute", QString::number(_calendar.date().minute));
-            xml.writeAttribute("second", QString::number(_calendar.date().second));
+            xml.writeAttribute("year",   QString::number(_dateAndTime.year));
+            xml.writeAttribute("month",  QString::number(_dateAndTime.month));
+            xml.writeAttribute("day",    QString::number(_dateAndTime.day));
+            xml.writeAttribute("hour",   QString::number(_dateAndTime.hour));
+            xml.writeAttribute("minute", QString::number(_dateAndTime.minute));
+            xml.writeAttribute("second", QString::number(_dateAndTime.second));
         xml.writeEndElement(); //size
+
+        xml.writeStartElement("visual_description");
+            xml.writeAttribute("fileUrl", descriptFileName);
+        xml.writeEndElement(); //visual_description
 
         xml.writeStartElement("sky");
             xml.writeAttribute("wres", QString::number(_sky.cloudsGrid().width()));
@@ -169,15 +175,13 @@ bool City::save(const string& fileName)
                 Citizen& ctz = c->second;
 
                 xml.writeStartElement("citizen");
-                    xml.writeAttribute("id",    QString::number(ctz.cid));
-                    xml.writeAttribute("state", Citizen::STATE_STRINGS[ctz.state].c_str());
+                    xml.writeAttribute("id",    QString::number(ctz.id()));
+                    xml.writeAttribute("state", CITIZEN_STATE_STRINGS[ctz.curState].c_str());
                     xml.writeAttribute("walkingSpeed", QString::number(ctz.walkingSpeed));
                     xml.writeAttribute("position", toString(ctz.position).c_str());
                     xml.writeAttribute("direction", toString(ctz.direction).c_str());
                     xml.writeAttribute("homePos", toString(ctz.homePos).c_str());
-                    xml.writeAttribute("homeRoom", toString(ctz.homeRoom).c_str());
                     xml.writeAttribute("workPos", toString(ctz.workPos).c_str());
-                    xml.writeAttribute("workRoom", toString(ctz.workRoom).c_str());
 
                     xml.writeStartElement("path");
                         xml.writeAttribute("name", "Home to Work path");
@@ -210,11 +214,71 @@ bool City::save(const string& fileName)
     stream << xmlDoc;
     file.close();
 
+
+    if( !saveDescription((filePath + descriptFileName).toStdString()))
+        return false;
     if( !saveHeightMap((filePath + heightMapFileName).toStdString()))
         return false;
     if( !saveSkyMap((filePath + skyMapFileName).toStdString()))
         return false;
 
+    return true;
+}
+
+bool City::saveDescription(const std::string& fileName)
+{
+    QString xmlDoc;
+    QXmlStreamWriter xml(&xmlDoc);
+
+    xml.writeStartDocument();
+        xml.writeStartElement("visual_description");
+            xml.writeStartElement("sun");
+                xml.writeAttribute("radius",   toString(_description.sunRadius).c_str());
+                xml.writeAttribute("color",    toString(_description.sunColor).c_str());
+                xml.writeAttribute("ambient",  toString(_description.sunLight.ambient).c_str());
+                xml.writeAttribute("diffuse",  toString(_description.sunLight.diffuse).c_str());
+                xml.writeAttribute("specular", toString(_description.sunLight.specular).c_str());
+                xml.writeAttribute("direction",toString(_description.sunLight.direction).c_str());
+            xml.writeEndElement(); //sun
+
+            xml.writeStartElement("sky");
+                xml.writeAttribute("nightColor",   toString(_description.nightSkyColor).c_str());
+                xml.writeAttribute("dayColor",     toString(_description.daySkyColor).c_str());
+                xml.writeAttribute("skyLineColor", toString(_description.skylineColor).c_str());
+                xml.writeAttribute("curColor",     toString(_description.curSkyColor).c_str());
+            xml.writeEndElement(); //sky
+
+            xml.writeStartElement("ground");
+                xml.writeAttribute("grassColor", toString(_description.grassColor).c_str());
+                xml.writeAttribute("mudColor",   toString(_description.mudColor).c_str());
+                xml.writeAttribute("waterColor", toString(_description.waterColor).c_str());
+                xml.writeAttribute("waterShininess", toString(_description.waterShininess).c_str());
+            xml.writeEndElement(); //ground
+
+            xml.writeStartElement("size");
+                xml.writeAttribute("unitPerMeter",   QString::number(_description.unitPerMeter));
+                xml.writeAttribute("meterPerUnit",   QString::number(_description.meterPerUnit));
+                xml.writeAttribute("citizensHeight", QString::number(_description.citizensHeight));
+                xml.writeAttribute("roadWidth",      QString::number(_description.roadWidth));
+                xml.writeAttribute("bridgeWidth",    QString::number(_description.bridgeWidth));
+                xml.writeAttribute("bridgeHeight",   QString::number(_description.bridgeHeight));
+                xml.writeAttribute("storyHeight",    QString::number(_description.storyHeight));
+            xml.writeEndElement(); //size
+
+            xml.writeStartElement("speed");
+                xml.writeAttribute("normalWalking", QString::number(_description.normalWalkingSpeed));
+            xml.writeEndElement(); //speed
+        xml.writeEndElement(); //visual_description
+    xml.writeEndDocument();
+
+    // Files writings
+    QFile file( fileName.c_str() );
+    if( !file.open(QIODevice::WriteOnly))
+        return false;
+
+    QTextStream stream(&file);
+    stream << xmlDoc;
+    file.close();
     return true;
 }
 
@@ -234,8 +298,8 @@ bool City::saveHeightMap(const std::string& fileName)
             bool underWater = intensity < 0.0f;
             heightMap.setColorAt(i, j, RGBAColor(
                 absIntensity,
-                ( underWater ? 0  : 255 - absIntensity),
-                (!underWater ? 0  : 255 - absIntensity)
+                ( underWater ? 0  : 32 + absIntensity*0.875f),
+                (!underWater ? 0  : 32 + absIntensity*0.875f)
             ));
         }
     }
@@ -266,9 +330,8 @@ bool City::saveSkyMap(const std::string& fileName)
 
 void City::update()
 {
-    _calendar.tic();
-    _sun.setTime(_calendar.date().hour,
-                 _calendar.date().minute);
+    _dateAndTime += _timeJump;
+    _sun.setTime(_dateAndTime);
     _sky.update();
 }
 

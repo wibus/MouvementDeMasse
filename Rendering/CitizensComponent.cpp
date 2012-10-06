@@ -100,6 +100,7 @@ void CitizensComponent::update()
         mat.translate(citizen.position.x(),
                       citizen.position.y(),
                       citizen.position.z());
+        mat.rotate(0.0f, 0.0f, 1.0f, atan2(citizen.direction.y(), citizen.direction.x()));
 
         _modelMats.push_back( mat );
     }
