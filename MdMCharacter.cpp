@@ -6,6 +6,9 @@ using namespace std;
 #include <DateAndTime/Timer.h>
 using namespace cellar;
 
+#include <PropTeam/AbstractPropTeam.h>
+using namespace prop2;
+
 #include <StageEvents/StageTime.h>
 #include <StageEvents/SynchronousKeyboard.h>
 #include <StageEvents/SynchronousMouse.h>
@@ -29,13 +32,11 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _mapElemAlgo(    new MapElementsByIsland() ),
     _citizensDistribAlgo( new CitizensDistribByIsland() ),
     _citizenMoveAlgo(     new CitizensMoveHomeWork() ),
-    _camMan( stage.camera() )
-    //_fpsText(),
-    //_upsText()
+    _camMan( stage.camera() ),
+    _dateText(),
+    _fpsText(),
+    _upsText()
 {
-    //_fpsText.setPosition(5, 5);
-    //_upsText.setPosition(5, 25);
-
     stage.camera().setTripod(Vec3f(_city->size().x() / 2, 0, _city->ground().maxHeight()),
                              Vec3f(_city->size().x() / 2, _city->size().y() / 2, 0),
                              Vec3f(0, 0 ,1));
@@ -55,6 +56,21 @@ void MdMCharacter::enterStage()
 {
     setAlgorithms();
     stage().camera().refresh();
+
+    _dateText = stage().propTeam().createTextHud();
+    _dateText->setHandlePosition(Vec2r(10, -30));
+    _dateText->setHorizontalAnchor(HorizontalAnchor::LEFT);
+    _dateText->setVerticalAnchor(VerticalAnchor::TOP);
+
+    _fpsText = stage().propTeam().createTextHud();
+    _fpsText->setHandlePosition(Vec2r(5, 5));
+    _fpsText->setHorizontalAnchor(HorizontalAnchor::LEFT);
+    _fpsText->setVerticalAnchor(VerticalAnchor::BOTTOM);
+
+    _upsText = stage().propTeam().createTextHud();
+    _upsText->setHandlePosition(Vec2r(5, 25));
+    _upsText->setHorizontalAnchor(HorizontalAnchor::LEFT);
+    _upsText->setVerticalAnchor(VerticalAnchor::BOTTOM);
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -66,8 +82,8 @@ void MdMCharacter::beginStep(const StageTime &time)
     _citizenMoveAlgo->update();
     _drawCityModule->update();
 
-    //_dateText.setText(_city->dateAndTime().toString());
-    //_upsText.setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
+    _dateText->setText(_city->dateAndTime().toString());
+    _upsText->setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
 void MdMCharacter::updateCamera(float elapsedtime)
@@ -108,14 +124,14 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 {
     _drawCityModule->draw();
 
-    //_fpsText.setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
-    //_fpsText.draw();
-    //_upsText.draw();
-    //_dateText.draw();
+    _fpsText->setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
 }
 
 void MdMCharacter::exitStage()
 {
+    stage().propTeam().deleteTextHud(_dateText);
+    stage().propTeam().deleteTextHud(_fpsText);
+    stage().propTeam().deleteTextHud(_upsText);
 }
 
 void MdMCharacter::notify(cellar::CameraMsg &msg)

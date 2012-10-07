@@ -9,6 +9,8 @@
 #include <DesignPattern/SpecificObserver.h>
 #include <Characters/AbstractCharacter.h>
 
+#include <Hud/TextHud.h>
+
 class City;
 class DrawCityModule;
 class HeightsAlgorithm;
@@ -52,10 +54,9 @@ private:
     CitizensAlgorithm*    _citizenMoveAlgo;
 
     cellar::CameraManFree _camMan;
-    // TODO: Put back the texts with new libPropRoom2D
-//    prop::twoD::Text _dateText;
-//    prop::twoD::Text _fpsText;
-//    prop::twoD::Text _upsText;
+    std::shared_ptr<prop2::TextHud> _dateText;
+    std::shared_ptr<prop2::TextHud> _fpsText;
+    std::shared_ptr<prop2::TextHud> _upsText;
 
 
     // Deleted methods //
