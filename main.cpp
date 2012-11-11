@@ -14,15 +14,16 @@ using namespace scaena;
 
 int main(int argc, char** argv) try
 {
-    getApplication().init(argc, argv, new MdMPlay());
+    getApplication().init(argc, argv);
+    getApplication().setPlay(shared_ptr<AbstractPlay>(new MdMPlay()));
 
     QGLStage* stage = new QGLStage();
     getApplication().addCustomStage(stage);
     getApplication().chooseStage(stage->id());
 
     stage->setDrawSynch( false );
-    stage->setDrawInterval( 16 );
-    stage->setUpdateInterval( 16 );
+    stage->setDrawInterval( 0 );
+    stage->setUpdateInterval( 0 );
 
     MainWindow window(stage);
     window.show();
