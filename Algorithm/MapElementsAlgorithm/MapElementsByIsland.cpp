@@ -7,6 +7,11 @@ using namespace std;
 #include <Misc/CellarUtils.h>
 using namespace cellar;
 
+#include <Algorithm/Kruskal/KruskalAlgorithm.h>
+
+const int LAND_UNDER_WATER = -1;
+const int UNKNOWN_ISLAND = -2;
+
 
 MapElementsByIsland::MapElementsByIsland()
 {
@@ -183,7 +188,7 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
         while (!positions.empty())
         {
             Vec2i position = positions.back();
-            _islandIdentifiers.set(position, -2);
+            _islandIdentifiers.set(position, UNKNOWN_ISLAND);
 
             positions.pop_back();
         }
@@ -192,26 +197,29 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
 
 void MapElementsByIsland::setLandsToIslands()
 {
-    int currIslandIdentifier = -1;
+    int currIslandIdentifier = UNKNOWN_ISLAND;
     for (int j = 0; j < _mapSize.y() - 1; j++)
     {
         for (int i = 0; i < _mapSize.x() - 1; i++)
         {
             if (!isJunctionAboveWater(Vec2i(i, j)))
             {
-                currIslandIdentifier = - 1;
-            }
-            else if (_islandIdentifiers.get(i, j) != - 1)
-            {
-                currIslandIdentifier = _islandIdentifiers.get(i, j);
+                currIslandIdentifier = LAND_UNDER_WATER;
             }
             else
             {
-                _islandIdentifiers.set(Vec2i(i, j), currIslandIdentifier);
-            }
-            if (isLandAboveWater(Vec2i(i, j)))
-            {
-                _city->lands().get(Vec2i(i, j))->setIslandIdentifier(currIslandIdentifier);
+                if (_islandIdentifiers.get(i, j) != - 1)
+                {
+                    currIslandIdentifier = _islandIdentifiers.get(i, j);
+                }
+                else
+                {
+                    _islandIdentifiers.set(Vec2i(i, j), currIslandIdentifier);
+                }
+                if (isLandAboveWater(Vec2i(i, j)))
+                {
+                    _city->lands().get(Vec2i(i, j))->setIslandIdentifier(currIslandIdentifier);
+                }
             }
         }
     }
@@ -224,78 +232,35 @@ void MapElementsByIsland::roadOneIsland(int index)
 
 void MapElementsByIsland::bridgeIslands()
 {
-    // The general idea here is to take an unlinked island
-    // and link it with an island that is already linked
-    // thus making an island mob
-    // When all the islands are linked to the mob,
-    // the "graph" connectivity is true
-
-    // All islands start unbridged
-    std::set<int> toBridgeIslands;
+    _possibleBridges = cellar::Grid2D<cellar::Vec2i>(_nbIslands, _nbIslands);
+    KruskalAlgorithm kruskal;
+    // The general idea here is: Kruskal
     for (int i = 0; i < _nbIslands; i++)
     {
-        toBridgeIslands.insert(i);
+        for (int j = 0; j < i; j++)
+        {
+            addAPossibleBridge(i, j);
+            double distance = cellar::Vec2f(
+                        _possibleBridges[i][j] -
+                        _possibleBridges[j][i]).length();
+            kruskal.addSegment(i, j, distance);
+        }
     }
 
-    // We will randomly pick an island.
-    // That island will be the first one of the mob
-    std::set<int> bridgedIslands;
-    int nbOfBridgedIslands = 1;
+    Graph cheapestGraph = kruskal.getCheapestGraph();
 
-    int size = toBridgeIslands.size();
-    int nextIsland = randomRange(0, (size - 1));
-    int linkedIsland = 0;
-
-    std::set<int>::iterator toBridgeIter = toBridgeIslands.begin();
-    std::set<int>::iterator bridgedIter = bridgedIslands.begin();
-
-    for (int i = 0; i < nextIsland; i++)
+    for (auto itr = cheapestGraph.begin(); itr != cheapestGraph.end(); itr++)
     {
-        toBridgeIter++;
-    }
-
-    bridgedIslands.insert(*toBridgeIter);
-    toBridgeIslands.erase(*toBridgeIter);
-
-    // We bridge other islands
-    while (nbOfBridgedIslands != _nbIslands)
-    {
-        // We randomly choose what islands will be bridges
-        size = toBridgeIslands.size();
-        nextIsland = randomRange(0, (size - 1));
-        size = bridgedIslands.size();
-        linkedIsland = randomRange(0, (size - 1));
-
-        toBridgeIter = toBridgeIslands.begin();
-        bridgedIter = bridgedIslands.begin();
-
-        for (int i = 0; i < nextIsland; i++)
-        {
-            toBridgeIter++;
-        }
-
-        for (int i = 0; i < linkedIsland; i++)
-        {
-            bridgedIter++;
-        }
-
-        bridgeTwoIslands(*toBridgeIter, *bridgedIter);
-
-        // There is one less island to bridge.
-        // and one more bridged
-        bridgedIslands.insert(*toBridgeIter);
-        toBridgeIslands.erase(*toBridgeIter);
-
-        ++nbOfBridgedIslands;
+        bridgeTwoIslands(itr->edgeA(), itr->edgeB());
     }
 }
 
-void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
+void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
 {
     int bestJuncFirst;
     int bestJuncSecond;
-    int bestDistance = _mapSize.x() + _mapSize.y() + 1;
-    int currDistance;
+    double bestDistance = _mapSize.x() + _mapSize.y();
+    double currDistance;
 
     int size = _islandEdges[firstIsland].size();
     bestJuncFirst = randomRange(0, size - 1);
@@ -303,11 +268,9 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
 
     for (uint currPos = 0; currPos < _islandEdges[secondIsland].size(); ++currPos)
     {
-        currDistance = absolute(_islandEdges[firstIsland][bestJuncFirst].x() -
-                                _islandEdges[secondIsland][currPos].x())
-                            +
-                       absolute(_islandEdges[firstIsland][bestJuncFirst].y() -
-                                _islandEdges[secondIsland][currPos].y());
+        currDistance = cellar::Vec2f(_islandEdges[firstIsland][bestJuncFirst] -
+                                     _islandEdges[secondIsland][currPos]).length();
+
         if (currDistance < bestDistance)
         {
             bestDistance = currDistance;
@@ -319,11 +282,9 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
 
     for (uint currPos = 0; currPos < _islandEdges[firstIsland].size(); ++currPos)
     {
-        currDistance = absolute(_islandEdges[firstIsland][currPos].x() -
-                                _islandEdges[secondIsland][bestJuncSecond].x())
-                            +
-                       absolute(_islandEdges[firstIsland][currPos].y() -
-                                _islandEdges[secondIsland][bestJuncSecond].y());
+        currDistance = cellar::Vec2f(_islandEdges[firstIsland][currPos] -
+                                     _islandEdges[secondIsland][bestJuncSecond]).length();
+
         if (currDistance < bestDistance)
         {
             bestDistance = currDistance;
@@ -334,34 +295,48 @@ void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
     Vec2i endA(_islandEdges[firstIsland][bestJuncFirst]);
     Vec2i endB(_islandEdges[secondIsland][bestJuncSecond]);
 
-    Vec2i atob = endB - endA;
+    _possibleBridges[firstIsland][secondIsland] = endA;
+    _possibleBridges[secondIsland][firstIsland] = endB;
 
-    int t = maxVal(absolute(atob.x()), absolute(atob.y()));
 
-    Vec2i currentPos;
+//     Legacy code I like.
+//     It takes two points on the map, and make bridges over water
+//     But no bridge over land.
+//    Vec2i atob = endB - endA;
 
-    Vec2i newBridgeEndA = endA;
-    Vec2i newBridgeEndB;
+//    int t = maxVal(absolute(atob.x()), absolute(atob.y()));
 
-    bool wasUnderWater = false;
+//    Vec2i currentPos;
 
-    for (int i = 0; i <= t; ++i)
-    {
-        currentPos = endA + (i * atob) / t;
+//    Vec2i newBridgeEndA = endA;
+//    Vec2i newBridgeEndB;
 
-        if (isJunctionAboveWater(currentPos))
-        {
-            if (wasUnderWater)
-            {
-                newBridgeEndB = currentPos;
-                _city->bridges().push_back(Bridge(newBridgeEndA, newBridgeEndB));
-            }
-            newBridgeEndA = currentPos;
-            wasUnderWater = false;
-        }
-        else
-            wasUnderWater = true;
-    }
+//    bool wasUnderWater = false;
+
+//    for (int i = 0; i <= t; ++i)
+//    {
+//        currentPos = endA + (i * atob) / t;
+
+//        if (isJunctionAboveWater(currentPos))
+//        {
+//            if (wasUnderWater)
+//            {
+//                newBridgeEndB = currentPos;
+//                _possibleBridges[firstIsland][secondIsland] = newBridgeEndA;
+//                _possibleBridges[secondIsland][firstIsland] = newBridgeEndB;
+//            }
+//            newBridgeEndA = currentPos;
+//            wasUnderWater = false;
+//        }
+//        else
+//            wasUnderWater = true;
+//    }
+}
+
+void MapElementsByIsland::bridgeTwoIslands(int firstIsland, int secondIsland)
+{
+    _city->bridges().push_back(Bridge(_possibleBridges[firstIsland][secondIsland],
+                                      _possibleBridges[secondIsland][firstIsland]));
 }
 
 void MapElementsByIsland::landIslands()
@@ -478,7 +453,12 @@ void MapElementsByIsland::landIslands()
             }
         }
     }
+}
 
+float MapElementsByIsland::landHeightDiff(const cellar::Vec2i& landPos)
+{
+    return  max(    max(_city->ground().heightAt( landPos ), _city->ground().heightAt( landPos + Vec2i(0,1) ) ),
+                    max(_city->ground().heightAt( landPos + Vec2i(1,0) ), _city->ground().heightAt( landPos + Vec2i(1,1) ) ) );
 }
 
 float MapElementsByIsland::slope (const cellar::Vec2i& endA, const cellar::Vec2i& endB)

@@ -71,7 +71,9 @@ SOURCES += \
     City/Description.cpp \
     City/Island.cpp \
     Algorithm/CitizensAlgorithm/CitizensDistribByIsland.cpp \
-    Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.cpp
+    Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.cpp \
+    Algorithm/Kruskal/Segment.cpp \
+    Algorithm/Kruskal/KruskalAlgorithm.cpp
 
 HEADERS += \
     MdMPlay.h \
@@ -108,7 +110,9 @@ HEADERS += \
     City/Description.h \
     City/Island.h \
     Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h \
-    Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.h
+    Algorithm/CitizensAlgorithm/CitizensMoveHomeWork.h \
+    Algorithm/Kruskal/Segment.h \
+    Algorithm/Kruskal/KruskalAlgorithm.h
 
 OTHER_FILES += \
     resources/shaders/ground.vert \
@@ -135,3 +139,13 @@ OTHER_FILES += \
     resources/fonts/Arial.bmp \
     resources/shaders/minimalist.frag \
     resources/shaders/minimalist.vert
+
+
+
+
+
+
+
+
+
+

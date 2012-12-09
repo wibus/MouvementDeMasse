@@ -26,6 +26,7 @@ protected:
     std::stack<cellar::Vec2i> _junctionsStack;
     int _nbIslands;
     cellar::Grid2D<int> _islandIdentifiers;
+    cellar::Grid2D<cellar::Vec2i> _possibleBridges;
     std::vector<std::vector<cellar::Vec2i> > _islandEdges;
 
 private:
@@ -34,8 +35,10 @@ private:
     void setLandsToIslands();
     void roadOneIsland(int index);
     void bridgeIslands();
+    void addAPossibleBridge(int firstIsland, int secondIsland);
     void bridgeTwoIslands(int firstIsland, int secondIsland);
     void landIslands();
+    float landHeightDiff(const cellar::Vec2i& landPos);
     float slope (const cellar::Vec2i& endA, const cellar::Vec2i& endB);
     bool isJunctionInBounds(cellar::Vec2i position);
     bool isJunctionAboveWater(cellar::Vec2i position);

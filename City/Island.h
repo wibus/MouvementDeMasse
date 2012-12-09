@@ -17,12 +17,13 @@ public:
     void addJunction(cellar::Vec2i junction);
     const std::vector<cellar::Vec2i>& getJunctions() const;
 
-    cellar::Vec2i bridgeForTravel (int islandToReachId) const;
+    void addBridge (int islandBridgedTo, cellar::Vec2i bridgePosition);
+    std::multimap<int, cellar::Vec2i>::const_iterator bridgesForTravel (int islandToReachId) const;
 
 private:
     int _islandId;
     std::vector<cellar::Vec2i> _junctions;
-    std::map<int, cellar::Vec2i> _bridges;
+    std::multimap<int, cellar::Vec2i> _bridges;
 };
 
 
@@ -45,6 +46,16 @@ inline void Island::addJunction(cellar::Vec2i junction)
 inline const std::vector<cellar::Vec2i>& Island::getJunctions() const
 {
     return _junctions;
+}
+
+inline void Island::addBridge (int islandBridgedTo, cellar::Vec2i bridgePosition)
+{
+    _bridges.insert(std::pair<int, cellar::Vec2i>(islandBridgedTo, bridgePosition));
+}
+
+inline std::multimap<int, cellar::Vec2i>::const_iterator Island::bridgesForTravel (int islandToReachId) const
+{
+    return _bridges.find(islandToReachId);
 }
 
 #endif // ISLANDS_H
