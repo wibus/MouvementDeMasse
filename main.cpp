@@ -2,6 +2,9 @@
 #include <iostream>
 using namespace std;
 
+#include <QApplication>
+#include <QCleanlooksStyle>
+
 #include <DataStructure/PGrid3D.h>
 
 #include <ScaenaApplication/Application.h>

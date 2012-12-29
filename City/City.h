@@ -19,6 +19,8 @@
 #include "Bridge.h"
 #include "Description.h"
 
+class QString;
+
 typedef std::vector<Bridge>        BridgeContainer;
 typedef BridgeContainer::iterator  BridgeIterator;
 
@@ -53,9 +55,16 @@ protected:
     void resetJunctions();
     void resetLands();
 
-    bool saveDescription(const std::string& fileName);
     bool saveHeightMap(const std::string& fileName);
     bool saveSkyMap(const std::string& fileName);
+
+    void constructFileNames(
+            const std::string& fileName,
+            QString& filePath,
+            QString& xmlFileName,
+            QString& descriptFileName ,
+            QString& heightMapFileName,
+            QString& skyMapFileName);
 
 private:
     cellar::Vec2i _size;

@@ -19,6 +19,7 @@ debug
 release
 unused
 old
+saves
 
 # Qt files
 *Makefile

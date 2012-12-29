@@ -10,6 +10,9 @@ class Description
 public:
     Description();
 
+    bool load(const std::string& fileName);
+    bool save(const std::string& fileName);
+
     // Matrices
     cellar::Matrix4x4<float> projMat;
     cellar::Matrix4x4<float> viewMat;

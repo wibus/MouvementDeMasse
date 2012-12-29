@@ -225,7 +225,7 @@ void MapElementsByIsland::setLandsToIslands()
     }
 }
 
-void MapElementsByIsland::roadOneIsland(int index)
+void MapElementsByIsland::roadOneIsland(int)
 {
 
 }

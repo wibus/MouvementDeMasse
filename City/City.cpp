@@ -34,28 +34,52 @@ void City::reset()
     _citizens.clear();
 }
 
-bool City::load(const string&)
+bool City::load(const string& fileName)
 {
+    QString filePath;
+    QString xmlFileName;
+    QString descriptFileName;
+    QString heightMapFileName;
+    QString skyMapFileName;
+
+    constructFileNames(
+        fileName,
+        filePath,
+        xmlFileName,
+        descriptFileName ,
+        heightMapFileName,
+        skyMapFileName);
+
+    if( !_description.load((filePath + descriptFileName).toStdString()))
+        return false;
+
     return false;
 }
 
 bool City::save(const string& fileName)
 {
-    // File names
-    QFileInfo fileInfo( fileName.c_str() );
-    if( !fileInfo.exists() )
-        cout << fileInfo.fileName().toStdString() << endl;
-    QString filePath   = fileInfo.path() + '/';
-    QString filePrefix = fileInfo.fileName();
+    QString filePath;
+    QString xmlFileName;
+    QString descriptFileName;
+    QString heightMapFileName;
+    QString skyMapFileName;
 
-    int dotPos = filePrefix.indexOf('.');
-    if(dotPos != -1)
-        filePrefix.truncate( dotPos );
+    constructFileNames(
+        fileName,
+        filePath,
+        xmlFileName,
+        descriptFileName ,
+        heightMapFileName,
+        skyMapFileName);
 
-    QString xmlFileName       = filePrefix + ".xml";
-    QString descriptFileName  = "Visual_description.xml";
-    QString heightMapFileName = filePrefix + "_heightMap.bmp";
-    QString skyMapFileName    = filePrefix + "_skyMap.bmp";
+
+    // Other files
+    if( !_description.save((filePath + descriptFileName).toStdString()))
+        return false;
+    if( !saveHeightMap((filePath + heightMapFileName).toStdString()))
+        return false;
+    if( !saveSkyMap((filePath + skyMapFileName).toStdString()))
+        return false;
 
 
     // The XML configuration file
@@ -214,71 +238,6 @@ bool City::save(const string& fileName)
     stream << xmlDoc;
     file.close();
 
-
-    if( !saveDescription((filePath + descriptFileName).toStdString()))
-        return false;
-    if( !saveHeightMap((filePath + heightMapFileName).toStdString()))
-        return false;
-    if( !saveSkyMap((filePath + skyMapFileName).toStdString()))
-        return false;
-
-    return true;
-}
-
-bool City::saveDescription(const std::string& fileName)
-{
-    QString xmlDoc;
-    QXmlStreamWriter xml(&xmlDoc);
-
-    xml.writeStartDocument();
-        xml.writeStartElement("visual_description");
-            xml.writeStartElement("sun");
-                xml.writeAttribute("radius",   toString(_description.sunRadius).c_str());
-                xml.writeAttribute("color",    toString(_description.sunColor).c_str());
-                xml.writeAttribute("ambient",  toString(_description.sunLight.ambient).c_str());
-                xml.writeAttribute("diffuse",  toString(_description.sunLight.diffuse).c_str());
-                xml.writeAttribute("specular", toString(_description.sunLight.specular).c_str());
-                xml.writeAttribute("direction",toString(_description.sunLight.direction).c_str());
-            xml.writeEndElement(); //sun
-
-            xml.writeStartElement("sky");
-                xml.writeAttribute("nightColor",   toString(_description.nightSkyColor).c_str());
-                xml.writeAttribute("dayColor",     toString(_description.daySkyColor).c_str());
-                xml.writeAttribute("skyLineColor", toString(_description.skylineColor).c_str());
-                xml.writeAttribute("curColor",     toString(_description.curSkyColor).c_str());
-            xml.writeEndElement(); //sky
-
-            xml.writeStartElement("ground");
-                xml.writeAttribute("grassColor", toString(_description.grassColor).c_str());
-                xml.writeAttribute("mudColor",   toString(_description.mudColor).c_str());
-                xml.writeAttribute("waterColor", toString(_description.waterColor).c_str());
-                xml.writeAttribute("waterShininess", toString(_description.waterShininess).c_str());
-            xml.writeEndElement(); //ground
-
-            xml.writeStartElement("size");
-                xml.writeAttribute("unitPerMeter",   QString::number(_description.unitPerMeter));
-                xml.writeAttribute("meterPerUnit",   QString::number(_description.meterPerUnit));
-                xml.writeAttribute("citizensHeight", QString::number(_description.citizensHeight));
-                xml.writeAttribute("roadWidth",      QString::number(_description.roadWidth));
-                xml.writeAttribute("bridgeWidth",    QString::number(_description.bridgeWidth));
-                xml.writeAttribute("bridgeHeight",   QString::number(_description.bridgeHeight));
-                xml.writeAttribute("storyHeight",    QString::number(_description.storyHeight));
-            xml.writeEndElement(); //size
-
-            xml.writeStartElement("speed");
-                xml.writeAttribute("normalWalking", QString::number(_description.normalWalkingSpeed));
-            xml.writeEndElement(); //speed
-        xml.writeEndElement(); //visual_description
-    xml.writeEndDocument();
-
-    // Files writings
-    QFile file( fileName.c_str() );
-    if( !file.open(QIODevice::WriteOnly))
-        return false;
-
-    QTextStream stream(&file);
-    stream << xmlDoc;
-    file.close();
     return true;
 }
 
@@ -326,6 +285,30 @@ bool City::saveSkyMap(const std::string& fileName)
     }
 
     return skyMap.saveBmp( fileName );
+}
+
+void City::constructFileNames(
+        const std::string& fileName,
+        QString& filePath,
+        QString& xmlFileName,
+        QString& descriptFileName ,
+        QString& heightMapFileName,
+        QString& skyMapFileName)
+{
+    QFileInfo fileInfo( fileName.c_str() );
+    if( !fileInfo.exists() )
+        cout << fileInfo.fileName().toStdString() << endl;
+
+    QString filePrefix = fileInfo.fileName();
+    int dotPos = filePrefix.indexOf('.');
+    if(dotPos != -1)
+        filePrefix.truncate( dotPos );
+
+    filePath          = fileInfo.path() + '/';
+    xmlFileName       = filePrefix + ".xml";
+    descriptFileName  = filePrefix + "_visualDescription.xml";
+    heightMapFileName = filePrefix + "_heightMap.bmp";
+    skyMapFileName    = filePrefix + "_skyMap.bmp";
 }
 
 void City::update()
