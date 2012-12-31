@@ -3,7 +3,6 @@
 using namespace std;
 
 #include <QApplication>
-#include <QCleanlooksStyle>
 
 #include <DataStructure/PGrid3D.h>
 
