@@ -30,7 +30,7 @@ GroundComponent::GroundComponent(City &city, GLShaderProgram &shader) :
     glGenBuffers(_TRIANGLES_NB_BUFFS, _trianglesBuffs);
 
     _groundTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/grass.bmp", false)
+        getImageBank().getImage("resources/textures/grass.bmp")
     );
 }
 

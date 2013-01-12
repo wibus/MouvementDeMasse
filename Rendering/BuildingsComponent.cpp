@@ -35,27 +35,27 @@ BuildingsComponent::BuildingsComponent(City &city, GLShaderProgram &shader) :
 
 
     _roofTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/roofTex.bmp", false)
+        getImageBank().getImage("resources/textures/roofTex.bmp")
     );
 
     _roofSpec = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/roofSpec.bmp", false)
+        getImageBank().getImage("resources/textures/roofSpec.bmp")
     );
 
     _apartmentTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/apartTex.bmp", false)
+        getImageBank().getImage("resources/textures/apartTex.bmp")
     );
 
     _apartmentSpec = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/apartSpec.bmp", false)
+        getImageBank().getImage("resources/textures/apartSpec.bmp")
     );
 
     _commerceTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/commerceTex.bmp", false)
+        getImageBank().getImage("resources/textures/commerceTex.bmp")
     );
 
     _commerceSpec = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/commerceSpec.bmp", false)
+        getImageBank().getImage("resources/textures/commerceSpec.bmp")
     );
 }
 

@@ -245,46 +245,47 @@ bool City::saveHeightMap(const std::string& fileName)
 {
     float amplitude = maxVal(absolute(_ground.minHeight()),
                              absolute(_ground.maxHeight()));
-    Image heightMap = Image(new unsigned char[_ground.width()*_ground.height()*3],
-                            _ground.width(), _ground.height(), Image::RGB);
+    Image heightMap = Image(new unsigned char[_ground.width()*_ground.height()*4],
+                            _ground.width(),
+                            _ground.height());
 
-    for(unsigned int j=0; j<heightMap.height(); ++j)
+    for(int j=0; j<heightMap.height(); ++j)
     {
-        for(unsigned int i=0; i<heightMap.width(); ++i)
+        for(int i=0; i<heightMap.width(); ++i)
         {
             float intensity = _ground.heightAt((int)i, (int)j) * 256 / amplitude;
             unsigned char absIntensity = absolute(intensity);
             bool underWater = intensity < 0.0f;
-            heightMap.setColorAt(i, j, RGBAColor(
-                absIntensity,
-                ( underWater ? 0  : 32 + absIntensity*0.875f),
-                (!underWater ? 0  : 32 + absIntensity*0.875f)
-            ));
+            heightMap.setColor(i, j,
+                               absIntensity,
+                               underWater  ? 0  : 32 + absIntensity*0.875f,
+                               !underWater ? 0  : 32 + absIntensity*0.875f,
+                               0xff);
         }
     }
 
-    return heightMap.saveBmp( fileName );
+    return heightMap.save( fileName );
 }
 
 bool City::saveSkyMap(const std::string& fileName)
 {
     Image skyMap = Image(new unsigned char[_sky.cloudsGrid().width()*_sky.cloudsGrid().height()*3],
-                         _sky.cloudsGrid().width(), _sky.cloudsGrid().height(), Image::RGB);
+                         _sky.cloudsGrid().width(), _sky.cloudsGrid().height());
 
-    for(unsigned int j=0; j<skyMap.height(); ++j)
+    for(int j=0; j<skyMap.height(); ++j)
     {
-        for(unsigned int i=0; i<skyMap.width(); ++i)
+        for(int i=0; i<skyMap.width(); ++i)
         {
             float intensity = (_sky.cloudsGrid().get(i, j) + 1.0f) * 0.5f * 256;
-            skyMap.setColorAt(i, j, RGBAColor(
-                intensity,
-                intensity,
-                128 + intensity /2.0f
-            ));
+            skyMap.setColor(i, j,
+                            intensity,
+                            intensity,
+                            128 + intensity /2.0f,
+                            0xff);
         }
     }
 
-    return skyMap.saveBmp( fileName );
+    return skyMap.save( fileName );
 }
 
 void City::constructFileNames(

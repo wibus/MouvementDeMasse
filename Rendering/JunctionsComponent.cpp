@@ -19,7 +19,7 @@ JunctionsComponent::JunctionsComponent(City &city, GLShaderProgram &shader) :
     glGenBuffers(_JUNCTIONS_NB_BUFFS, _junctionsBuffs);
 
     _junctionsTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/junction.bmp", false)
+        getImageBank().getImage("resources/textures/junction.bmp")
     );
 }
 

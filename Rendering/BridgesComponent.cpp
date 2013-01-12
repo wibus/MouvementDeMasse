@@ -21,7 +21,7 @@ BridgesComponent::BridgesComponent(City& city, cellar::GLShaderProgram& shader) 
     glGenBuffers(_BRIDGE_NB_BUFFS, _bridgeBuffs);
 
     _bridgeTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/bridgeTex.bmp", true)
+        getImageBank().getImage("resources/textures/bridgeTex.bmp")
     );
 }
 

@@ -19,7 +19,7 @@ StreetsComponent::StreetsComponent(City &city, GLShaderProgram &shader) :
     glGenBuffers(_STREETS_NB_BUFFS, _streetsBuffs);
 
     _streetsTex = GLToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/street.bmp", false)
+        getImageBank().getImage("resources/textures/street.bmp")
     );
 }
 

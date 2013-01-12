@@ -7,7 +7,7 @@ using namespace cellar;
 Sky::Sky(int width, int height) :
     _colorsGrid(width, height, 0.0f),
     _cloudsGrid(width, height, 0.0f),
-    _cloudsImage(new unsigned char[width*height*4], width, height, Image::RGBA),
+    _cloudsImage(new unsigned char[width*height*4], width, height),
     _cloudyness(0.5f),
     _compactness(0.6f)
 {
@@ -34,11 +34,11 @@ Sky::Sky(int width, int height) :
             float density = pow(clamp(norm*(_cloudyness - depth), 0.0f, 1.0f),
                                 1.0f-_compactness);
 
-            _cloudsImage.setColorAt(i, j,
-                RGBAColor(_colorsGrid.get(i, j),
-                          _colorsGrid.get(i, j),
-                          _colorsGrid.get(i, j),
-                          density * 255));
+            _cloudsImage.setColor(i, j,
+                                  _colorsGrid.get(i, j),
+                                  _colorsGrid.get(i, j),
+                                  _colorsGrid.get(i, j),
+                                  density * 255);
         }
     }
 }
