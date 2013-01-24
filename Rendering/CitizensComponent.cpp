@@ -3,11 +3,11 @@
 #include <GL/glew.h>
 using namespace std;
 
-#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/GL/GlToolkit.h>
 using namespace cellar;
 
 
-CitizensComponent::CitizensComponent(City &city, cellar::GLShaderProgram &shader) :
+CitizensComponent::CitizensComponent(City &city, cellar::GlProgram &shader) :
     AbstractComponent(city, shader),
     _citizennBuffs(),
     _citizenVao(0),
@@ -23,7 +23,7 @@ CitizensComponent::~CitizensComponent()
 {
     glDeleteVertexArrays(1, &_citizenVao);
     glDeleteBuffers(_CITIZEN_NB_BUFFS, _citizennBuffs);
-    GLToolkit::deleteTextureId(_citizenTex);
+    GlToolkit::deleteTextureId(_citizenTex);
 }
 
 void CitizensComponent::setup()
@@ -70,7 +70,7 @@ void CitizensComponent::setup()
 
 void CitizensComponent::draw()
 {
-    _shader.pushThisProgram();
+    _shader.pushProgram();
 
     glBindVertexArray(_citizenVao);
 

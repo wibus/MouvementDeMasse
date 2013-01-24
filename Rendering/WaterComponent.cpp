@@ -6,7 +6,7 @@ using namespace std;
 using namespace cellar;
 
 
-WaterComponent::WaterComponent(City &city, GLShaderProgram &shader) :
+WaterComponent::WaterComponent(City &city, GlProgram &shader) :
     AbstractComponent(city, shader),
     _waterBuffs(),
     _waterVao(0),
@@ -51,7 +51,7 @@ void WaterComponent::setup()
 
 void WaterComponent::draw()
 {
-    _shader.pushThisProgram();
+    _shader.pushProgram();
 
     glBindVertexArray(_waterVao);
     glEnable(GL_BLEND);

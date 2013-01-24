@@ -5,12 +5,12 @@
 using namespace std;
 
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/GL/GlToolkit.h>
 #include <Graphics/ImageBank.h>
 using namespace cellar;
 
 
-BridgesComponent::BridgesComponent(City& city, cellar::GLShaderProgram& shader) :
+BridgesComponent::BridgesComponent(City& city, cellar::GlProgram& shader) :
     AbstractComponent(city, shader),
     _bridgeBuffs(),
     _bridgeVao(0),    
@@ -20,7 +20,7 @@ BridgesComponent::BridgesComponent(City& city, cellar::GLShaderProgram& shader) 
     glGenVertexArrays(1, &_bridgeVao);
     glGenBuffers(_BRIDGE_NB_BUFFS, _bridgeBuffs);
 
-    _bridgeTex = GLToolkit::genTextureId(
+    _bridgeTex = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/bridgeTex.bmp")
     );
 }
@@ -29,7 +29,7 @@ BridgesComponent::~BridgesComponent()
 {
     glDeleteVertexArrays(1, &_bridgeVao);
     glDeleteBuffers(_BRIDGE_NB_BUFFS, _bridgeBuffs);
-    GLToolkit::deleteTextureId(_bridgeTex);
+    GlToolkit::deleteTextureId(_bridgeTex);
 }
 
 void BridgesComponent::setup()
@@ -194,7 +194,7 @@ void BridgesComponent::setup()
 
 void BridgesComponent::draw()
 {
-    _shader.pushThisProgram();
+    _shader.pushProgram();
 
     glEnable(GL_BLEND);
     glDisable(GL_CULL_FACE);

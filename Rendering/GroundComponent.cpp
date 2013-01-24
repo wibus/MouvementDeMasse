@@ -5,12 +5,12 @@
 #include <GL/glew.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/GL/GlToolkit.h>
 #include <Graphics/ImageBank.h>
 using namespace cellar;
 
 
-GroundComponent::GroundComponent(City &city, GLShaderProgram &shader) :
+GroundComponent::GroundComponent(City &city, GlProgram &shader) :
     AbstractComponent(city, shader),
     _landsBuffs(),
     _landsVao(0),
@@ -29,7 +29,7 @@ GroundComponent::GroundComponent(City &city, GLShaderProgram &shader) :
     glGenVertexArrays(1, &_trianglesVao);
     glGenBuffers(_TRIANGLES_NB_BUFFS, _trianglesBuffs);
 
-    _groundTex = GLToolkit::genTextureId(
+    _groundTex = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/grass.bmp")
     );
 }
@@ -43,7 +43,7 @@ GroundComponent::~GroundComponent()
     glDeleteVertexArrays(1, &_trianglesVao);
     glDeleteBuffers(_TRIANGLES_NB_BUFFS, _trianglesBuffs);
 
-    GLToolkit::deleteTextureId(_groundTex);
+    GlToolkit::deleteTextureId(_groundTex);
 }
 
 void GroundComponent::setup()
@@ -366,7 +366,7 @@ void GroundComponent::setupTriangles()
 
 void GroundComponent::draw()
 {
-    _shader.pushThisProgram();
+    _shader.pushProgram();
 
     glBindTexture(GL_TEXTURE_2D, _groundTex);
 

@@ -5,11 +5,11 @@ using namespace std;
 
 #include <GL/glew.h>
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/GL/GlToolkit.h>
 using namespace cellar;
 
 
-SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
+SkyComponent::SkyComponent(City &city, GlProgram &shader) :
     AbstractComponent(city, shader),
     _skyBuffs(),
     _skyVao(0),
@@ -21,16 +21,16 @@ SkyComponent::SkyComponent(City &city, GLShaderProgram &shader) :
     glGenVertexArrays(1, &_skyVao);
     glGenBuffers(_SKY_NB_BUFFS, _skyBuffs);
 
-    _cloudsTex = GLToolkit::genTextureId(_city.sky().cloudsImage());
+    _cloudsTex = GlToolkit::genTextureId(_city.sky().cloudsImage());
 }
 
 SkyComponent::~SkyComponent()
 {
     glDeleteVertexArrays(1, &_skyVao);
     glDeleteBuffers(_SKY_NB_BUFFS, _skyBuffs);
-    GLToolkit::deleteTextureId(_cloudsTex);
-    GLToolkit::deleteTextureId(_daySkyTex);
-    GLToolkit::deleteTextureId(_nightSkyTex);
+    GlToolkit::deleteTextureId(_cloudsTex);
+    GlToolkit::deleteTextureId(_daySkyTex);
+    GlToolkit::deleteTextureId(_nightSkyTex);
 }
 
 void SkyComponent::setup()
@@ -72,7 +72,7 @@ void SkyComponent::draw()
     glDisable(GL_DEPTH_TEST);
     glDepthMask(false);
 
-    _shader.pushThisProgram();
+    _shader.pushProgram();
     glBindVertexArray(_skyVao);
     glBindTexture(GL_TEXTURE_2D, _cloudsTex);
     glDrawArrays(GL_TRIANGLE_FAN, 0, _skyNbElems);

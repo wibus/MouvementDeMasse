@@ -3,12 +3,12 @@
 #include <GL/glew.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/GL/GlToolkit.h>
 #include <Graphics/ImageBank.h>
 using namespace cellar;
 
 
-JunctionsComponent::JunctionsComponent(City &city, GLShaderProgram &shader) :
+JunctionsComponent::JunctionsComponent(City &city, GlProgram &shader) :
     AbstractComponent(city, shader),
     _junctionsBuffs(),
     _junctionsVao(0),
@@ -18,7 +18,7 @@ JunctionsComponent::JunctionsComponent(City &city, GLShaderProgram &shader) :
     glGenVertexArrays(1, &_junctionsVao);
     glGenBuffers(_JUNCTIONS_NB_BUFFS, _junctionsBuffs);
 
-    _junctionsTex = GLToolkit::genTextureId(
+    _junctionsTex = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/junction.bmp")
     );
 }
@@ -27,7 +27,7 @@ JunctionsComponent::~JunctionsComponent()
 {
     glDeleteVertexArrays(1, &_junctionsVao);
     glDeleteBuffers(_JUNCTIONS_NB_BUFFS, _junctionsBuffs);
-    GLToolkit::deleteTextureId(_junctionsTex);
+    GlToolkit::deleteTextureId(_junctionsTex);
 }
 
 void JunctionsComponent::setup()
@@ -88,7 +88,7 @@ void JunctionsComponent::setup()
 
 void JunctionsComponent::draw()
 {
-    _shader.pushThisProgram();
+    _shader.pushProgram();
     glVertexAttrib3f(_shader.getAttributeLocation("normal_att"), 0,0,1);
 
     glActiveTexture(GL_TEXTURE1);

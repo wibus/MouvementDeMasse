@@ -10,7 +10,7 @@
 class BridgesComponent : public AbstractComponent
 {
 public:
-    BridgesComponent(City& city, cellar::GLShaderProgram& shader);
+    BridgesComponent(City& city, cellar::GlProgram& shader);
     ~BridgesComponent();
 
     void setup();

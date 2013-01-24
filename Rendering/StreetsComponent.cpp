@@ -3,12 +3,12 @@
 #include <GL/glew.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/GL/GlToolkit.h>
 #include <Graphics/ImageBank.h>
 using namespace cellar;
 
 
-StreetsComponent::StreetsComponent(City &city, GLShaderProgram &shader) :
+StreetsComponent::StreetsComponent(City &city, GlProgram &shader) :
     AbstractComponent(city, shader),
     _streetsBuffs(),
     _streetsVao(0),
@@ -18,7 +18,7 @@ StreetsComponent::StreetsComponent(City &city, GLShaderProgram &shader) :
     glGenVertexArrays(1, &_streetsVao);
     glGenBuffers(_STREETS_NB_BUFFS, _streetsBuffs);
 
-    _streetsTex = GLToolkit::genTextureId(
+    _streetsTex = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/street.bmp")
     );
 }
@@ -27,7 +27,7 @@ StreetsComponent::~StreetsComponent()
 {
     glDeleteVertexArrays(1, &_streetsVao);
     glDeleteBuffers(_STREETS_NB_BUFFS, _streetsBuffs);
-    GLToolkit::deleteTextureId(_streetsTex);
+    GlToolkit::deleteTextureId(_streetsTex);
 }
 
 void StreetsComponent::setup()
@@ -125,7 +125,7 @@ void StreetsComponent::setup()
 
 void StreetsComponent::draw()
 {
-    _shader.pushThisProgram();
+    _shader.pushProgram();
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _streetsTex);

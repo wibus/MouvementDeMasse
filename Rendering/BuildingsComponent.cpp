@@ -3,11 +3,11 @@
 #include <GL/glew.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GLToolkit.h>
+#include <Graphics/GL/GlToolkit.h>
 #include <Graphics/ImageBank.h>
 using namespace cellar;
 
-BuildingsComponent::BuildingsComponent(City &city, GLShaderProgram &shader) :
+BuildingsComponent::BuildingsComponent(City &city, GlProgram &shader) :
     AbstractComponent(city, shader),
     _buildingBuffs(),
     _buildingWallsVao(0),
@@ -34,27 +34,27 @@ BuildingsComponent::BuildingsComponent(City &city, GLShaderProgram &shader) :
     glGenBuffers(_ROOF_NB_BUFFS, _roofBuffs);
 
 
-    _roofTex = GLToolkit::genTextureId(
+    _roofTex = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/roofTex.bmp")
     );
 
-    _roofSpec = GLToolkit::genTextureId(
+    _roofSpec = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/roofSpec.bmp")
     );
 
-    _apartmentTex = GLToolkit::genTextureId(
+    _apartmentTex = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/apartTex.bmp")
     );
 
-    _apartmentSpec = GLToolkit::genTextureId(
+    _apartmentSpec = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/apartSpec.bmp")
     );
 
-    _commerceTex = GLToolkit::genTextureId(
+    _commerceTex = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/commerceTex.bmp")
     );
 
-    _commerceSpec = GLToolkit::genTextureId(
+    _commerceSpec = GlToolkit::genTextureId(
         getImageBank().getImage("resources/textures/commerceSpec.bmp")
     );
 }
@@ -66,12 +66,12 @@ BuildingsComponent::~BuildingsComponent()
     glDeleteVertexArrays(1, &_roofVao);
     glDeleteBuffers(_ROOF_NB_BUFFS, _roofBuffs);
 
-    GLToolkit::deleteTextureId(_roofTex);
-    GLToolkit::deleteTextureId(_roofSpec);
-    GLToolkit::deleteTextureId(_apartmentTex);
-    GLToolkit::deleteTextureId(_apartmentSpec);
-    GLToolkit::deleteTextureId(_commerceTex);
-    GLToolkit::deleteTextureId(_commerceSpec);
+    GlToolkit::deleteTextureId(_roofTex);
+    GlToolkit::deleteTextureId(_roofSpec);
+    GlToolkit::deleteTextureId(_apartmentTex);
+    GlToolkit::deleteTextureId(_apartmentSpec);
+    GlToolkit::deleteTextureId(_commerceTex);
+    GlToolkit::deleteTextureId(_commerceSpec);
 }
 
 void BuildingsComponent::setup()
@@ -250,7 +250,7 @@ void BuildingsComponent::setupRoofTop()
 
 void BuildingsComponent::draw()
 {
-    _shader.pushThisProgram();
+    _shader.pushProgram();
 
 
     // Residential
