@@ -7,7 +7,7 @@ using namespace std;
 #include <DataStructure/PGrid3D.h>
 
 #include <ScaenaApplication/Application.h>
-#include <Stages/QGLStage.h>
+#include <Stage/QGLStage.h>
 using namespace scaena;
 
 #include "MdMPlay.h"

@@ -9,10 +9,10 @@ using namespace cellar;
 #include <PropTeam/AbstractPropTeam.h>
 using namespace prop2;
 
-#include <StageEvents/StageTime.h>
-#include <StageEvents/SynchronousKeyboard.h>
-#include <StageEvents/SynchronousMouse.h>
-#include <Stages/AbstractStage.h>
+#include <Stage/Event/StageTime.h>
+#include <Stage/Event/SynchronousKeyboard.h>
+#include <Stage/Event/SynchronousMouse.h>
+#include <Stage/AbstractStage.h>
 using namespace scaena;
 
 #include "MdMCharacter.h"

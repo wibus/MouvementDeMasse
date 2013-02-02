@@ -28,6 +28,8 @@ saves
 *.pro.*
 *Thumbs*
 
+# User files
+*.user
+
 #Log
 Log.txt
-MouvementDeMasse

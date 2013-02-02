@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QMenuBar>
 
-#include <Stages/QGLStage.h>
+#include <Stage/QGLStage.h>
 #include <MdMCharacter.h>
 
 

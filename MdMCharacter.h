@@ -7,7 +7,7 @@
 #include <Graphics/Camera/Camera.h>
 #include <Graphics/Camera/CameraManFree.h>
 #include <DesignPattern/SpecificObserver.h>
-#include <Characters/AbstractCharacter.h>
+#include <Character/AbstractCharacter.h>
 
 #include <Hud/TextHud.h>
 

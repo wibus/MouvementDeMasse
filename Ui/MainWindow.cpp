@@ -2,8 +2,8 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 
-#include <Plays/AbstractPlay.h>
-#include <Acts/AbstractAct.h>
+#include <Play/AbstractPlay.h>
+#include <Act/AbstractAct.h>
 
 
 MainWindow::MainWindow(scaena::QGLStage *stage) :
