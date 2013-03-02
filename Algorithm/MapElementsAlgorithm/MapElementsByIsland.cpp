@@ -79,11 +79,11 @@ void MapElementsByIsland::findAndExploreIslands()
                 if (!(isJunctionInBounds(position - direction) &&
                     isJunctionAboveWater(position - direction)))
                 {
-                    direction.rotateQuarterCCW();
+                    direction = perpCCW(direction);
                     if (!(isJunctionInBounds(position - direction) &&
                         isJunctionAboveWater(position - direction)))
                     {
-                        direction.rotateQuarterCCW();
+                        direction = perpCCW(direction);
                     }
                 }
                 exploreOneIsland(position, direction);
@@ -120,7 +120,7 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
         // We are gonna look at three different cases.
 
         Vec2i newDirection = currDirection;
-        newDirection.rotateQuarterCCW();
+        newDirection = perpCCW(newDirection);
         Vec2i newPosition = currPosition + newDirection;
         // The block at the left is land. We turn left.
         if (isJunctionInBounds(newPosition) && isJunctionAboveWater(newPosition))
@@ -145,7 +145,7 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
 
         // If not. The block in right is land. We turn right.
         newDirection = currDirection;
-        newDirection.rotateQuarterCW();
+        newDirection = perpCW(newDirection);
         newPosition = currPosition + newDirection;
         // If not. The block in front is land. We continue.
         if (isJunctionInBounds(newPosition) && isJunctionAboveWater(newPosition))
@@ -374,7 +374,7 @@ void MapElementsByIsland::landIslands()
 
             for (int i = 0; i < 4; i++)
             {
-                direction.rotateQuarterCCW();
+                direction = perpCCW(direction);
                 Vec2i neighPos = currPos + direction;
 
                 // In bounds

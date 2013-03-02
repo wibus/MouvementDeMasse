@@ -52,7 +52,7 @@ void MapElementsDepthFirst::setup(City& city)
 
         for (int i = 0; i < 4; i++)
         {
-            direction.rotateQuarterCCW();
+            direction = perpCCW(direction);
             Vec2i neighPos = currPos + direction;
 
             // In bounds

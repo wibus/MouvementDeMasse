@@ -86,12 +86,12 @@ void Path::gotoNextNode()
 
 bool Path::isBeginReached() const
 {
-    return curNode == nodes.begin();
+    return curNode == nodes.begin() || nodes.empty();
 }
 
 bool Path::isEndReached() const
 {
-    return nextNode == nodes.end();
+    return nextNode == nodes.end() || nodes.empty();
 }
 
 void Path::gotoRevNextNode()
@@ -105,12 +105,12 @@ void Path::gotoRevNextNode()
 
 bool Path::isRevBeginReached() const
 {
-    return revCurNode == nodes.rbegin();
+    return revCurNode == nodes.rbegin() || nodes.empty();
 }
 
 bool Path::isRevEndReached() const
 {
-    return revNextNode == nodes.rend();
+    return revNextNode == nodes.rend() || nodes.empty();
 }
 
 

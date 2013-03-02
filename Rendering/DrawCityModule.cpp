@@ -177,7 +177,7 @@ void DrawCityModule::update()
     // Sky color
     const double skyCoefCorrection = 0.1;
     Vec4f  nLightDir    = _description->sunLight.direction.normalized();
-    double sunIntensity = maxVal(nLightDir * Vec4f(0, 0, -1, 0) + skyCoefCorrection, 0.0);
+    double sunIntensity = maxVal(dot(nLightDir, Vec4f(0, 0, -1, 0)) + skyCoefCorrection, 0.0);
     double skyColorCoef = pow(sunIntensity, 0.75) / (skyCoefCorrection + 1.0);
     Vec4f  skyCol = _description->nightSkyColor * (1 - skyColorCoef) +
                     _description->daySkyColor   * skyColorCoef;

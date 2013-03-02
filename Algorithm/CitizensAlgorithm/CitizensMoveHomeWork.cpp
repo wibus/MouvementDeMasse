@@ -140,7 +140,7 @@ float CitizensMoveHomeWork::gotoWork(Citizen& ctz, float timeToMove)
     Path& path = ctz.homeToWorkPath;
     float canWalk = timeToMove * ctz.walkingSpeed;
 
-    while( !ctz.homeToWorkPath.isEndReached() )
+    while( !path.isEndReached() )
     {
         float distance = Vec2f(path.nextNode->pos - path.curNode->pos).length();
         float toWalk = distance * (1.0f - path.nodeProgession);
@@ -257,10 +257,10 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
         // Progression
         float road3DLength = sqrt(roadLength*roadLength + deltaz*deltaz);
         float streetProg   = (walkedLength - _juncHalfLength) / roadLength;
-        Vec2f right( (dir2D * _juncLength / 4.0f).rotateQuarterCW() );
+        Vec2f right( perpCW(dir2D * _juncLength / 4.0f) );
 
-        ctz.position = vec3(right + begPos + dir2D*_juncHalfLength, begHeight) +
-                       ctz.direction*streetProg*road3DLength;
+        ctz.position  = Vec3f(right + begPos + dir2D*_juncHalfLength, begHeight);
+        ctz.position += ctz.direction*streetProg*road3DLength;
     }
     else
     {
@@ -316,12 +316,12 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
         // Position
         lastDir2d.normalize();
         lastDir2d *= _juncHalfLength;
-        lastRight = (lastDir2d / 2.0f).rotateQuarterCW();
+        lastRight = perpCW(lastDir2d / 2.0f);
         lastRealPos = -lastDir2d + lastRight;
 
         nextDir2d.normalize();
         nextDir2d *= _juncHalfLength;
-        nextRight = (nextDir2d / 2.0f).rotateQuarterCW();
+        nextRight = perpCW(nextDir2d / 2.0f);
         nextRealPos = nextDir2d + nextRight;
 
         Vec2f posInterpol = juncPos + lastWeight*lastRealPos + nextWeight*nextRealPos;

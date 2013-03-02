@@ -1,6 +1,7 @@
 #include "Sky.h"
 
 #include <Algorithm/Noise.h>
+#include <Misc/CellarUtils.h>
 using namespace cellar;
 
 

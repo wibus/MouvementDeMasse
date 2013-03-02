@@ -28,18 +28,25 @@ CitizensComponent::~CitizensComponent()
 
 void CitizensComponent::setup()
 {
-    vector<Vec3f> positions;
+    // Vertices colors
     vector<Vec4f> colors;
+    colors.push_back(Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
+    colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
+    colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
+    colors.push_back(Vec4f(0.0f, 0.0f, 1.0f, 1.0f));
+    colors.push_back(Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
+    colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
 
-    // Construct
+    // Vertices positions
+    vector<Vec3f> positions;
     Vec2f halfBase(1.0f, 0.0f);
     float angle = -PI*2.0f/3.0f;
-    positions.push_back(vec3(halfBase, 0.0f));                  colors.push_back(Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
-    positions.push_back(vec3(halfBase.rotate( angle ), 0.0f));  colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
-    positions.push_back(vec3(halfBase.rotate( angle ), 0.0f));  colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
-    positions.push_back(Vec3f(0.0f, 0.0f, 1.0f));               colors.push_back(Vec4f(0.0f, 0.0f, 1.0f, 1.0f));
-    positions.push_back(vec3(halfBase.rotate( angle ), 0.0f));  colors.push_back(Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
-    positions.push_back(vec3(halfBase.rotate( angle ), 0.0f));  colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
+    positions.push_back(Vec3f(halfBase, 0.0f));
+    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
+    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
+    positions.push_back(Vec3f(0.0f, 0.0f, 1.0f));
+    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
+    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
     _citizenNbElems = positions.size();
 
     // Scale

@@ -5,6 +5,7 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 
+#include <Misc/CellarUtils.h>
 #include <Misc/Log.h>
 
 using namespace cellar;

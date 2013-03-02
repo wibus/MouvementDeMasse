@@ -40,15 +40,15 @@ void CitizensEqualAlgo::update()
         {
             Vec2i pos(round(ctz.position.x()),  round(ctz.position.y()));
             Vec2i dir(round(ctz.direction.x()), round(ctz.direction.y()));
-            dir.rotateQuarterCCW();
+            dir = perpCCW(dir);
 
             Junction& junc = *_city->junctions().get( pos );
 
             while(! junc.getStreet(toDirection( dir )))
-                dir.rotateQuarterCW();
+                dir = perpCW(dir);
 
             Vec2i right = dir;
-            right.rotateQuarterCW();
+            right = perpCW(right);
             Vec2f rightSide = Vec2f(right) * roadQuarterWidth;
 
             ctz.curState = CITIZEN_GOTO_WORK;
@@ -63,7 +63,7 @@ void CitizensEqualAlgo::update()
             ctz.position += ctz.direction * ctz.walkingSpeed;
             ctz.position.setZ( _ground->heightAt(ctz.position.x(), ctz.position.y()));
 
-            if(vec2(ctz.position).distanceTo(Vec2f(ctz.homeToWorkPath.destination)) < ctz.walkingSpeed + roadQuarterWidth)
+            if(Vec2f(ctz.position).distanceTo(Vec2f(ctz.homeToWorkPath.destination)) < ctz.walkingSpeed + roadQuarterWidth)
                 ctz.curState = CITIZEN_AT_HOME;
         }
     }

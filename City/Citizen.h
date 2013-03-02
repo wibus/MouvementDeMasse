@@ -108,8 +108,8 @@ public:
     float         walkingSpeed;
     cellar::Vec3f position;
     cellar::Vec3f direction;
-    cellar::Vec2i homePos;      //Vec3i(MapX,  MapY)
-    cellar::Vec2i workPos;      //Vec3i(MapX,  MapY)
+    cellar::Vec2i homePos;
+    cellar::Vec2i workPos;
     Path          homeToWorkPath;
     Schedule      schedule;
 

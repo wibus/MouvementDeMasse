@@ -21,7 +21,7 @@ BridgesComponent::BridgesComponent(City& city, cellar::GlProgram& shader) :
     glGenBuffers(_BRIDGE_NB_BUFFS, _bridgeBuffs);
 
     _bridgeTex = GlToolkit::genTextureId(
-        getImageBank().getImage("resources/textures/bridgeTex.bmp")
+        getImageBank().getImage("resources/textures/bridgeTex.png")
     );
 }
 
@@ -46,8 +46,10 @@ void BridgesComponent::setup()
 
     for(size_t b=0; b<_city.bridges().size(); ++b)
     {
-        Vec3f endA = vec3<float>(_city.bridges()[b].endA(), _ground.heightAt(_city.bridges()[b].endA()));
-        Vec3f endB = vec3<float>(_city.bridges()[b].endB(), _ground.heightAt(_city.bridges()[b].endB()));
+        Vec3f endA = Vec3f(_city.bridges()[b].endA(),
+                           _ground.heightAt(_city.bridges()[b].endA()));
+        Vec3f endB = Vec3f(_city.bridges()[b].endB(),
+                           _ground.heightAt(_city.bridges()[b].endB()));
 
 
         float length = ((endB - endA).length() - 2.0f*bridgeHalfWidth) / _description.bridgeWidth;
@@ -55,8 +57,8 @@ void BridgesComponent::setup()
         float texBracingRepeat = round(length / 4.0f);
 
         Vec3f dir = (endB - endA).normalize();
-        Vec3f perp = vec3(vec2(dir).normalize().rotateQuarterCCW(), 0.0f);
-        Vec3f up = (dir ^ perp) * _description.bridgeHeight;
+        Vec3f perp = Vec3f(perpCCW(Vec2f(dir).normalize()), 0.0f);
+        Vec3f up = cross(dir, perp) * _description.bridgeHeight;
 
         Vec2f domDirAxe, domDiraxePerp;
         if(absolute(dir.x()) < absolute(dir.y()))
@@ -64,7 +66,7 @@ void BridgesComponent::setup()
         else
             domDirAxe(sign(dir.x()), 0);
         domDiraxePerp = domDirAxe;
-        domDiraxePerp.rotateQuarterCCW();
+        domDiraxePerp = perpCCW(domDiraxePerp);
 
 
         // Positions
@@ -90,8 +92,8 @@ void BridgesComponent::setup()
 
 
         // Entrance 1
-        positions.push_back(endA + vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
-        positions.push_back(endA + vec3(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endA + Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endA + Vec3f(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
         positions.push_back(corners[1]);
         positions.push_back(corners[0]);
 
@@ -104,8 +106,8 @@ void BridgesComponent::setup()
         texCoords.push_back(Vec2f(0.125f, 0.125f));
 
         // Entrance 2
-        positions.push_back(endB - vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
-        positions.push_back(endB - vec3(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endB - Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endB - Vec3f(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
         positions.push_back(corners[3]);
         positions.push_back(corners[2]);
 
