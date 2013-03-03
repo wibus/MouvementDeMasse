@@ -233,7 +233,7 @@ void DrawCityModule::updateShaders()
     _infrastructShader.popProgram();
 }
 
-void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
+void DrawCityModule::updateProjectionMatrix(const Mat4f& proj)
 {
     _description->projMat = proj;
 
@@ -243,30 +243,30 @@ void DrawCityModule::updateProjectionMatrix(const Matrix4x4<float>& proj)
 void DrawCityModule::updateShadersProjectionMatrix()
 {    
     _minimalistShader.pushProgram();
-    _minimalistShader.setMatrix4x4("ProjectionMatrix", _description->projMat);
+    _minimalistShader.setMat4f("ProjectionMatrix", _description->projMat);
     _minimalistShader.popProgram();
 
     _skyShader.pushProgram();
-    _skyShader.setMatrix4x4("ProjectionMatrix", _description->projMat);
+    _skyShader.setMat4f("ProjectionMatrix", _description->projMat);
     _skyShader.popProgram();
 
     _groundShader.pushProgram();
-    _groundShader.setMatrix4x4("ProjectionMatrix", _description->projMat);
+    _groundShader.setMat4f("ProjectionMatrix", _description->projMat);
     _groundShader.popProgram();
 
     _waterShader.pushProgram();
-    _waterShader.setMatrix4x4("ProjectionMatrix", _description->projMat);
+    _waterShader.setMat4f("ProjectionMatrix", _description->projMat);
     _waterShader.popProgram();
 
     _infrastructShader.pushProgram();
-    _infrastructShader.setMatrix4x4("ProjectionMatrix", _description->projMat);
+    _infrastructShader.setMat4f("ProjectionMatrix", _description->projMat);
     _infrastructShader.popProgram();
 }
 
-void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
+void DrawCityModule::updateModelViewMatrix(const Mat4f& view)
 {
     _description->viewMat = view;
-    _description->normalMat = view.subMat3();
+    _description->normalMat = submat(view, 3, 3);
 
     updateShadersModelViewMatrix();
 }
@@ -274,25 +274,25 @@ void DrawCityModule::updateModelViewMatrix(const Matrix4x4<float>& view)
 void DrawCityModule::updateShadersModelViewMatrix()
 {
     _minimalistShader.pushProgram();
-    _minimalistShader.setMatrix4x4("ViewMatrix", _description->viewMat);
+    _minimalistShader.setMat4f("ViewMatrix", _description->viewMat);
     _minimalistShader.popProgram();
 
     _skyShader.pushProgram();
-    _skyShader.setMatrix3x3("ViewMatrix",  _description->normalMat);
+    _skyShader.setMat3f("ViewMatrix", _description->normalMat);
     _skyShader.popProgram();
 
     _groundShader.pushProgram();
-    _groundShader.setMatrix4x4("ViewMatrix", _description->viewMat);
-    _groundShader.setMatrix3x3("NormalMatrix",    _description->normalMat);
+    _groundShader.setMat4f("ViewMatrix",   _description->viewMat);
+    _groundShader.setMat3f("NormalMatrix", _description->normalMat);
     _groundShader.popProgram();
 
     _waterShader.pushProgram();
-    _waterShader.setMatrix4x4("ViewMatrix", _description->viewMat);
-    _waterShader.setMatrix3x3("NormalMatrix",    _description->normalMat);
+    _waterShader.setMat4f("ViewMatrix",   _description->viewMat);
+    _waterShader.setMat3f("NormalMatrix", _description->normalMat);
     _waterShader.popProgram();
 
     _infrastructShader.pushProgram();
-    _infrastructShader.setMatrix4x4("ViewMatrix", _description->viewMat);
-    _infrastructShader.setMatrix3x3("NormalMatrix",    _description->normalMat);
+    _infrastructShader.setMat4f("ViewMatrix",   _description->viewMat);
+    _infrastructShader.setMat3f("NormalMatrix", _description->normalMat);
     _infrastructShader.popProgram();
 }

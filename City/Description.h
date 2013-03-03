@@ -14,9 +14,9 @@ public:
     bool save(const std::string& fileName);
 
     // Matrices
-    cellar::Matrix4x4<float> projMat;
-    cellar::Matrix4x4<float> viewMat;
-    cellar::Matrix3x3<float> normalMat;
+    cellar::Mat4f projMat;
+    cellar::Mat4f viewMat;
+    cellar::Mat3f normalMat;
 
     // Sun
     float sunRadius;

@@ -15,11 +15,20 @@ void HeightByNoiseAlgo::setup(City &city)
 {
     HeightsAlgorithm::setup( city );
 
+    const int NB_FREQ = 4;
+    const float FREQ[NB_FREQ] = {
+        1.0f,
+        2.0f,
+        4.0f,
+        8.0f
+    };
+    Vec2f ORIG[NB_FREQ];
+    for(int i=0; i<NB_FREQ; ++i)
+        ORIG[i] = Vec2f(randomRange(-10.0f, 10.0f), randomRange(-10.0f, 10.0f));
+
     float middleHeight = (_ground->maxHeight() + _ground->minHeight()) / 2.0f;
     float amplitude    = (_ground->maxHeight() - _ground->minHeight()) / 2.0f;
     SimplexNoise noisegen;
-    float nsx = randomRange(-10.0f, 10.0f);
-    float nsy = randomRange(-10.0f, 10.0f);
 
     for(int j=0; j< _mapSize.y(); ++j)
     {
@@ -28,9 +37,14 @@ void HeightByNoiseAlgo::setup(City &city)
             float xc = i/(float)_mapSize.x();
             float yc = j/(float)_mapSize.y();
 
-            _ground->setHeightAt(i, j,
-                noisegen.noiseTile2d(xc + nsx, yc + nsy, 0.5f) * amplitude + middleHeight
-            );
+            float height = 0.0f;
+            for(int k=0; k<NB_FREQ; ++k)
+                height += amplitude/(FREQ[k]*FREQ[k]) * noisegen.noiseTile2d(
+                    ORIG[k].x() + xc*FREQ[k],
+                    ORIG[k].x() + yc*FREQ[k],
+                    0.5f);
+
+            _ground->setHeightAt(i, j, middleHeight + height);
         }
     }
 }

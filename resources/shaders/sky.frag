@@ -12,6 +12,7 @@ uniform sampler2D CloudsTexUnit;
 varying vec3 position;
 varying vec3 fragDir;
 
+const float SKY_DOWN_SHIFT = 0.12;
 
 void main(void)
 {
@@ -19,7 +20,8 @@ void main(void)
 
     // Position
     vec3 pos = normalize(position);
-    vec2 ceilCoord = normalize(pos.xy) * length(pos.xy) / (pos.z+0.12) + TexShift;
+    float ceilZ = pos.z+SKY_DOWN_SHIFT;
+    vec2 ceilCoord = normalize(pos.xy) * length(pos.xy) / (ceilZ) + TexShift;
 
     // Skyline
     vec4 skylineColor = abs(pow(1.0 - pos.z, 6.0)) * SkylineColor;
@@ -30,8 +32,11 @@ void main(void)
     color = sunItensity * SunColor + (1.0 - sunItensity) * color;
 
     // Clouds
-    vec4 cloudsColor = texture2D(CloudsTexUnit, ceilCoord * Clouds1Height);
-    color = (cloudsColor.a * cloudsColor) + (1.0 - cloudsColor.a) * color;
+    if(ceilZ > 0)
+    {
+        vec4 cloudsColor = texture2D(CloudsTexUnit, ceilCoord * Clouds1Height);
+        color = (cloudsColor.a * cloudsColor) + (1.0 - cloudsColor.a) * color;
+    }
 
     gl_FragColor = color;
 }

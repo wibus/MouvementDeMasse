@@ -19,7 +19,7 @@ protected:
     cellar::Vec4f _direction;
     cellar::Vec4f _midnightDirection;
     cellar::Vec3f _rotationAxis;
-    cellar::Matrix4x4<float> _rotationMatrix;
+    cellar::Mat4f _rotationMatrix;
 };
 
 

@@ -29,8 +29,8 @@ public:
     void draw();
     void update();
 
-    void updateProjectionMatrix(const cellar::Matrix4x4<float>& proj);
-    void updateModelViewMatrix(const cellar::Matrix4x4<float>& view);
+    void updateProjectionMatrix(const cellar::Mat4f& proj);
+    void updateModelViewMatrix(const cellar::Mat4f& view);
 
 protected:
     void setupShaders();
