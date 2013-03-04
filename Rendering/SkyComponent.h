@@ -24,9 +24,7 @@ protected:
     unsigned int _skyVao;
     unsigned int _skyNbElems;
     unsigned int _cloudsTex;
-    unsigned int _daySkyTex;
     unsigned int _nightSkyTex;
-    std::vector<unsigned int> _skyIndices;
 };
 
 #endif // SKYCOMPONENT_H

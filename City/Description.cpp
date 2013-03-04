@@ -17,8 +17,8 @@ Description::Description() :
     sunColor(     1.00, 0.90, 0.20, 1.00),
     nightSkyColor(0.02, 0.01, 0.05, 1.00),
     daySkyColor(  0.40, 0.60, 0.80, 1.00),
+    sunSetColor(  0.70, 0.55, 0.10, 1.00),
     skylineColor( 0.12, 0.12, 0.12, 1.00),
-    curSkyColor(  nightSkyColor         ),
     grassColor(   0.32, 0.90, 0.08, 1.00),
     mudColor(     0.20, 0.14, 0.01, 1.00),
     waterColor(   0.03, 0.03, 0.30, 0.42),
@@ -33,7 +33,6 @@ Description::Description() :
     normalWalkingSpeed( 1.4f * unitPerMeter) // real life = 1.4 m/s
 {
     sunLight.direction(1.0f, 1.0f, 0.0f, 0.0f).normalize();
-    sunLight.ambient = curSkyColor;
     sunLight.diffuse( 0.76, 0.74, 0.72);
     sunLight.specular(0.65, 0.58, 0.46);
 }
@@ -65,8 +64,8 @@ bool Description::load(const std::string& fileName)
             {
                 fromString(att.value("nightColor").toString().toStdString(),   nightSkyColor);
                 fromString(att.value("dayColor").toString().toStdString(),     daySkyColor);
+                fromString(att.value("sunSetColor").toString().toStdString(),  sunSetColor);
                 fromString(att.value("skyLineColor").toString().toStdString(), skylineColor);
-                fromString(att.value("curColor").toString().toStdString(),     curSkyColor);
             }
             else if(xml.name() == "ground")
             {
@@ -125,8 +124,8 @@ bool Description::save(const std::string& fileName)
             xml.writeStartElement("sky");
                 xml.writeAttribute("nightColor",   toString(nightSkyColor).c_str());
                 xml.writeAttribute("dayColor",     toString(daySkyColor).c_str());
+                xml.writeAttribute("sunSetColor",  toString(sunSetColor).c_str());
                 xml.writeAttribute("skyLineColor", toString(skylineColor).c_str());
-                xml.writeAttribute("curColor",     toString(curSkyColor).c_str());
             xml.writeEndElement(); //sky
 
             xml.writeStartElement("ground");

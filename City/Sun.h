@@ -14,6 +14,7 @@ public:
     cellar::Vec4f direction() const;
     cellar::Vec4f midnightDirection() const;
     cellar::Vec3f rotationAxis() const;
+    const cellar::Mat4f& rotationMatrix() const;
 
 protected:
     cellar::Vec4f _direction;
@@ -38,6 +39,11 @@ inline cellar::Vec4f Sun::midnightDirection() const
 inline cellar::Vec3f Sun::rotationAxis() const
 {
     return _rotationAxis;
+}
+
+inline const cellar::Mat4f& Sun::rotationMatrix() const
+{
+    return _rotationMatrix;
 }
 
 #endif // SUN_H

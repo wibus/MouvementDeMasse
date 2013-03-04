@@ -4,7 +4,8 @@ using namespace std;
 
 #include <QApplication>
 
-#include <DataStructure/PGrid3D.h>
+#include <Misc/Log.h>
+using namespace cellar;
 
 #include <ScaenaApplication/Application.h>
 #include <Stage/QGLStage.h>
@@ -16,6 +17,8 @@ using namespace scaena;
 
 int main(int argc, char** argv) try
 {
+    getLog().setOuput(std::cout);
+
     getApplication().init(argc, argv);
     getApplication().setPlay(shared_ptr<AbstractPlay>(new MdMPlay()));
 

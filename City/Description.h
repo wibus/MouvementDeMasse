@@ -27,8 +27,8 @@ public:
     cellar::Vec4f sunColor;
     cellar::Vec4f nightSkyColor;
     cellar::Vec4f daySkyColor;
+    cellar::Vec4f sunSetColor;
     cellar::Vec4f skylineColor;
-    cellar::Vec4f curSkyColor;
     cellar::Vec4f grassColor;
     cellar::Vec4f mudColor;
     cellar::Vec4f waterColor;

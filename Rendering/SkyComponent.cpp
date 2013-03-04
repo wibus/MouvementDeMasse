@@ -15,7 +15,6 @@ SkyComponent::SkyComponent(City &city, GlProgram &shader) :
     _skyVao(0),
     _skyNbElems(0),
     _cloudsTex(0),
-    _daySkyTex(0),
     _nightSkyTex(0)
 {
     glGenVertexArrays(1, &_skyVao);
@@ -29,7 +28,6 @@ SkyComponent::~SkyComponent()
     glDeleteVertexArrays(1, &_skyVao);
     glDeleteBuffers(_SKY_NB_BUFFS, _skyBuffs);
     GlToolkit::deleteTextureId(_cloudsTex);
-    GlToolkit::deleteTextureId(_daySkyTex);
     GlToolkit::deleteTextureId(_nightSkyTex);
 }
 
@@ -65,6 +63,9 @@ void SkyComponent::setupSky()
     // Clearage
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray( 0 );
+
+    _shader.setTexture(GL_TEXTURE0, GL_TEXTURE_2D, _cloudsTex);
+    _shader.setTexture(GL_TEXTURE1, GL_TEXTURE_2D, "resources/textures/nightSkySphere.png");
 }
 
 void SkyComponent::draw()
@@ -74,7 +75,6 @@ void SkyComponent::draw()
 
     _shader.pushProgram();
     glBindVertexArray(_skyVao);
-    glBindTexture(GL_TEXTURE_2D, _cloudsTex);
     glDrawArrays(GL_TRIANGLE_FAN, 0, _skyNbElems);
     _shader.popProgram();
 

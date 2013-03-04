@@ -120,13 +120,17 @@ void DrawCityModule::setup(City &city)
 void DrawCityModule::setupShaders()
 {
     _skyShader.pushProgram();
-    _skyShader.setVec4f("SkyColor",     _description->curSkyColor);
+    _skyShader.setVec4f("NightSkyColor",_description->nightSkyColor);
+    _skyShader.setVec4f("DaySkyColor",  _description->daySkyColor);
+    _skyShader.setVec4f("SunSetColor",  _description->sunSetColor);
     _skyShader.setVec4f("SkylineColor", _description->skylineColor);
     _skyShader.setVec4f("SunColor",     _description->sunColor);
     _skyShader.setFloat("SunRadius",    _description->sunRadius);
     _skyShader.setVec3f("SunPosition",  Vec3f(0.0f, 0.0f, -1.0f));
     _skyShader.setVec2f("TexShift",     Vec2f(0.0f, 0.0f));
     _skyShader.setInt("CloudsTexUnit",  0);
+    _skyShader.setInt("StarsTexUnit",   1);
+    _skyShader.setMat4f("SkyRotMatrix",  _city->sun().rotationMatrix());
     _skyShader.popProgram();
 
     _groundShader.pushProgram();
@@ -175,23 +179,23 @@ void DrawCityModule::update()
         return;
 
     // Sky color
+
     const double skyCoefCorrection = 0.1;
     Vec4f  nLightDir    = _description->sunLight.direction.normalized();
     double sunIntensity = maxVal(dot(nLightDir, Vec4f(0, 0, -1, 0)) + skyCoefCorrection, 0.0);
     double skyColorCoef = pow(sunIntensity, 0.75) / (skyCoefCorrection + 1.0);
     Vec4f  skyCol = _description->nightSkyColor * (1 - skyColorCoef) +
                     _description->daySkyColor   * skyColorCoef;
-    _description->curSkyColor = skyCol;
-
     skyCol += _description->skylineColor;
     glClearColor(skyCol[0], skyCol[1], skyCol[2], skyCol[3]);
+
 
 
     // Sun ambient light
     const float AMBIENT_EFF_FACT = 0.50;
     const float BASE_INTENSITY = 0.03;
     const Vec4f BASE_LIGHT = Vec4f(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
-    _description->sunLight.ambient = BASE_LIGHT + _description->curSkyColor * AMBIENT_EFF_FACT;
+    _description->sunLight.ambient = BASE_LIGHT + skyCol * AMBIENT_EFF_FACT;
 
 
     // Sun position
@@ -212,9 +216,10 @@ void DrawCityModule::updateShaders()
     shift[1] += 0.0008;
 
     _skyShader.pushProgram();
-    _skyShader.setVec4f("SkyColor", _description->curSkyColor);
-    _skyShader.setVec4f("SunPosition", -_description->viewedSunDirection);
-    _skyShader.setVec2f("TexShift", shift);
+    _skyShader.setVec4f("VCSunPosition", -_city->sun().direction().normalize());
+    _skyShader.setVec4f("ECSunPosition", -_description->viewedSunDirection);
+    _skyShader.setVec2f("TexShift",      shift);
+    _skyShader.setMat4f("SkyRotMatrix",   transpose(_city->sun().rotationMatrix()));
     _skyShader.popProgram();
 
     _groundShader.pushProgram();
