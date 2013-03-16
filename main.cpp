@@ -8,11 +8,11 @@ using namespace std;
 using namespace cellar;
 
 #include <ScaenaApplication/Application.h>
+#include <ScaenaApplication/GlMainWindow.h>
 #include <Stage/QGLStage.h>
 using namespace scaena;
 
 #include "MdMPlay.h"
-#include "Ui/MainWindow.h"
 
 
 int main(int argc, char** argv) try
@@ -30,7 +30,9 @@ int main(int argc, char** argv) try
     stage->setDrawInterval( 0 );
     stage->setUpdateInterval( 0 );
 
-    MainWindow window(stage);
+    GlMainWindow window(stage);
+    window.setGlWindowSpace(800, 600);
+    window.centerOnScreen();
     window.show();
 
     return getApplication().execute();    

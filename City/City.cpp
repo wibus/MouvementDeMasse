@@ -14,7 +14,7 @@ using namespace cellar;
 City::City(int width, int height):
     _size(  width, height),
     _dateAndTime(2000, JANUARY, 0, 18, 0, 0),
-    _timeJump(0, 0, 0, 0, 0, 10),
+    _timeJump(0, 0, 0, 0, 0, 1),
     _sky(256, 256),
     _sun(Vec4f(-1, -1, 2, 0).normalize(), Vec3f(1.0, 1.0, 1.0).normalize()),
     _ground(   width+1, height+1),    
