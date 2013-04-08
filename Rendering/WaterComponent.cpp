@@ -1,6 +1,6 @@
 #include "WaterComponent.h"
 
-#include <GL/glew.h>
+#include <GL3/gl3w.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
 using namespace cellar;

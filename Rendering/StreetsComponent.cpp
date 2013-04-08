@@ -1,6 +1,6 @@
 #include "StreetsComponent.h"
 
-#include <GL/glew.h>
+#include <GL3/gl3w.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
 #include <Graphics/GL/GlToolkit.h>
@@ -63,9 +63,17 @@ void StreetsComponent::setup()
                 normals.push_back(dzdx);
                 texCoords.push_back(Vec2f(lengthRatio, 1));
 
+                positions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, endHeight));
+                normals.push_back(dzdx);
+                texCoords.push_back(Vec2f(lengthRatio, 1));
+
                 positions.push_back(Vec3f(i + roadHalfWidth, j+roadHalfWidth, startHeight));
                 normals.push_back(dzdx);
                 texCoords.push_back(Vec2f(0, 1));
+
+                positions.push_back(Vec3f(i + roadHalfWidth, j-roadHalfWidth, startHeight));
+                normals.push_back(dzdx);
+                texCoords.push_back(Vec2f(0, 0));
             }
             if(_city.junctions().get(i , j)->getStreet(NORTH) != 0x0)
             {
@@ -85,9 +93,17 @@ void StreetsComponent::setup()
                 normals.push_back(dzdy);
                 texCoords.push_back(Vec2f(lengthRatio, 0));
 
+                positions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, endHeight));
+                normals.push_back(dzdy);
+                texCoords.push_back(Vec2f(lengthRatio, 0));
+
                 positions.push_back(Vec3f(i-roadHalfWidth, j+1-roadHalfWidth, endHeight));
                 normals.push_back(dzdy);
                 texCoords.push_back(Vec2f(lengthRatio, 1));
+
+                positions.push_back(Vec3f(i-roadHalfWidth, j + roadHalfWidth, startHeight));
+                normals.push_back(dzdy);
+                texCoords.push_back(Vec2f(0, 1));
             }
         }
     }
@@ -133,7 +149,7 @@ void StreetsComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _streetsTex);
 
     glBindVertexArray(_streetsVao);
-    glDrawArrays(GL_QUADS, 0, _streetsNbElems);
+    glDrawArrays(GL_TRIANGLES, 0, _streetsNbElems);
 
     _shader.popProgram();
 }

@@ -1,6 +1,6 @@
 #include "BuildingsComponent.h"
 
-#include <GL/glew.h>
+#include <GL3/gl3w.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
 #include <Graphics/GL/GlToolkit.h>
@@ -172,7 +172,9 @@ void BuildingsComponent::setupBuidlindSides()
             _buildingIndices.back().push_back(w*2);
             _buildingIndices.back().push_back(w*2+1);
             _buildingIndices.back().push_back(w*2+1 + s*8);
+            _buildingIndices.back().push_back(w*2+1 + s*8);
             _buildingIndices.back().push_back(w*2   + s*8);
+            _buildingIndices.back().push_back(w*2);
         }
     }
 
@@ -265,7 +267,7 @@ void BuildingsComponent::draw()
     for(size_t i=0; i<_apartmentPos.size(); ++i)
     {
         _shader.setVec3f("Translation", _apartmentPos[i]);
-        glDrawElements(GL_QUADS, _buildingIndices[0].size(), GL_UNSIGNED_INT,
+        glDrawElements(GL_TRIANGLES, _buildingIndices[0].size(), GL_UNSIGNED_INT,
                        _buildingIndices[_apartmentNbStories[i]].data());
     }
     _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
@@ -284,7 +286,7 @@ void BuildingsComponent::draw()
     for(size_t i=0; i<_commercePos.size(); ++i)
     {
         _shader.setVec3f("Translation", _commercePos[i]);
-        glDrawElements(GL_QUADS, _buildingIndices[0].size(), GL_UNSIGNED_INT,
+        glDrawElements(GL_TRIANGLES, _buildingIndices[0].size(), GL_UNSIGNED_INT,
                        _buildingIndices[_commerceNbStories[i]].data());
     }
     _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));

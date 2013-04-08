@@ -1,7 +1,7 @@
 #include "BridgesComponent.h"
 
 #include <cmath>
-#include <GL/glew.h>
+#include <GL3/gl3w.h>
 using namespace std;
 
 #include <Misc/CellarUtils.h>
@@ -78,16 +78,22 @@ void BridgesComponent::setup()
 
 
         // Deck
-        for(int c=0; c<4; ++c)
-            positions.push_back(corners[c]);
+        positions.push_back(corners[0]);
+        positions.push_back(corners[1]);
+        positions.push_back(corners[2]);
+        positions.push_back(corners[2]);
+        positions.push_back(corners[3]);
+        positions.push_back(corners[0]);
 
-        for(int c=0; c<4; ++c)
+        for(int c=0; c<6; ++c)
             normals.push_back(up);
 
         texCoords.push_back(Vec2f(0.0f,          0.5f));
         texCoords.push_back(Vec2f(0.0f,          0.0f));
         texCoords.push_back(Vec2f(texDeckRepeat, 0.0f));
+        texCoords.push_back(Vec2f(texDeckRepeat, 0.0f));
         texCoords.push_back(Vec2f(texDeckRepeat, 0.5f));
+        texCoords.push_back(Vec2f(0.0f,          0.5f));
 
 
 
@@ -96,10 +102,14 @@ void BridgesComponent::setup()
         positions.push_back(endA + Vec3f(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
         positions.push_back(corners[1]);
         positions.push_back(corners[0]);
+        positions.push_back(corners[1]);
+        positions.push_back(endA + Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
 
-        for(int c=0; c<4; ++c)
+        for(int c=0; c<6; ++c)
             normals.push_back(up);
 
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
         texCoords.push_back(Vec2f(0.125f, 0.125f));
         texCoords.push_back(Vec2f(0.125f, 0.125f));
         texCoords.push_back(Vec2f(0.125f, 0.125f));
@@ -109,11 +119,15 @@ void BridgesComponent::setup()
         positions.push_back(endB - Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
         positions.push_back(endB - Vec3f(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
         positions.push_back(corners[3]);
+        positions.push_back(corners[3]);
         positions.push_back(corners[2]);
+        positions.push_back(endB - Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
 
-        for(int c=0; c<4; ++c)
+        for(int c=0; c<6; ++c)
             normals.push_back(up);
 
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(Vec2f(0.125f, 0.125f));
         texCoords.push_back(Vec2f(0.125f, 0.125f));
         texCoords.push_back(Vec2f(0.125f, 0.125f));
         texCoords.push_back(Vec2f(0.125f, 0.125f));
@@ -125,43 +139,57 @@ void BridgesComponent::setup()
         positions.push_back(corners[1]);
         positions.push_back(corners[2]);
         positions.push_back(corners[2] + up);
+        positions.push_back(corners[2] + up);
         positions.push_back(corners[1] + up);
+        positions.push_back(corners[1]);
 
-        for(int c=0; c<4; ++c)
+        for(int c=0; c<6; ++c)
             normals.push_back(-perp);
 
         texCoords.push_back(Vec2f(0.0f,             0.50f));
         texCoords.push_back(Vec2f(texBracingRepeat, 0.50f));
         texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
         texCoords.push_back(Vec2f(0.0f,             0.75f));
+        texCoords.push_back(Vec2f(0.0f,             0.50f));
 
         // Side 2
         positions.push_back(corners[0]);
         positions.push_back(corners[3]);
         positions.push_back(corners[3] + up);
+        positions.push_back(corners[3] + up);
         positions.push_back(corners[0] + up);
+        positions.push_back(corners[0]);
 
-        for(int c=0; c<4; ++c)
+        for(int c=0; c<6; ++c)
             normals.push_back(perp);
 
         texCoords.push_back(Vec2f(0.0f,             0.50f));
         texCoords.push_back(Vec2f(texBracingRepeat, 0.50f));
         texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
         texCoords.push_back(Vec2f(0.0f,             0.75f));
+        texCoords.push_back(Vec2f(0.0f,             0.50f));
 
 
 
         // Roof
-        for(int c=0; c<4; ++c)
-            positions.push_back(corners[c] + up);
+        positions.push_back(corners[0] + up);
+        positions.push_back(corners[1] + up);
+        positions.push_back(corners[2] + up);
+        positions.push_back(corners[2] + up);
+        positions.push_back(corners[3] + up);
+        positions.push_back(corners[0] + up);
 
-        for(int c=0; c<4; ++c)
+        for(int c=0; c<6; ++c)
             normals.push_back(up);
 
         texCoords.push_back(Vec2f(0.0f,             1.0f));
         texCoords.push_back(Vec2f(0.0f,             0.75f));
         texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
+        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
         texCoords.push_back(Vec2f(texBracingRepeat, 1.0f));
+        texCoords.push_back(Vec2f(0.0f,             1.0f));
     }
 
     _bridgeNbElems = positions.size();
@@ -207,7 +235,7 @@ void BridgesComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _bridgeTex);
 
     glBindVertexArray(_bridgeVao);
-    glDrawArrays(GL_QUADS, 0, _bridgeNbElems);
+    glDrawArrays(GL_TRIANGLES, 0, _bridgeNbElems);
     glBindVertexArray(0);
 
     glDisable(GL_BLEND);

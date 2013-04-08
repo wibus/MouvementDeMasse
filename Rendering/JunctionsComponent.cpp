@@ -1,6 +1,6 @@
 #include "JunctionsComponent.h"
 
-#include <GL/glew.h>
+#include <GL3/gl3w.h>
 using namespace std;
 #include <Misc/CellarUtils.h>
 #include <Graphics/GL/GlToolkit.h>
@@ -55,8 +55,14 @@ void JunctionsComponent::setup()
                 positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, height));
                 texCoords.push_back(Vec2f(1, 1));
 
+                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, height));
+                texCoords.push_back(Vec2f(1, 1));
+
                 positions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth, height));
                 texCoords.push_back(Vec2f(0, 1));
+
+                positions.push_back(Vec3f(i-roadHalfWidth, j-roadHalfWidth, height));
+                texCoords.push_back(Vec2f(0, 0));
             }
         }
     }
@@ -97,7 +103,7 @@ void JunctionsComponent::draw()
     glBindTexture(GL_TEXTURE_2D, _junctionsTex);
 
     glBindVertexArray(_junctionsVao);    
-    glDrawArrays(GL_QUADS, 0, _junctionsNbElems);
+    glDrawArrays(GL_TRIANGLES, 0, _junctionsNbElems);
 
     _shader.popProgram();
 }

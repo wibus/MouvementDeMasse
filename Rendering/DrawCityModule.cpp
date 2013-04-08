@@ -1,6 +1,6 @@
 #include "DrawCityModule.h"
 
-#include <GL/glew.h>
+#include <GL3/gl3w.h>
 
 #include "City/City.h"
 #include "SkyComponent.h"

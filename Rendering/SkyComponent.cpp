@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-#include <GL/glew.h>
+#include <GL3/gl3w.h>
 #include <Misc/CellarUtils.h>
 #include <Graphics/GL/GlToolkit.h>
 using namespace cellar;
