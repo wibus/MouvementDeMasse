@@ -6,7 +6,7 @@
 using namespace std;
 #include <Misc/CellarUtils.h>
 #include <Graphics/GL/GlToolkit.h>
-#include <Graphics/ImageBank.h>
+#include <Graphics/Image/ImageBank.h>
 using namespace cellar;
 
 

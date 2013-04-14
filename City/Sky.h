@@ -2,7 +2,7 @@
 #define SKY_H
 
 #include <DataStructure/Grid2D.h>
-#include <Graphics/Image.h>
+#include <Graphics/Image/Image.h>
 #include <DataStructure/Vector.h>
 
 
