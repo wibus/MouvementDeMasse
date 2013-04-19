@@ -47,7 +47,7 @@ void CitizensComponent::setup()
     positions.push_back(Vec3f(0.0f, 0.0f, 1.0f));
     positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
     positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
-    _citizenNbElems = positions.size();
+    _citizenNbElems = static_cast<int>(positions.size());
 
     // Scale
     for(size_t i=0; i<positions.size(); ++i)

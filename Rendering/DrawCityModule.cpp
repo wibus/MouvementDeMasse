@@ -192,8 +192,8 @@ void DrawCityModule::update()
 
 
     // Sun ambient light
-    const float AMBIENT_EFF_FACT = 0.50;
-    const float BASE_INTENSITY = 0.03;
+    const float AMBIENT_EFF_FACT = 0.50f;
+    const float BASE_INTENSITY = 0.03f;
     const Vec4f BASE_LIGHT = Vec4f(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
     _description->sunLight.ambient = BASE_LIGHT + skyCol * AMBIENT_EFF_FACT;
 
@@ -213,7 +213,7 @@ void DrawCityModule::update()
 void DrawCityModule::updateShaders()
 {
     static Vec2f shift(0.0f, 0.0f);
-    shift[1] += 0.0008;
+    shift[1] += 0.0008f;
 
     _skyShader.pushProgram();
     _skyShader.setVec4f("VCSunPosition", -_city->sun().direction().normalize());

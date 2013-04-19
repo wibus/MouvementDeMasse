@@ -74,7 +74,7 @@ inline int Land::capacity() const
 
 inline int Land::nbResidents() const
 {
-    return _residents.size();
+    return static_cast<int>(_residents.size());
 }
 
 inline bool Land::isEmpty() const
@@ -105,7 +105,7 @@ inline bool Land::allocateRoom(Citizen::Id id)
 
 inline bool Land::deallocateRoom(Citizen::Id id)
 {
-    return _residents.erase(id);
+    return _residents.erase(id) != 0;
 }
 
 

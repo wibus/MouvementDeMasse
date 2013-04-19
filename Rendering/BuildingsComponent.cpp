@@ -267,8 +267,11 @@ void BuildingsComponent::draw()
     for(size_t i=0; i<_apartmentPos.size(); ++i)
     {
         _shader.setVec3f("Translation", _apartmentPos[i]);
-        glDrawElements(GL_TRIANGLES, _buildingIndices[0].size(), GL_UNSIGNED_INT,
-                       _buildingIndices[_apartmentNbStories[i]].data());
+        glDrawElements(
+            GL_TRIANGLES, 
+            static_cast<GLsizei>(_buildingIndices[0].size()), 
+            GL_UNSIGNED_INT,
+            _buildingIndices[_apartmentNbStories[i]].data());
     }
     _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
     _shader.setVec2f("RepeatFrom", Vec2f(1.0f, 1.0f));
@@ -286,8 +289,10 @@ void BuildingsComponent::draw()
     for(size_t i=0; i<_commercePos.size(); ++i)
     {
         _shader.setVec3f("Translation", _commercePos[i]);
-        glDrawElements(GL_TRIANGLES, _buildingIndices[0].size(), GL_UNSIGNED_INT,
-                       _buildingIndices[_commerceNbStories[i]].data());
+        glDrawElements(GL_TRIANGLES, 
+            static_cast<GLsizei>(_buildingIndices[0].size()), 
+            GL_UNSIGNED_INT,
+            _buildingIndices[_commerceNbStories[i]].data());
     }
     _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
     _shader.setVec2f("RepeatFrom", Vec2f(1.0f, 1.0f));

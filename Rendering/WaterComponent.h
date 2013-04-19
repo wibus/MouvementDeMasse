@@ -15,9 +15,9 @@ public:
 
 protected:
     static const int _WATER_NB_BUFFS = 1;
+    static const int _WATER_NB_ELEMS = 4;
     unsigned int _waterBuffs[_WATER_NB_BUFFS];
     unsigned int _waterVao;
-    const int _WATER_NB_ELEMS;
 };
 
 #endif // WATERCOMPONENT_H

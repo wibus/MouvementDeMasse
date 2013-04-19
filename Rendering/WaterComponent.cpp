@@ -9,8 +9,7 @@ using namespace cellar;
 WaterComponent::WaterComponent(City &city, GlProgram &shader) :
     AbstractComponent(city, shader),
     _waterBuffs(),
-    _waterVao(0),
-    _WATER_NB_ELEMS(4)
+    _waterVao(0)
 {
     glGenVertexArrays(1, &_waterVao);
     glGenBuffers(_WATER_NB_BUFFS, _waterBuffs);

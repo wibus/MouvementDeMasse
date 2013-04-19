@@ -67,7 +67,7 @@ void JunctionsComponent::setup()
         }
     }
 
-    _junctionsNbElems = positions.size();
+    _junctionsNbElems = static_cast<int>(positions.size());
 
 
     // Setup Vao

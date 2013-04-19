@@ -262,11 +262,12 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
     double bestDistance = _mapSize.x() + _mapSize.y();
     double currDistance;
 
-    int size = _islandEdges[firstIsland].size();
+    int size = static_cast<int>(_islandEdges[firstIsland].size());
     bestJuncFirst = randomRange(0, size - 1);
     bestJuncSecond = 0;
 
-    for (uint currPos = 0; currPos < _islandEdges[secondIsland].size(); ++currPos)
+    int nbIslandEdges2 = static_cast<int>(_islandEdges[secondIsland].size());
+    for (int currPos = 0; currPos < nbIslandEdges2; ++currPos)
     {
         currDistance = cellar::Vec2f(_islandEdges[firstIsland][bestJuncFirst] -
                                      _islandEdges[secondIsland][currPos]).length();
@@ -280,7 +281,8 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
 
     bestDistance = _mapSize.x() + _mapSize.y() + 1;
 
-    for (uint currPos = 0; currPos < _islandEdges[firstIsland].size(); ++currPos)
+    int nbIslandEdges1 = static_cast<int>(_islandEdges[firstIsland].size());
+    for (int currPos = 0; currPos < nbIslandEdges1; ++currPos)
     {
         currDistance = cellar::Vec2f(_islandEdges[firstIsland][currPos] -
                                      _islandEdges[secondIsland][bestJuncSecond]).length();
@@ -401,7 +403,7 @@ void MapElementsByIsland::landIslands()
             if (!freeSides.empty())
             {
                 // Choose randomly a free side
-                int nbElements = freeSides.size();
+                int nbElements = static_cast<int>(freeSides.size());
                 int pos = randomRange(0, nbElements);
                 Vec2i nextDirection = freeSides[pos];
                 Vec2i nextPos = currPos + nextDirection;
@@ -420,7 +422,7 @@ void MapElementsByIsland::landIslands()
                 if(randomRange(0.0, 4.0) > 1.0)
                 {
                     // Choose randomly an reachable side
-                    int nbElements = reachableSides.size();
+                    int nbElements = static_cast<int>(reachableSides.size());
                     int pos = randomRange(0, nbElements);
                     Vec2i nextDirection = reachableSides[pos];
                     Vec2i nextPos = currPos + nextDirection;

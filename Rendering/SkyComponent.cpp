@@ -47,7 +47,7 @@ void SkyComponent::setupSky()
     positions.push_back(Vec3f(r*cos(4*PI/3),  r*sin(4*PI/3), -r/2.0f));
     positions.push_back(Vec3f(r*cos(2*PI/3),  r*sin(2*PI/3), -r/2.0f));
     positions.push_back(Vec3f(r*cos(0*PI/3),  r*sin(0*PI/3), -r/2.0f));
-    _skyNbElems = positions.size();
+    _skyNbElems = static_cast<int>(positions.size());
 
 
     //VAO setup

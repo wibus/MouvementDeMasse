@@ -10,13 +10,6 @@
 
 class MapElementsByIsland: public MapElementsAlgorithm
 {
-protected:
-    struct distance{
-        cellar::Vec2i endA;
-        cellar::Vec2i endB;
-        int distance;
-    };
-
 public:
     MapElementsByIsland();
     virtual ~MapElementsByIsland();

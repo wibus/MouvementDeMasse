@@ -37,9 +37,9 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _fpsText(),
     _upsText()
 {
-    stage.camera().setTripod(Vec3f(_city->size().x() / 2, 0, _city->ground().maxHeight()),
-                             Vec3f(_city->size().x() / 2, _city->size().y() / 2, 0),
-                             Vec3f(0, 0 ,1));
+    stage.camera().setTripod(Vec3f(_city->size().x() / 2.0f, 0.0f, _city->ground().maxHeight()),
+                             Vec3f(_city->size().x() / 2.0f, _city->size().y() / 2.0f, 0.0f),
+                             Vec3f(0.0f, 0.0f, 1.0f));
     stage.camera().registerObserver( *this );
 }
 
@@ -89,7 +89,7 @@ void MdMCharacter::beginStep(const StageTime &time)
 void MdMCharacter::updateCamera(float elapsedtime)
 {
     float velocity  = 10.0f * elapsedtime;
-    float turnSpeed = 0.004;
+    float turnSpeed = 0.004f;
 
     if(stage().synchronousKeyboard().isAsciiPressed('w'))
     {

@@ -32,14 +32,15 @@ void CitizensEqualAlgo::update()
 {
     const float roadQuarterWidth = _city->description().roadWidth *0.25f;
 
-    for(size_t c=0; c<_city->citizens().size(); ++c)
+    int nbCitizens = static_cast<int>(_city->citizens().size());
+    for(int c=0; c < nbCitizens; ++c)
     {
         Citizen& ctz = _city->citizens()[c];
 
         if(ctz.curState == CITIZEN_AT_HOME)
         {
-            Vec2i pos(round(ctz.position.x()),  round(ctz.position.y()));
-            Vec2i dir(round(ctz.direction.x()), round(ctz.direction.y()));
+            Vec2i pos(floor(ctz.position.x() + 0.5f),  floor(ctz.position.y() + 0.5f));
+            Vec2i dir(floor(ctz.direction.x() + 0.5f), floor(ctz.direction.y() + 0.5f));
             dir = perpCCW(dir);
 
             Junction& junc = *_city->junctions().get( pos );

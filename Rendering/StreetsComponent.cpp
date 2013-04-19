@@ -108,7 +108,7 @@ void StreetsComponent::setup()
         }
     }
 
-    _streetsNbElems = positions.size();
+    _streetsNbElems = static_cast<int>(positions.size());
 
 
     // Setup Vao

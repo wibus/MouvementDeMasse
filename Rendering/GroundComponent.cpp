@@ -114,7 +114,7 @@ void GroundComponent::setupLands()
         }
     }
 
-    _landsNbElems = positions.size();
+    _landsNbElems = static_cast<int>(positions.size());
 
 
     // Ground VAO setup
@@ -206,7 +206,7 @@ void GroundComponent::setupRoads()
         }
     }
 
-    _roadsNbElems = positions.size();
+    _roadsNbElems = static_cast<int>(positions.size());
 
 
     // Ground VAO setup
@@ -356,7 +356,7 @@ void GroundComponent::setupTriangles()
         }
     }
 
-    _trianglesNbElems = positions.size();
+    _trianglesNbElems = static_cast<int>(positions.size());
 
     // Ground VAO setup
     glBindVertexArray(_trianglesVao);

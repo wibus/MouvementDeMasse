@@ -54,7 +54,7 @@ void BridgesComponent::setup()
 
         float length = ((endB - endA).length() - 2.0f*bridgeHalfWidth) / _description.bridgeWidth;
         float texDeckRepeat = length;
-        float texBracingRepeat = round(length / 4.0f);
+        float texBracingRepeat = floor(length / 4.0f + 0.5f);
 
         Vec3f dir = (endB - endA).normalize();
         Vec3f perp = Vec3f(perpCCW(Vec2f(dir).normalize()), 0.0f);
@@ -192,7 +192,7 @@ void BridgesComponent::setup()
         texCoords.push_back(Vec2f(0.0f,             1.0f));
     }
 
-    _bridgeNbElems = positions.size();
+    _bridgeNbElems = static_cast<int>(positions.size());
 
 
     // Setup Vao

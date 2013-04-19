@@ -22,7 +22,7 @@ protected:
     void cleanAStarStructures();
 
 
-    class DataStructures;
+    struct DataStructures;
     DataStructures* _data;
 };
 
@@ -31,7 +31,7 @@ protected:
 // IMPLEMENTATION //
 inline float CitizensDistribByIsland::dist(const cellar::Vec2i& p1, const cellar::Vec2i &p2)
 {
-    return cellar::Vec2f(p1).distanceTo(p2);
+    return static_cast<float>(cellar::Vec2f(p1).distanceTo(p2));
 }
 
 #endif // CITIZENSDISTRIBBYISLAND_H

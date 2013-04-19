@@ -79,7 +79,7 @@ void MapElementsDepthFirst::setup(City& city)
         if (!freeSides.empty())
         {
             // Choose randomly a free side
-            int nbElements = freeSides.size();
+            int nbElements = static_cast<int>(freeSides.size());
             int pos = randomRange(0, nbElements);
             Vec2i nextDirection = freeSides[pos];
             Vec2i nextPos = currPos + nextDirection;
@@ -98,7 +98,7 @@ void MapElementsDepthFirst::setup(City& city)
             if(randomRange(0.0, 4.0) > 1.0)
             {
                 // Choose randomly an reachable side
-                int nbElements = reachableSides.size();
+                int nbElements = static_cast<int>(reachableSides.size());
                 int pos = randomRange(0, nbElements);
                 Vec2i nextDirection = reachableSides[pos];
                 Vec2i nextPos = currPos + nextDirection;

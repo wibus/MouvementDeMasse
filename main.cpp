@@ -34,6 +34,7 @@ int main(int argc, char** argv) try
     window.setGlWindowSpace(800, 600);
     window.centerOnScreen();
     window.show();
+    
 
     return getApplication().execute();    
 }

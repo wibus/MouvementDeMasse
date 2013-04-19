@@ -14,14 +14,14 @@ using namespace cellar;
 Description::Description() :
     sunRadius(0.99994f),
     sunLight(),
-    sunColor(     1.00, 0.90, 0.20, 1.00),
-    nightSkyColor(0.02, 0.01, 0.05, 1.00),
-    daySkyColor(  0.40, 0.60, 0.80, 1.00),
-    sunSetColor(  0.70, 0.55, 0.10, 1.00),
-    skylineColor( 0.12, 0.12, 0.12, 1.00),
-    grassColor(   0.32, 0.90, 0.08, 1.00),
-    mudColor(     0.20, 0.14, 0.01, 1.00),
-    waterColor(   0.03, 0.03, 0.30, 0.42),
+    sunColor(     1.00f, 0.90f, 0.20f, 1.00f),
+    nightSkyColor(0.02f, 0.01f, 0.05f, 1.00f),
+    daySkyColor(  0.40f, 0.60f, 0.80f, 1.00f),
+    sunSetColor(  0.70f, 0.55f, 0.10f, 1.00f),
+    skylineColor( 0.12f, 0.12f, 0.12f, 1.00f),
+    grassColor(   0.32f, 0.90f, 0.08f, 1.00f),
+    mudColor(     0.20f, 0.14f, 0.01f, 1.00f),
+    waterColor(   0.03f, 0.03f, 0.30f, 0.42f),
     waterShininess( 200.0f),
     unitPerMeter(1.0f/40.0f),
     meterPerUnit(1.0f/unitPerMeter),
@@ -33,8 +33,8 @@ Description::Description() :
     normalWalkingSpeed( 1.4f * unitPerMeter) // real life = 1.4 m/s
 {
     sunLight.direction(1.0f, 1.0f, 0.0f, 0.0f).normalize();
-    sunLight.diffuse( 0.76, 0.74, 0.72);
-    sunLight.specular(0.65, 0.58, 0.46);
+    sunLight.diffuse( 0.76f, 0.74f, 0.72f);
+    sunLight.specular(0.65f, 0.58f, 0.46f);
 }
 
 bool Description::load(const std::string& fileName)

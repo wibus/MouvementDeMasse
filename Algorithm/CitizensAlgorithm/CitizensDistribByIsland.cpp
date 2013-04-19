@@ -104,7 +104,7 @@ void CitizensDistribByIsland::setup(City &city)
         Citizen ctz;
 
         // Randomly find a home that have a junction nearby
-        int homeIdx = randomRange((size_t)0, residential.size());
+        int homeIdx = randomRange(0, static_cast<int>(residential.size()));
         Vec2i homePos = residential[ homeIdx ];
         Vec2i homeAccessPoint = randomAccessPointTo(homePos);
         Land* home = _city->lands().get( homePos );
@@ -116,7 +116,7 @@ void CitizensDistribByIsland::setup(City &city)
         }
 
         // Randomly find a work that have a junction nearby
-        int workIdx = randomRange((size_t)0, commercial.size());
+        int workIdx = randomRange(0, static_cast<int>(commercial.size()));
         Vec2i workPos = commercial[ workIdx ];
         Vec2i workAccessPoint = randomAccessPointTo(workPos);
         Land* work = _city->lands().get( workPos );
