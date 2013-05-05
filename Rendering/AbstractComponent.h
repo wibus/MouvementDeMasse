@@ -1,14 +1,14 @@
 #ifndef ABSTRACTCOMPONENT_H
 #define ABSTRACTCOMPONENT_H
 
-#include <Graphics/GL/GlProgram.h>
+#include <GL/GlProgram.h>
 #include <City/City.h>
 
 
 class AbstractComponent
 {
 public:
-    AbstractComponent(City& city, cellar::GlProgram& shader) :
+    AbstractComponent(City& city, media::GlProgram& shader) :
         _city(city),                      _ground(city.ground()),
         _description(city.description()), _shader(shader)
     {}
@@ -22,7 +22,7 @@ protected:
     City&   _city;
     Ground& _ground;
     Description& _description;
-    cellar::GlProgram& _shader;
+    media::GlProgram& _shader;
 };
 
 #endif // ABSTRACTCOMPONENT_H

@@ -9,6 +9,7 @@ using namespace std;
 #include <QXmlStreamWriter>
 
 using namespace cellar;
+using namespace media;
 
 
 City::City(int width, int height):

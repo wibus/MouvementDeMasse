@@ -5,12 +5,14 @@
 using namespace std;
 
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GlToolkit.h>
-#include <Graphics/Image/ImageBank.h>
 using namespace cellar;
 
+#include <GL/GlToolkit.h>
+#include <Image/ImageBank.h>
+using namespace media;
 
-BridgesComponent::BridgesComponent(City& city, cellar::GlProgram& shader) :
+
+BridgesComponent::BridgesComponent(City& city, media::GlProgram& shader) :
     AbstractComponent(city, shader),
     _bridgeBuffs(),
     _bridgeVao(0),    

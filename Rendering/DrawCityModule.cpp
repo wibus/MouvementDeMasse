@@ -14,6 +14,7 @@
 
 using namespace std;
 using namespace cellar;
+using namespace media;
 
 
 DrawCityModule::DrawCityModule() :

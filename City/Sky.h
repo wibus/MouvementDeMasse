@@ -2,7 +2,7 @@
 #define SKY_H
 
 #include <DataStructure/Grid2D.h>
-#include <Graphics/Image/Image.h>
+#include <Image/Image.h>
 #include <DataStructure/Vector.h>
 
 
@@ -14,7 +14,7 @@ public:
     void update();
 
     cellar::Grid2D<float>& cloudsGrid();
-    cellar::Image& cloudsImage();
+    media::Image& cloudsImage();
     float cloudyness() const;
     float compactness() const;
 
@@ -24,7 +24,7 @@ public:
 private:
     cellar::Grid2D<float>  _colorsGrid;
     cellar::Grid2D<float>  _cloudsGrid;
-    cellar::Image          _cloudsImage;
+    media::Image          _cloudsImage;
     float _cloudyness;
     float _compactness;
 };
@@ -37,7 +37,7 @@ inline cellar::Grid2D<float>& Sky::cloudsGrid()
     return _cloudsGrid;
 }
 
-inline cellar::Image& Sky::cloudsImage()
+inline media::Image& Sky::cloudsImage()
 {
     return _cloudsImage;
 }

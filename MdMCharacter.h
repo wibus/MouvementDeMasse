@@ -4,9 +4,9 @@
 #include <memory>
 
 #include <DateAndTime/Calendar.h>
-#include <Graphics/Camera/Camera.h>
-#include <Graphics/Camera/CameraManFree.h>
 #include <DesignPattern/SpecificObserver.h>
+#include <Camera/Camera.h>
+#include <Camera/CameraManFree.h>
 #include <Character/AbstractCharacter.h>
 
 #include <Hud/TextHud.h>
@@ -20,7 +20,7 @@ class SaveAndLoadAlgorithm;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
-                     public cellar::SpecificObserver<cellar::CameraMsg>
+                     public cellar::SpecificObserver<media::CameraMsg>
 {
 public:
     MdMCharacter(scaena::AbstractStage& stage);
@@ -34,7 +34,7 @@ public:
     virtual void exitStage();
 
     // Specific observer interface
-    virtual void notify(cellar::CameraMsg &msg);
+    virtual void notify(media::CameraMsg &msg);
 
     // City manip
     City& city();
@@ -53,7 +53,7 @@ private:
     CitizensAlgorithm*    _citizensDistribAlgo;
     CitizensAlgorithm*    _citizenMoveAlgo;
 
-    cellar::CameraManFree _camMan;
+    media::CameraManFree _camMan;
     std::shared_ptr<prop2::TextHud> _dateText;
     std::shared_ptr<prop2::TextHud> _fpsText;
     std::shared_ptr<prop2::TextHud> _upsText;

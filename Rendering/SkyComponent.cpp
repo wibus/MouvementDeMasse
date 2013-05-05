@@ -3,10 +3,12 @@
 #include <vector>
 using namespace std;
 
-#include <GL3/gl3w.h>
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GlToolkit.h>
 using namespace cellar;
+
+#include <GL/GlToolkit.h>
+#include <GL3/gl3w.h>
+using namespace media;
 
 
 SkyComponent::SkyComponent(City &city, GlProgram &shader) :

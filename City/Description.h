@@ -2,7 +2,7 @@
 #define DESCRIPTION_H
 
 #include <DataStructure/Matrix.h>
-#include <Graphics/Light/Light3D.h>
+#include <Light/Light3D.h>
 
 
 class Description
@@ -20,7 +20,7 @@ public:
 
     // Sun
     float sunRadius;
-    cellar::DirectionnalLight3D sunLight;
+    media::DirectionnalLight3D sunLight;
     cellar::Vec4f viewedSunDirection;
 
     // Colors

@@ -3,11 +3,13 @@
 #include <GL3/gl3w.h>
 using namespace std;
 
-#include <Graphics/GL/GlToolkit.h>
 using namespace cellar;
 
+#include <GL/GlToolkit.h>
+using namespace media;
 
-CitizensComponent::CitizensComponent(City &city, cellar::GlProgram &shader) :
+
+CitizensComponent::CitizensComponent(City &city, media::GlProgram &shader) :
     AbstractComponent(city, shader),
     _citizennBuffs(),
     _citizenVao(0),

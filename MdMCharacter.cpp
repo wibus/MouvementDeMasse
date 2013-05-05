@@ -1,3 +1,5 @@
+#include "MdMCharacter.h"
+
 #include <iostream>
 using namespace std;
 
@@ -5,6 +7,8 @@ using namespace std;
 #include <Misc/Log.h>
 #include <DateAndTime/Timer.h>
 using namespace cellar;
+
+using namespace media;
 
 #include <PropTeam/AbstractPropTeam.h>
 using namespace prop2;
@@ -15,7 +19,6 @@ using namespace prop2;
 #include <Stage/AbstractStage.h>
 using namespace scaena;
 
-#include "MdMCharacter.h"
 #include "City/City.h"
 #include "Rendering/DrawCityModule.h"
 #include "Algorithm/CitizensAlgorithm/CitizensDistribByIsland.h"
@@ -134,7 +137,7 @@ void MdMCharacter::exitStage()
     stage().propTeam().deleteTextHud(_upsText);
 }
 
-void MdMCharacter::notify(cellar::CameraMsg &msg)
+void MdMCharacter::notify(CameraMsg &msg)
 {
     if(msg.change == CameraMsg::PROJECTION)
     {

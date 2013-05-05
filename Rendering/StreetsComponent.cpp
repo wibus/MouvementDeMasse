@@ -1,11 +1,14 @@
 #include "StreetsComponent.h"
 
-#include <GL3/gl3w.h>
 using namespace std;
+
 #include <Misc/CellarUtils.h>
-#include <Graphics/GL/GlToolkit.h>
-#include <Graphics/Image/ImageBank.h>
 using namespace cellar;
+
+#include <GL3/gl3w.h>
+#include <GL/GlToolkit.h>
+#include <Image/ImageBank.h>
+using namespace media;
 
 
 StreetsComponent::StreetsComponent(City &city, GlProgram &shader) :

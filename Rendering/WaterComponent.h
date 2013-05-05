@@ -7,7 +7,7 @@
 class WaterComponent : public AbstractComponent
 {
 public:
-    WaterComponent(City& city, cellar::GlProgram& shader);
+    WaterComponent(City& city, media::GlProgram& shader);
     ~WaterComponent();
 
     void setup();

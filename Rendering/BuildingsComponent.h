@@ -10,7 +10,7 @@
 class BuildingsComponent : public AbstractComponent
 {
 public:
-    BuildingsComponent(City& city, cellar::GlProgram& shader);
+    BuildingsComponent(City& city, media::GlProgram& shader);
     ~BuildingsComponent();
 
     void setup();
