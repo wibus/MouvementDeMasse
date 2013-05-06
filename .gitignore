@@ -30,6 +30,7 @@ saves
 
 # User files
 *.user
+*.user.*
 
 #Log
 Log.txt

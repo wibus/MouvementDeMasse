@@ -2,8 +2,6 @@
 #include <iostream>
 using namespace std;
 
-#include <QApplication>
-
 #include <Misc/Log.h>
 using namespace cellar;
 
