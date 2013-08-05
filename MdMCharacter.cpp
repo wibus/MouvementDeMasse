@@ -62,18 +62,18 @@ void MdMCharacter::enterStage()
 
     _dateText = stage().propTeam().createTextHud();
     _dateText->setHandlePosition(Vec2r(10, -30));
-    _dateText->setHorizontalAnchor(HorizontalAnchor::LEFT);
-    _dateText->setVerticalAnchor(VerticalAnchor::TOP);
+    _dateText->setHorizontalAnchor(EHorizontalAnchor::LEFT);
+    _dateText->setVerticalAnchor(EVerticalAnchor::TOP);
 
     _fpsText = stage().propTeam().createTextHud();
     _fpsText->setHandlePosition(Vec2r(5, 5));
-    _fpsText->setHorizontalAnchor(HorizontalAnchor::LEFT);
-    _fpsText->setVerticalAnchor(VerticalAnchor::BOTTOM);
+    _fpsText->setHorizontalAnchor(EHorizontalAnchor::LEFT);
+    _fpsText->setVerticalAnchor(EVerticalAnchor::BOTTOM);
 
     _upsText = stage().propTeam().createTextHud();
     _upsText->setHandlePosition(Vec2r(5, 25));
-    _upsText->setHorizontalAnchor(HorizontalAnchor::LEFT);
-    _upsText->setVerticalAnchor(VerticalAnchor::BOTTOM);
+    _upsText->setHorizontalAnchor(EHorizontalAnchor::LEFT);
+    _upsText->setVerticalAnchor(EVerticalAnchor::BOTTOM);
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -91,7 +91,7 @@ void MdMCharacter::beginStep(const StageTime &time)
 
 void MdMCharacter::updateCamera(float elapsedtime)
 {
-    float velocity  = 10.0f * elapsedtime;
+    float velocity  = 2.0f * elapsedtime;
     float turnSpeed = 0.004f;
 
     if(stage().synchronousKeyboard().isAsciiPressed('w'))
@@ -112,7 +112,7 @@ void MdMCharacter::updateCamera(float elapsedtime)
     }
 
     if(stage().synchronousMouse().displacement() != Vec2i(0, 0) &&
-       stage().synchronousMouse().buttonIsPressed(Mouse::LEFT))
+       stage().synchronousMouse().buttonIsPressed(EMouseButton::LEFT))
     {
         _camMan.turnHorizontaly(stage().synchronousMouse().displacement().x() * turnSpeed);
         _camMan.turnVerticaly(  stage().synchronousMouse().displacement().y() * turnSpeed);
@@ -139,11 +139,11 @@ void MdMCharacter::exitStage()
 
 void MdMCharacter::notify(CameraMsg &msg)
 {
-    if(msg.change == CameraMsg::PROJECTION)
+    if(msg.change == CameraMsg::EChange::PROJECTION)
     {
         _drawCityModule->updateProjectionMatrix( msg.camera.projectionMatrix() );
     }
-    else if(msg.change == CameraMsg::VIEW)
+    else if(msg.change == CameraMsg::EChange::VIEW)
     {
         _drawCityModule->updateModelViewMatrix( msg.camera.viewMatrix() );
     }
