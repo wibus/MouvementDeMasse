@@ -1,7 +1,7 @@
 #include "BridgesComponent.h"
 
 #include <cmath>
-#include <GL3/gl3w.h>
+#include <gl3w.h>
 using namespace std;
 
 #include <Misc/CellarUtils.h>

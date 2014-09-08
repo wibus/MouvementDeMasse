@@ -72,9 +72,9 @@ void CitizensDistribByIsland::setup(City &city)
     int commercialRooms = 0;
 
     Land* land;
-    for(int j=0; j<_city->lands().height(); ++j)
+    for(int j=0; j<_city->lands().getHeight(); ++j)
     {
-        for(int i=0; i<_city->lands().width(); ++i)
+        for(int i=0; i<_city->lands().getWidth(); ++i)
         {
             Vec2i pos(i, j);
             land = _city->lands().get(i, j);
@@ -193,8 +193,8 @@ bool CitizensDistribByIsland::homeToWorkPathByAStar(Path& path, const Vec2i& src
 
     float inf = _city->size().x() * _city->size().y();
 
-    for(int j=0; j<aStarGrid.height(); ++j)
-        for(int i=0; i<aStarGrid.width(); ++i)
+    for(int j=0; j<aStarGrid.getHeight(); ++j)
+        for(int i=0; i<aStarGrid.getWidth(); ++i)
             aStarGrid.set(i, j, AStarNode(AStarNode::NOT_VISITED, dist(Vec2i(i, j), dst), inf,
                                      Path::Node(Path::BUS_STOP, Vec2i(i, j)),
                                      Path::Node(Path::BUS_STOP, Vec2i(-1, -1))));
@@ -295,14 +295,14 @@ void CitizensDistribByIsland::initializeAStarStructures()
         bridgeEnds.insert(make_pair(_city->bridges()[b].endB(), _city->bridges()[b].endA()));
     }
 
-    aStarGrid = Grid2D< AStarNode >(_city->junctions().width(),
-                                   _city->junctions().height());
+    aStarGrid = Grid2D< AStarNode >(_city->junctions().getWidth(),
+                                   _city->junctions().getHeight());
 
 
-    nodesToBeConsidered = Grid2D< vector<Path::Node> >(_city->junctions().width(),
-                                                       _city->junctions().height());
-    int ntbcWidth = nodesToBeConsidered.width();
-    int ntbcHeight = nodesToBeConsidered.height();
+    nodesToBeConsidered = Grid2D< vector<Path::Node> >(_city->junctions().getWidth(),
+                                                       _city->junctions().getHeight());
+    int ntbcWidth = nodesToBeConsidered.getWidth();
+    int ntbcHeight = nodesToBeConsidered.getHeight();
     vector< std::shared_ptr<Street> > streets;
     for(int j=0; j<ntbcHeight; ++j)
     {

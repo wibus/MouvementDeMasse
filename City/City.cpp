@@ -109,8 +109,8 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); //visual_description
 
         xml.writeStartElement("sky");
-            xml.writeAttribute("wres", QString::number(_sky.cloudsGrid().width()));
-            xml.writeAttribute("hres", QString::number(_sky.cloudsGrid().height()));
+            xml.writeAttribute("wres", QString::number(_sky.cloudsGrid().getWidth()));
+            xml.writeAttribute("hres", QString::number(_sky.cloudsGrid().getHeight()));
             xml.writeAttribute("cloudyness",  QString::number(_sky.cloudyness()));
             xml.writeAttribute("compactness", QString::number(_sky.compactness()));
             xml.writeAttribute("mapUrl", skyMapFileName);
@@ -131,15 +131,15 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); //ground
 
         xml.writeStartElement("lands");
-            xml.writeAttribute("width", QString::number(_lands.width()));
-            xml.writeAttribute("height", QString::number(_lands.height()));
+            xml.writeAttribute("width", QString::number(_lands.getWidth()));
+            xml.writeAttribute("height", QString::number(_lands.getHeight()));
             xml.writeAttribute("maxNbStories", QString::number(Land::maxNbStories()));
 
-            for(int j=0; j<_lands.height(); ++j)
+            for(int j=0; j<_lands.getHeight(); ++j)
             {
                 xml.writeStartElement("line");
                 xml.writeAttribute("y", QString::number(j));
-                for(int i=0; i<_lands.width(); ++i)
+                for(int i=0; i<_lands.getWidth(); ++i)
                 {
                     xml.writeStartElement("land");
                         xml.writeAttribute("pos", toString(Vec2i(i, j)).c_str());
@@ -154,14 +154,14 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); //lands
 
         xml.writeStartElement("junctions");
-            xml.writeAttribute("width", QString::number(_junctions.width()));
-            xml.writeAttribute("height", QString::number(_junctions.height()));
+            xml.writeAttribute("width", QString::number(_junctions.getWidth()));
+            xml.writeAttribute("height", QString::number(_junctions.getHeight()));
 
-            for(int j=0; j<_junctions.height(); ++j)
+            for(int j=0; j<_junctions.getHeight(); ++j)
             {
                 xml.writeStartElement("line");
                 xml.writeAttribute("y", QString::number(j));
-                for(int i=0; i<_junctions.width(); ++i)
+                for(int i=0; i<_junctions.getWidth(); ++i)
                 {
                     xml.writeStartElement("junction");
                         xml.writeAttribute("pos", toString(Vec2i(i, j)).c_str());
@@ -270,8 +270,8 @@ bool City::saveHeightMap(const std::string& fileName)
 
 bool City::saveSkyMap(const std::string& fileName)
 {
-    Image skyMap = Image(new unsigned char[_sky.cloudsGrid().width()*_sky.cloudsGrid().height()*3],
-                         _sky.cloudsGrid().width(), _sky.cloudsGrid().height());
+    Image skyMap = Image(new unsigned char[_sky.cloudsGrid().getWidth()*_sky.cloudsGrid().getHeight()*3],
+                         _sky.cloudsGrid().getWidth(), _sky.cloudsGrid().getHeight());
 
     for(int j=0; j<skyMap.height(); ++j)
     {
@@ -322,9 +322,9 @@ void City::update()
 
 void City::resetJunctions()
 {
-    for(int j=0; j<_junctions.height(); ++j)
+    for(int j=0; j<_junctions.getHeight(); ++j)
     {
-        for(int i=0; i<_junctions.width(); ++i)
+        for(int i=0; i<_junctions.getWidth(); ++i)
         {
             Junction* junc = _junctions.get(i, j);
             if(junc != 0x0)
@@ -336,9 +336,9 @@ void City::resetJunctions()
 
 void City::resetLands()
 {
-    for(int j=0; j<_lands.height(); ++j)
+    for(int j=0; j<_lands.getHeight(); ++j)
     {
-        for(int i=0; i<_lands.width(); ++i)
+        for(int i=0; i<_lands.getWidth(); ++i)
         {
             Land* land = _lands.get(i, j);
             if(land != 0x0)

@@ -7,7 +7,7 @@ using namespace std;
 using namespace cellar;
 
 #include <GL/GlToolkit.h>
-#include <GL3/gl3w.h>
+#include <gl3w.h>
 using namespace media;
 
 

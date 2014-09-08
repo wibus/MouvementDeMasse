@@ -86,7 +86,7 @@ void MdMCharacter::beginStep(const StageTime &time)
     _drawCityModule->update();
 
     _dateText->setText(_city->dateAndTime().toString());
-    _upsText->setText( string("UPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
+    _upsText->setText( string("UPS : ") + toString( floor(time.framesPerSecond()) ) );
 }
 
 void MdMCharacter::updateCamera(float elapsedtime)
@@ -127,7 +127,7 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 {
     _drawCityModule->draw();
 
-    _fpsText->setText( string("FPS : ") + toString(ceil(1.0f / time.elapsedTime())) );
+    _fpsText->setText( string("FPS : ") + toString( floor(time.framesPerSecond()) ) );
 }
 
 void MdMCharacter::exitStage()

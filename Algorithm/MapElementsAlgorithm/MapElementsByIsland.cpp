@@ -442,9 +442,9 @@ void MapElementsByIsland::landIslands()
 
     // Add some lands.
     PGrid2D<Land>* lands = &_city->lands();
-    for (int j = 0; j < lands->height(); ++j)
+    for (int j = 0; j < lands->getHeight(); ++j)
     {
-        for (int i = 0; i < lands->width(); ++i)
+        for (int i = 0; i < lands->getWidth(); ++i)
         {
             if (_city->lands().get(Vec2i(i, j))->getIslandIdentifier() != -1)
             {

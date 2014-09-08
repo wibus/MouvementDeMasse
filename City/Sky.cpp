@@ -14,7 +14,6 @@ Sky::Sky(int width, int height) :
 {
     float nsx = randomRange(-10.0f, 10.0f);
     float nsy = randomRange(-10.0f, 10.0f);
-    SimplexNoise noisegen;
 
     for(int j=0; j<height; ++j)
     {
@@ -24,11 +23,11 @@ Sky::Sky(int width, int height) :
             float yc = j/(float)height;
 
             _colorsGrid.set(i, j,
-               (noisegen.noiseTile2d(xc + nsx + 0.0f, yc + nsy + 0.0f, 0.6f) * 0.40f + 0.60f) * 256);
+               (SimplexNoise::noiseTile2d(xc + nsx + 0.0f, yc + nsy + 0.0f, 0.6f) * 0.40f + 0.60f) * 256);
 
             _cloudsGrid.set(i, j,
-                noisegen.noiseTile2d(xc + nsx + 1.0f, yc + nsy + 1.0f, 1.0f) * 0.75f +
-                noisegen.noiseTile2d(xc + nsx + 2.0f, yc + nsy + 2.0f, 3.0f) * 0.25f);
+                SimplexNoise::noiseTile2d(xc + nsx + 1.0f, yc + nsy + 1.0f, 1.0f) * 0.75f +
+                SimplexNoise::noiseTile2d(xc + nsx + 2.0f, yc + nsy + 2.0f, 3.0f) * 0.25f);
 
             float norm = 1.0f / (_cloudyness);
             float depth = (_cloudsGrid.get(i, j) + 1.0f) * 0.5f;

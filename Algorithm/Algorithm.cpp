@@ -19,6 +19,6 @@ void Algorithm::setup(City &city)
     _city = &city;
     _ground  = &(city.ground());
     _description  = &(city.description());
-    _mapSize(_city->junctions().width(),
-             _city->junctions().height());
+    _mapSize(_city->junctions().getWidth(),
+             _city->junctions().getHeight());
 }

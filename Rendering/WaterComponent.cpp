@@ -5,7 +5,7 @@ using namespace std;
 #include <Misc/CellarUtils.h>
 using namespace cellar;
 
-#include <GL3/gl3w.h>
+#include <gl3w.h>
 using namespace media;
 
 

@@ -28,7 +28,6 @@ void HeightByNoiseAlgo::setup(City &city)
 
     float middleHeight = (_ground->maxHeight() + _ground->minHeight()) / 2.0f;
     float amplitude    = (_ground->maxHeight() - _ground->minHeight()) / 2.0f;
-    SimplexNoise noisegen;
 
     for(int j=0; j< _mapSize.y(); ++j)
     {
@@ -39,7 +38,7 @@ void HeightByNoiseAlgo::setup(City &city)
 
             float height = 0.0f;
             for(int k=0; k<NB_FREQ; ++k)
-                height += amplitude/(FREQ[k]*FREQ[k]) * noisegen.noiseTile2d(
+                height += amplitude/(FREQ[k]*FREQ[k]) * SimplexNoise::noiseTile2d(
                     ORIG[k].x() + xc*FREQ[k],
                     ORIG[k].x() + yc*FREQ[k],
                     0.5f);
