@@ -2,7 +2,7 @@
 
 #include <GLM/gtc/matrix_transform.hpp>
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
+
 using namespace cellar;
 
 Sun::Sun(const glm::vec4& midnightDirection, const glm::vec3& rotationAxis) :

@@ -1,25 +1,19 @@
 #include "MdMCharacter.h"
 
 #include <iostream>
-using namespace std;
 
 #include <GLM/gtc/matrix_transform.hpp>
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
-#include <CellarWorkbench/Misc/Log.h>
 #include <CellarWorkbench/DateAndTime/Clock.h>
-using namespace cellar;
-
-using namespace media;
+#include <CellarWorkbench/Misc/StringUtils.h>
+#include <CellarWorkbench/Misc/Log.h>
 
 #include <PropRoom2D/PropTeam/AbstractPropTeam.h>
-using namespace prop2;
 
 #include <Scaena/Stage/Event/StageTime.h>
 #include <Scaena/Stage/Event/SynchronousKeyboard.h>
 #include <Scaena/Stage/Event/SynchronousMouse.h>
 #include <Scaena/Stage/AbstractStage.h>
-using namespace scaena;
 
 #include "City/City.h"
 #include "Rendering/DrawCityModule.h"
@@ -28,6 +22,12 @@ using namespace scaena;
 #include "Algorithm/HeightsAlgorithm/HeightsByNoiseAlgo.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsDepthFirst.h"
 #include "Algorithm/MapElementsAlgorithm/MapElementsByIsland.h"
+
+using namespace std;
+using namespace cellar;
+using namespace prop2;
+using namespace scaena;
+
 
 MdMCharacter::MdMCharacter(AbstractStage& stage) :
     AbstractCharacter(stage, "MdMCharacter"),

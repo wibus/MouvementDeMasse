@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <MediaWorkbench/Light/Light3D.h>
+#include <PropRoom3D/Prop/Lighting/Light3D.h>
 
 
 class Description
@@ -21,7 +21,7 @@ public:
 
     // Sun
     float sunRadius;
-    media::DirectionnalLight3D sunLight;
+    prop3::DirectionnalLight3D sunLight;
     glm::vec4 viewedSunDirection;
 
     // Colors

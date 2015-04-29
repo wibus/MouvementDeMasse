@@ -8,7 +8,7 @@
 class GroundComponent : public AbstractComponent
 {
 public:
-    GroundComponent(City& city, media::GlProgram& shader);
+    GroundComponent(City& city, cellar::GlProgram& shader);
     ~GroundComponent();
 
     void setup();

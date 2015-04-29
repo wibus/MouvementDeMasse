@@ -3,9 +3,14 @@
 #include <vector>
 #include <memory>
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
-#include <CellarWorkbench/Geometry/Segment2D.h>
+#include <GLM/gtc/random.hpp>
+
+
+
+#include <PropRoom2D/Shape/Segment2D.h>
+
 using namespace cellar;
+using namespace prop2;
 
 
 MapElementsDepthFirst::MapElementsDepthFirst():
@@ -30,7 +35,9 @@ void MapElementsDepthFirst::setup(City& city)
         currentPoint += glm::ivec2(1, 1);
         if (currentPoint.x >= _mapSize.x)
         {
-            currentPoint = glm::ivec2(randomRange(0, _mapSize.x), randomRange(0, _mapSize.y));
+            currentPoint = glm::ivec2(
+                glm::linearRand(0, _mapSize.x-1),
+                glm::linearRand(0, _mapSize.y-1));
         }
     }
 
@@ -81,7 +88,7 @@ void MapElementsDepthFirst::setup(City& city)
         {
             // Choose randomly a free side
             int nbElements = static_cast<int>(freeSides.size());
-            int pos = randomRange(0, nbElements);
+            int pos = glm::linearRand(0, nbElements-1);
             glm::ivec2 nextDirection = freeSides[pos];
             glm::ivec2 nextPos = currPos + nextDirection;
 
@@ -96,11 +103,11 @@ void MapElementsDepthFirst::setup(City& city)
         else
         {
             if(!reachableSides.empty())
-            if(randomRange(0.0, 4.0) > 1.0)
+            if(glm::linearRand(0.0, 4.0) > 1.0)
             {
                 // Choose randomly an reachable side
                 int nbElements = static_cast<int>(reachableSides.size());
-                int pos = randomRange(0, nbElements);
+                int pos = glm::linearRand(0, nbElements-1);
                 glm::ivec2 nextDirection = reachableSides[pos];
                 glm::ivec2 nextPos = currPos + nextDirection;
 
@@ -124,10 +131,10 @@ void MapElementsDepthFirst::setup(City& city)
         {
             if (_city->ground().heightAt(i, j) > 0)
             {
-                int landType = randomRange(0, (int) Land::NB_TYPES);
+                int landType = glm::linearRand(0, (int) Land::NB_TYPES-1);
 
                 lands->get(i, j)->setType((Land::Type) landType);
-                lands->get(i, j)->setNbStories(2+randomRange(0, Land::maxNbStories()-2));
+                lands->get(i, j)->setNbStories(2+glm::linearRand(0, Land::maxNbStories()-3));
             }
         }
     }

@@ -2,18 +2,19 @@
 
 #include <cmath>
 #include <GL3/gl3w.h>
+
+#include <CellarWorkbench/GL/GlToolkit.h>
+#include <CellarWorkbench/Image/ImageBank.h>
+
+
+#include <PropRoom2D/Shape/Segment2D.h>
+
 using namespace std;
-
-#include <CellarWorkbench/Misc/CellarUtils.h>
-#include <CellarWorkbench/Geometry/Segment2D.h>
 using namespace cellar;
-
-#include <MediaWorkbench/GL/GlToolkit.h>
-#include <MediaWorkbench/Image/ImageBank.h>
-using namespace media;
+using namespace prop2;
 
 
-BridgesComponent::BridgesComponent(City& city, media::GlProgram& shader) :
+BridgesComponent::BridgesComponent(City& city, cellar::GlProgram& shader) :
     AbstractComponent(city, shader),
     _bridgeBuffs(),
     _bridgeVao(0),    
@@ -64,10 +65,10 @@ void BridgesComponent::setup()
         glm::vec3 up = cross(dir, perp) * _description.bridgeHeight;
 
         glm::vec2 domDirAxe, domDiraxePerp;
-        if(absolute(dir.x) < absolute(dir.y))
-            domDirAxe = glm::vec2(0, sign(dir.y));
+        if(glm::abs(dir.x) < glm::abs(dir.y))
+            domDirAxe = glm::vec2(0, glm::sign(dir.y));
         else
-            domDirAxe = glm::vec2(sign(dir.x), 0);
+            domDirAxe = glm::vec2(glm::sign(dir.x), 0);
         domDiraxePerp = domDirAxe;
         domDiraxePerp = Segment2D::perpCCW(domDiraxePerp);
 

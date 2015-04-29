@@ -1,14 +1,13 @@
 #include "JunctionsComponent.h"
 
-using namespace std;
-
-#include <CellarWorkbench/Misc/CellarUtils.h>
-using namespace cellar;
-
 #include <GL3/gl3w.h>
-#include <MediaWorkbench/GL/GlToolkit.h>
-#include <MediaWorkbench/Image/ImageBank.h>
-using namespace media;
+
+#include <CellarWorkbench/GL/GlToolkit.h>
+#include <CellarWorkbench/Image/ImageBank.h>
+
+
+using namespace std;
+using namespace cellar;
 
 
 JunctionsComponent::JunctionsComponent(City &city, GlProgram &shader) :

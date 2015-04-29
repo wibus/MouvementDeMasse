@@ -1,16 +1,16 @@
 #include "SkyComponent.h"
 
 #include <vector>
-using namespace std;
 
 #include <GLM/gtc/constants.hpp>
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
-using namespace cellar;
-
-#include <MediaWorkbench/GL/GlToolkit.h>
 #include <GL3/gl3w.h>
-using namespace media;
+
+#include <CellarWorkbench/GL/GlToolkit.h>
+
+
+using namespace std;
+using namespace cellar;
 
 
 SkyComponent::SkyComponent(City &city, GlProgram &shader) :

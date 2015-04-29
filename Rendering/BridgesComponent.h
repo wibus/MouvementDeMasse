@@ -9,7 +9,7 @@
 class BridgesComponent : public AbstractComponent
 {
 public:
-    BridgesComponent(City& city, media::GlProgram& shader);
+    BridgesComponent(City& city, cellar::GlProgram& shader);
     ~BridgesComponent();
 
     void setup();

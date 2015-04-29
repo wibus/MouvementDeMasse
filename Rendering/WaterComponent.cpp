@@ -2,11 +2,11 @@
 
 using namespace std;
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
+
 using namespace cellar;
 
 #include <GL3/gl3w.h>
-using namespace media;
+
 
 
 WaterComponent::WaterComponent(City &city, GlProgram &shader) :

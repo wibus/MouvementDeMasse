@@ -3,11 +3,10 @@
 
 #include <memory>
 
+#include <CellarWorkbench/Camera/Camera.h>
+#include <CellarWorkbench/Camera/CameraManFree.h>
 #include <CellarWorkbench/DateAndTime/Calendar.h>
 #include <CellarWorkbench/DesignPattern/SpecificObserver.h>
-
-#include <MediaWorkbench/Camera/Camera.h>
-#include <MediaWorkbench/Camera/CameraManFree.h>
 
 #include <PropRoom2D/Hud/TextHud.h>
 
@@ -23,7 +22,7 @@ class SaveAndLoadAlgorithm;
 
 
 class MdMCharacter : public scaena::AbstractCharacter,
-                     public cellar::SpecificObserver<media::CameraMsg>
+                     public cellar::SpecificObserver<cellar::CameraMsg>
 {
 public:
     MdMCharacter(scaena::AbstractStage& stage);
@@ -37,7 +36,7 @@ public:
     virtual void exitStage();
 
     // Specific observer interface
-    virtual void notify(media::CameraMsg &msg);
+    virtual void notify(cellar::CameraMsg &msg);
 
     // City manip
     City& city();
@@ -56,7 +55,7 @@ private:
     CitizensAlgorithm*    _citizensDistribAlgo;
     CitizensAlgorithm*    _citizenMoveAlgo;
 
-    media::CameraManFree _camMan;
+    cellar::CameraManFree _camMan;
     std::shared_ptr<prop2::TextHud> _dateText;
     std::shared_ptr<prop2::TextHud> _fpsText;
     std::shared_ptr<prop2::TextHud> _upsText;

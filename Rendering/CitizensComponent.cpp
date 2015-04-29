@@ -3,15 +3,14 @@
 #include <GLM/gtc/matrix_transform.hpp>
 
 #include <GL3/gl3w.h>
-using namespace std;
 
+#include <CellarWorkbench/GL/GlToolkit.h>
+
+using namespace std;
 using namespace cellar;
 
-#include <MediaWorkbench/GL/GlToolkit.h>
-using namespace media;
 
-
-CitizensComponent::CitizensComponent(City &city, media::GlProgram &shader) :
+CitizensComponent::CitizensComponent(City &city, cellar::GlProgram &shader) :
     AbstractComponent(city, shader),
     _citizennBuffs(),
     _citizenVao(0),

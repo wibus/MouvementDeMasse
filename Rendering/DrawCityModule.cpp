@@ -14,7 +14,7 @@
 
 using namespace std;
 using namespace cellar;
-using namespace media;
+
 
 
 DrawCityModule::DrawCityModule() :
@@ -183,7 +183,7 @@ void DrawCityModule::update()
 
     const double skyCoefCorrection = 0.1;
     glm::vec4  nLightDir = glm::normalize(_description->sunLight.direction);
-    float sunIntensity = maxVal(dot(nLightDir, glm::vec4(0, 0, -1, 0)) + skyCoefCorrection, 0.0);
+    float sunIntensity = glm::max(dot(nLightDir, glm::vec4(0, 0, -1, 0)) + skyCoefCorrection, 0.0);
     float skyColorCoef = pow(sunIntensity, 0.75) / (skyCoefCorrection + 1.0);
     glm::vec4  skyCol = _description->nightSkyColor * (1 - skyColorCoef) +
                     _description->daySkyColor   * skyColorCoef;

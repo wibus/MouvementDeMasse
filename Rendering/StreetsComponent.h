@@ -7,7 +7,7 @@
 class StreetsComponent : public AbstractComponent
 {
 public:
-    StreetsComponent(City& city, media::GlProgram& shader);
+    StreetsComponent(City& city, cellar::GlProgram& shader);
     ~StreetsComponent();
 
     void setup();

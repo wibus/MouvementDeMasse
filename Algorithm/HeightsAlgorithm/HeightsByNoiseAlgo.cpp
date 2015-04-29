@@ -1,11 +1,15 @@
 #include "HeightsByNoiseAlgo.h"
 
 #include <iostream>
-using namespace std;
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <GLM/gtc/random.hpp>
+
+
 #include <CellarWorkbench/Misc/SimplexNoise.h>
+
+using namespace std;
 using namespace cellar;
+
 
 HeightByNoiseAlgo::HeightByNoiseAlgo()
 {
@@ -24,7 +28,7 @@ void HeightByNoiseAlgo::setup(City &city)
     };
     glm::vec2 ORIG[NB_FREQ];
     for(int i=0; i<NB_FREQ; ++i)
-        ORIG[i] = glm::vec2(randomRange(-10.0f, 10.0f), randomRange(-10.0f, 10.0f));
+        ORIG[i] = glm::vec2(glm::linearRand(-10.0f, 10.0f), glm::linearRand(-10.0f, 10.0f));
 
     float middleHeight = (_ground->maxHeight() + _ground->minHeight()) / 2.0f;
     float amplitude    = (_ground->maxHeight() - _ground->minHeight()) / 2.0f;

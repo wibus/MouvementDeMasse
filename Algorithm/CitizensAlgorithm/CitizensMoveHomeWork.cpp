@@ -2,10 +2,13 @@
 
 #include <iostream>
 
-using namespace std;
+#include <GLM/gtc/random.hpp>
 
-#include <CellarWorkbench/Geometry/Segment2D.h>
+#include <PropRoom2D/Shape/Segment2D.h>
+
+using namespace std;
 using namespace cellar;
+using namespace prop2;
 
 
 CitizensMoveHomeWork::CitizensMoveHomeWork() :
@@ -344,7 +347,7 @@ void CitizensMoveHomeWork::placeCitizenOnBuilding(Citizen& ctz)
 
     // XY Position
     const glm::vec2 center(0.5f, 0.5f);
-    glm::vec2 randomRoofPos(randomRange(-0.4f, 0.4f), randomRange(-0.4f, 0.4f));
+    glm::vec2 randomRoofPos(glm::linearRand(-0.4f, 0.4f), glm::linearRand(-0.4f, 0.4f));
     glm::vec2 pos2d = center + glm::vec2(buildingPos) + randomRoofPos;
 
     // Height

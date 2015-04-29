@@ -1,14 +1,13 @@
 #include "BuildingsComponent.h"
 
 #include <GL3/gl3w.h>
+
+#include <CellarWorkbench/GL/GlToolkit.h>
+#include <CellarWorkbench/Image/ImageBank.h>
+
+
 using namespace std;
-
-#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
-
-#include <MediaWorkbench/GL/GlToolkit.h>
-#include <MediaWorkbench/Image/ImageBank.h>
-using namespace media;
 
 
 BuildingsComponent::BuildingsComponent(City &city, GlProgram &shader) :

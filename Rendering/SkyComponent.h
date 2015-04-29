@@ -9,7 +9,7 @@
 class SkyComponent : public AbstractComponent
 {
 public:
-    SkyComponent(City& city, media::GlProgram& shader);
+    SkyComponent(City& city, cellar::GlProgram& shader);
     ~SkyComponent();
 
     void setup();

@@ -1,9 +1,12 @@
 #include "CitizensEqualAlgo.h"
 
+#include <GLM/gtc/random.hpp>
+
+#include <PropRoom2D/Shape/Segment2D.h>
+
 using namespace std;
 using namespace cellar;
-
-#include <CellarWorkbench/Geometry/Segment2D.h>
+using namespace prop2;
 
 
 CitizensEqualAlgo::CitizensEqualAlgo()
@@ -22,7 +25,7 @@ void CitizensEqualAlgo::setup(City &city)
             {
                 Citizen ctz;
                 ctz.position = glm::vec3(i, j, _ground->heightAt(i, j));
-                ctz.walkingSpeed = (0.8f + randomRange(-0.5f, 0.5f)) * _city->description().unitPerMeter;
+                ctz.walkingSpeed = (0.8f + glm::linearRand(-0.5f, 0.5f)) * _city->description().unitPerMeter;
 
                 _city->citizens().insert(make_pair(ctz.id(), ctz));
             }

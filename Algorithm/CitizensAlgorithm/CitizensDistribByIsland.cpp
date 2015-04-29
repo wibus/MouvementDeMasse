@@ -5,9 +5,12 @@
 #include <stack>
 #include <map>
 #include <algorithm>
-using namespace std;
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <GLM/gtc/random.hpp>
+
+
+
+using namespace std;
 using namespace cellar;
 
 
@@ -114,7 +117,7 @@ void CitizensDistribByIsland::setup(City &city)
 
 
     initializeAStarStructures();
-    int nbCitizens = minVal(residentialRooms, commercialRooms) / 16;
+    int nbCitizens = glm::min(residentialRooms, commercialRooms) / 16;
     float normWalkSp = _description->normalWalkingSpeed;
 
 
@@ -123,7 +126,7 @@ void CitizensDistribByIsland::setup(City &city)
         Citizen ctz;
 
         // Randomly find a home that have a junction nearby
-        int homeIdx = randomRange(0, static_cast<int>(residential.size()));
+        int homeIdx = glm::linearRand(0, static_cast<int>(residential.size())-1);
         glm::ivec2 homePos = residential[ homeIdx ];
         glm::ivec2 homeAccessPoint = randomAccessPointTo(homePos);
         Land* home = _city->lands().get( homePos );
@@ -135,7 +138,7 @@ void CitizensDistribByIsland::setup(City &city)
         }
 
         // Randomly find a work that have a junction nearby
-        int workIdx = randomRange(0, static_cast<int>(commercial.size()));
+        int workIdx = glm::linearRand(0, static_cast<int>(commercial.size())-1);
         glm::ivec2 workPos = commercial[ workIdx ];
         glm::ivec2 workAccessPoint = randomAccessPointTo(workPos);
         Land* work = _city->lands().get( workPos );
@@ -160,10 +163,10 @@ void CitizensDistribByIsland::setup(City &city)
         ctz.homePos = homePos;
         ctz.workPos = workPos;
         ctz.homeToWorkPath = homeToWorkPath;
-        ctz.walkingSpeed = normWalkSp + randomRange(-normWalkSp/3.0f, normWalkSp/3.0f);
+        ctz.walkingSpeed = normWalkSp + glm::linearRand(-normWalkSp/3.0f, normWalkSp/3.0f);
 
         // Shifts : [0, 4] = Day; [5, 7] = Afternoon; [8, 9] = Night
-        int shift = randomRange(0, 10);
+        int shift = glm::linearRand(0, 9);
         Time toGoWorking = Time().fromSeconds(ctz.homeToWorkPath.lenght / ctz.walkingSpeed);
              if(shift < 5) ctz.schedule.setDayShift(       toGoWorking );
         else if(shift < 8) ctz.schedule.setAfternoonShift( toGoWorking );
@@ -197,7 +200,7 @@ glm::ivec2 CitizensDistribByIsland::randomAccessPointTo(const glm::ivec2& pos)
         glm::ivec2(0, 1)
     };
 
-    int turn = randomRange(0, 4);
+    int turn = glm::linearRand(0, 3);
 
     while(_city->junctions().get(pos + offsets[turn])->type() == Junction::GRASS)
         turn = (turn + 1) % 4;

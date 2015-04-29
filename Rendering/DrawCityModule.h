@@ -2,7 +2,8 @@
 #define DRAWCITYMODULE_H
 
 #include <vector>
-#include <MediaWorkbench/GL/GlProgram.h>
+
+#include <CellarWorkbench/GL/GlProgram.h>
 
 class City;
 class Ground;
@@ -43,11 +44,11 @@ protected:
     Description* _description;
 
     // Shaders
-    media::GlProgram _minimalistShader;
-    media::GlProgram _skyShader;
-    media::GlProgram _groundShader;
-    media::GlProgram _waterShader;
-    media::GlProgram _infrastructShader;
+    cellar::GlProgram _minimalistShader;
+    cellar::GlProgram _skyShader;
+    cellar::GlProgram _groundShader;
+    cellar::GlProgram _waterShader;
+    cellar::GlProgram _infrastructShader;
 
     std::vector<AbstractComponent*> _components;
     SkyComponent*       _skyComponent;

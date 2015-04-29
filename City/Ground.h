@@ -2,7 +2,7 @@
 #define GROUND_H
 
 #include <CellarWorkbench/DataStructure/Grid2D.h>
-#include <CellarWorkbench/Misc/CellarUtils.h>
+
 
 
 class Ground
@@ -90,14 +90,14 @@ inline void Ground::setWaterHeight(float height)
 
 inline float Ground::heightAt(int x, int y) const
 {
-    return _heights.get(cellar::clamp(x, 0, _width-1),
-                        cellar::clamp(y, 0, _height-1));
+    return _heights.get(glm::clamp(x, 0, _width-1),
+                        glm::clamp(y, 0, _height-1));
 }
 
 inline float Ground::heightAt(const glm::ivec2& pos) const
 {
-    return _heights.get(cellar::clamp(pos.x, 0, _width-1),
-                        cellar::clamp(pos.y, 0, _height-1));
+    return _heights.get(glm::clamp(pos.x, 0, _width-1),
+                        glm::clamp(pos.y, 0, _height-1));
 }
 
 inline float Ground::heightAt(const glm::vec2& pos) const

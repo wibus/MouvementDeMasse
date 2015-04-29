@@ -1,7 +1,10 @@
 #include "Sky.h"
 
+#include <GLM/gtc/random.hpp>
+
 #include <CellarWorkbench/Misc/SimplexNoise.h>
-#include <CellarWorkbench/Misc/CellarUtils.h>
+
+
 using namespace cellar;
 
 
@@ -12,8 +15,8 @@ Sky::Sky(int width, int height) :
     _cloudyness(0.5f),
     _compactness(0.6f)
 {
-    float nsx = randomRange(-10.0f, 10.0f);
-    float nsy = randomRange(-10.0f, 10.0f);
+    float nsx = glm::linearRand(-10.0f, 10.0f);
+    float nsy = glm::linearRand(-10.0f, 10.0f);
 
     for(int j=0; j<height; ++j)
     {
@@ -31,7 +34,7 @@ Sky::Sky(int width, int height) :
 
             float norm = 1.0f / (_cloudyness);
             float depth = (_cloudsGrid.get(i, j) + 1.0f) * 0.5f;
-            float density = pow(clamp(norm*(_cloudyness - depth), 0.0f, 1.0f),
+            float density = pow(glm::clamp(norm*(_cloudyness - depth), 0.0f, 1.0f),
                                 1.0f-_compactness);
 
             _cloudsImage.setColor(i, j,

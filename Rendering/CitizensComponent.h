@@ -9,7 +9,7 @@
 class CitizensComponent : public AbstractComponent
 {
 public:
-    CitizensComponent(City& city, media::GlProgram& shader);
+    CitizensComponent(City& city, cellar::GlProgram& shader);
     ~CitizensComponent();
 
     void setup();

@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-#include <CellarWorkbench/Misc/CellarUtils.h>
+
 using namespace cellar;
 
 
@@ -54,7 +54,7 @@ float Ground::heightAt(float x, float y) const
 
 float Ground::landLowerCornerAt(int x, int y) const
 {
-    return minVal(minVal(minVal(
+    return glm::min(glm::min(glm::min(
         heightAt(x,   y),
         heightAt(x+1, y)),
         heightAt(x+1, y+1)),
@@ -64,7 +64,7 @@ float Ground::landLowerCornerAt(int x, int y) const
 
 float Ground::landHigherCornerAt(int x, int y) const
 {
-    return maxVal(maxVal(maxVal(
+    return glm::max(glm::max(glm::max(
         heightAt(x,   y),
         heightAt(x+1, y)),
         heightAt(x+1, y+1)),

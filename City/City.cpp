@@ -10,7 +10,7 @@ using namespace std;
 #include <QXmlStreamWriter>
 
 using namespace cellar;
-using namespace media;
+
 
 
 City::City(int width, int height):
@@ -252,8 +252,8 @@ bool City::save(const string& fileName)
 
 bool City::saveHeightMap(const std::string& fileName)
 {
-    float amplitude = maxVal(absolute(_ground.minHeight()),
-                             absolute(_ground.maxHeight()));
+    float amplitude = glm::max(glm::abs(_ground.minHeight()),
+                             glm::abs(_ground.maxHeight()));
     Image heightMap = Image(new unsigned char[_ground.width()*_ground.height()*4],
                             _ground.width(),
                             _ground.height());
@@ -263,7 +263,7 @@ bool City::saveHeightMap(const std::string& fileName)
         for(int i=0; i<heightMap.width(); ++i)
         {
             float intensity = _ground.heightAt((int)i, (int)j) * 256 / amplitude;
-            unsigned char absIntensity = absolute(intensity);
+            unsigned char absIntensity = glm::abs(intensity);
             bool underWater = intensity < 0.0f;
             heightMap.setColor(i, j,
                                absIntensity,
