@@ -4,7 +4,8 @@
 #include <set>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <CellarWorkbench/Geometry/Segment2D.h>
 using namespace cellar;
 
 #include <Algorithm/Kruskal/KruskalAlgorithm.h>
@@ -24,15 +25,15 @@ MapElementsByIsland::~MapElementsByIsland()
 
 void MapElementsByIsland::setup(City &city)
 {
-    _junctionsStack = stack<cellar::Vec2i>();
+    _junctionsStack = stack<glm::ivec2>();
     _islandIdentifiers = Grid2D<int>();
-    _islandEdges = std::vector<std::vector<cellar::Vec2i> >();
+    _islandEdges = std::vector<std::vector<glm::ivec2> >();
 
     MapElementsAlgorithm::setup(city);
 
     _nbIslands = 0;
-    _islandIdentifiers = Grid2D<int>(_mapSize.x(),
-                                   _mapSize.y(),
+    _islandIdentifiers = Grid2D<int>(_mapSize.x,
+                                   _mapSize.y,
                                    -1);
 
     findAndExploreIslands();
@@ -44,29 +45,29 @@ void MapElementsByIsland::setup(City &city)
 void MapElementsByIsland::findAndExploreIslands()
 {
     bool prevIsLand = false;
-    for (int j = 0; j < _mapSize.y(); ++j)
+    for (int j = 0; j < _mapSize.y; ++j)
     {
         prevIsLand = false;
-        for (int i = 0; i < _mapSize.x(); i++)
+        for (int i = 0; i < _mapSize.x; i++)
         {
             // If the current junction is over water
-            bool currIsLand = (isJunctionAboveWater(Vec2i(i, j)));
+            bool currIsLand = (isJunctionAboveWater(glm::ivec2(i, j)));
 
             if (prevIsLand != currIsLand)
             {
-                Vec2i position(0, 0);
-                Vec2i direction(0, 0);
+                glm::ivec2 position(0, 0);
+                glm::ivec2 direction(0, 0);
 
                 // The land is at the "right", while the non-land is at the "left"
                 if (prevIsLand == true)
                 {
-                    position = Vec2i(i - 1, j);
-                    direction = Vec2i(0, -1);
+                    position = glm::ivec2(i - 1, j);
+                    direction = glm::ivec2(0, -1);
                 }
                 else  // prevIsLand == false
                 {
-                    position = Vec2i(i, j);
-                    direction = Vec2i(0, 1);
+                    position = glm::ivec2(i, j);
+                    direction = glm::ivec2(0, 1);
                 }
                 //If it's an island that had already been explored, we won't reexplore it
                 if (_islandIdentifiers.get(position) != -1)
@@ -79,11 +80,11 @@ void MapElementsByIsland::findAndExploreIslands()
                 if (!(isJunctionInBounds(position - direction) &&
                     isJunctionAboveWater(position - direction)))
                 {
-                    direction = perpCCW(direction);
+                    direction = Segment2D::perpCCW(direction);
                     if (!(isJunctionInBounds(position - direction) &&
                         isJunctionAboveWater(position - direction)))
                     {
-                        direction = perpCCW(direction);
+                        direction = Segment2D::perpCCW(direction);
                     }
                 }
                 exploreOneIsland(position, direction);
@@ -93,7 +94,7 @@ void MapElementsByIsland::findAndExploreIslands()
     }
 }
 
-void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirection)
+void MapElementsByIsland::exploreOneIsland(glm::ivec2 startPosition, glm::ivec2 startDirection)
 {
 
     // Small explanation about how it works.
@@ -105,23 +106,23 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
     // we always have a land on the "right" and a non-land on the "left"
 
     // We keep a list of the positions
-    std::vector<Vec2i> positions;
+    std::vector<glm::ivec2> positions;
     positions.push_back(startPosition);
 
     // If we make a circle clockwise, it's "non-land" around "land".
     // Else, it's "land" around "non-land" and it's not an island.
     int diffClockwise = 0;
 
-    Vec2i currPosition = startPosition;
-    Vec2i currDirection = startDirection;
+    glm::ivec2 currPosition = startPosition;
+    glm::ivec2 currDirection = startDirection;
 
     do
     {
         // We are gonna look at three different cases.
 
-        Vec2i newDirection = currDirection;
-        newDirection = perpCCW(newDirection);
-        Vec2i newPosition = currPosition + newDirection;
+        glm::ivec2 newDirection = currDirection;
+        newDirection = Segment2D::perpCCW(newDirection);
+        glm::ivec2 newPosition = currPosition + newDirection;
         // The block at the left is land. We turn left.
         if (isJunctionInBounds(newPosition) && isJunctionAboveWater(newPosition))
         {
@@ -145,7 +146,7 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
 
         // If not. The block in right is land. We turn right.
         newDirection = currDirection;
-        newDirection = perpCW(newDirection);
+        newDirection = Segment2D::perpCW(newDirection);
         newPosition = currPosition + newDirection;
         // If not. The block in front is land. We continue.
         if (isJunctionInBounds(newPosition) && isJunctionAboveWater(newPosition))
@@ -174,7 +175,7 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
         // We have an Island so we can identify an Island with the positions
         while (!positions.empty())
         {
-            Vec2i position = positions.back();
+            glm::ivec2 position = positions.back();
             _islandIdentifiers.set(position, _nbIslands);
 
             positions.pop_back();
@@ -187,7 +188,7 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
         // That way, we won't visit it again.
         while (!positions.empty())
         {
-            Vec2i position = positions.back();
+            glm::ivec2 position = positions.back();
             _islandIdentifiers.set(position, UNKNOWN_ISLAND);
 
             positions.pop_back();
@@ -198,11 +199,11 @@ void MapElementsByIsland::exploreOneIsland(Vec2i startPosition, Vec2i startDirec
 void MapElementsByIsland::setLandsToIslands()
 {
     int currIslandIdentifier = UNKNOWN_ISLAND;
-    for (int j = 0; j < _mapSize.y() - 1; j++)
+    for (int j = 0; j < _mapSize.y - 1; j++)
     {
-        for (int i = 0; i < _mapSize.x() - 1; i++)
+        for (int i = 0; i < _mapSize.x - 1; i++)
         {
-            if (!isJunctionAboveWater(Vec2i(i, j)))
+            if (!isJunctionAboveWater(glm::ivec2(i, j)))
             {
                 currIslandIdentifier = LAND_UNDER_WATER;
             }
@@ -214,11 +215,11 @@ void MapElementsByIsland::setLandsToIslands()
                 }
                 else
                 {
-                    _islandIdentifiers.set(Vec2i(i, j), currIslandIdentifier);
+                    _islandIdentifiers.set(glm::ivec2(i, j), currIslandIdentifier);
                 }
-                if (isLandAboveWater(Vec2i(i, j)))
+                if (isLandAboveWater(glm::ivec2(i, j)))
                 {
-                    _city->lands().get(Vec2i(i, j))->setIslandIdentifier(currIslandIdentifier);
+                    _city->lands().get(glm::ivec2(i, j))->setIslandIdentifier(currIslandIdentifier);
                 }
             }
         }
@@ -232,7 +233,7 @@ void MapElementsByIsland::roadOneIsland(int)
 
 void MapElementsByIsland::bridgeIslands()
 {
-    _possibleBridges = cellar::Grid2D<cellar::Vec2i>(_nbIslands, _nbIslands);
+    _possibleBridges = cellar::Grid2D<glm::ivec2>(_nbIslands, _nbIslands);
     KruskalAlgorithm kruskal;
     // The general idea here is: Kruskal
     for (int i = 0; i < _nbIslands; i++)
@@ -240,9 +241,10 @@ void MapElementsByIsland::bridgeIslands()
         for (int j = 0; j < i; j++)
         {
             addAPossibleBridge(i, j);
-            double distance = cellar::Vec2f(
-                        _possibleBridges[i][j] -
-                        _possibleBridges[j][i]).length();
+            double distance =
+                glm::length(glm::vec2(
+                    _possibleBridges[i][j] -
+                    _possibleBridges[j][i]));
             kruskal.addSegment(i, j, distance);
         }
     }
@@ -259,7 +261,7 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
 {
     int bestJuncFirst;
     int bestJuncSecond;
-    double bestDistance = _mapSize.x() + _mapSize.y();
+    double bestDistance = _mapSize.x + _mapSize.y;
     double currDistance;
 
     int size = static_cast<int>(_islandEdges[firstIsland].size());
@@ -269,8 +271,10 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
     int nbIslandEdges2 = static_cast<int>(_islandEdges[secondIsland].size());
     for (int currPos = 0; currPos < nbIslandEdges2; ++currPos)
     {
-        currDistance = cellar::Vec2f(_islandEdges[firstIsland][bestJuncFirst] -
-                                     _islandEdges[secondIsland][currPos]).length();
+        currDistance =
+                glm::length(glm::vec2(
+                    _islandEdges[firstIsland][bestJuncFirst] -
+                    _islandEdges[secondIsland][currPos]));
 
         if (currDistance < bestDistance)
         {
@@ -279,13 +283,15 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
         }
     }
 
-    bestDistance = _mapSize.x() + _mapSize.y() + 1;
+    bestDistance = _mapSize.x + _mapSize.y + 1;
 
     int nbIslandEdges1 = static_cast<int>(_islandEdges[firstIsland].size());
     for (int currPos = 0; currPos < nbIslandEdges1; ++currPos)
     {
-        currDistance = cellar::Vec2f(_islandEdges[firstIsland][currPos] -
-                                     _islandEdges[secondIsland][bestJuncSecond]).length();
+        currDistance =
+            glm::length(glm::vec2(
+                _islandEdges[firstIsland][currPos] -
+                _islandEdges[secondIsland][bestJuncSecond]));
 
         if (currDistance < bestDistance)
         {
@@ -294,8 +300,8 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
         }
     }
 
-    Vec2i endA(_islandEdges[firstIsland][bestJuncFirst]);
-    Vec2i endB(_islandEdges[secondIsland][bestJuncSecond]);
+    glm::ivec2 endA(_islandEdges[firstIsland][bestJuncFirst]);
+    glm::ivec2 endB(_islandEdges[secondIsland][bestJuncSecond]);
 
     _possibleBridges[firstIsland][secondIsland] = endA;
     _possibleBridges[secondIsland][firstIsland] = endB;
@@ -304,14 +310,14 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
 //     Legacy code I like.
 //     It takes two points on the map, and make bridges over water
 //     But no bridge over land.
-//    Vec2i atob = endB - endA;
+//    glm::ivec2 atob = endB - endA;
 
-//    int t = maxVal(absolute(atob.x()), absolute(atob.y()));
+//    int t = maxVal(absolute(atob.x), absolute(atob.y));
 
-//    Vec2i currentPos;
+//    glm::ivec2 currentPos;
 
-//    Vec2i newBridgeEndA = endA;
-//    Vec2i newBridgeEndB;
+//    glm::ivec2 newBridgeEndA = endA;
+//    glm::ivec2 newBridgeEndB;
 
 //    bool wasUnderWater = false;
 
@@ -346,14 +352,14 @@ void MapElementsByIsland::landIslands()
     for (int i = 0; i < _nbIslands; ++i)
     {
         // Begining of algorithm
-        Vec2i currentPoint = _islandEdges[i][0];
+        glm::ivec2 currentPoint = _islandEdges[i][0];
 
         while (_ground->heightAt( currentPoint ) < _ground->waterHeight())
         {
-            currentPoint += Vec2i(1, 1);
-            if (currentPoint.x() >= _mapSize.x())
+            currentPoint += glm::ivec2(1, 1);
+            if (currentPoint.x >= _mapSize.x)
             {
-                currentPoint(randomRange(0, _mapSize.x()), randomRange(0, _mapSize.y()));
+                currentPoint = glm::ivec2(randomRange(0, _mapSize.x), randomRange(0, _mapSize.y));
             }
         }
 
@@ -363,27 +369,27 @@ void MapElementsByIsland::landIslands()
         // Main loop
         while (!_junctionsStack.empty())
         {
-            Vec2i currPos = _junctionsStack.top();
+            glm::ivec2 currPos = _junctionsStack.top();
             Junction* currJunc = _city->junctions().get(currPos);
             currJunc->setType(Junction::ASPHALT);
 
             // Check wich sides are free (not under water and not visited)
             // And wich are reachable (not under water)
-            std::vector<Vec2i> reachableSides;
-            std::vector<Vec2i> freeSides;
+            std::vector<glm::ivec2> reachableSides;
+            std::vector<glm::ivec2> freeSides;
 
-            Vec2i direction(1, 0);
+            glm::ivec2 direction(1, 0);
 
             for (int i = 0; i < 4; i++)
             {
-                direction = perpCCW(direction);
-                Vec2i neighPos = currPos + direction;
+                direction = Segment2D::perpCCW(direction);
+                glm::ivec2 neighPos = currPos + direction;
 
                 // In bounds
-                if (neighPos.x() >= _mapSize.x() ||
-                    neighPos.y() >= _mapSize.y() ||
-                    neighPos.x() < 0 ||
-                    neighPos.y() < 0)
+                if (neighPos.x >= _mapSize.x ||
+                    neighPos.y >= _mapSize.y ||
+                    neighPos.x < 0 ||
+                    neighPos.y < 0)
                     continue;
 
                 // Not under water
@@ -405,8 +411,8 @@ void MapElementsByIsland::landIslands()
                 // Choose randomly a free side
                 int nbElements = static_cast<int>(freeSides.size());
                 int pos = randomRange(0, nbElements);
-                Vec2i nextDirection = freeSides[pos];
-                Vec2i nextPos = currPos + nextDirection;
+                glm::ivec2 nextDirection = freeSides[pos];
+                glm::ivec2 nextPos = currPos + nextDirection;
 
                 std::shared_ptr<Street> newStreet(new Street(currPos, nextPos));
 
@@ -424,8 +430,8 @@ void MapElementsByIsland::landIslands()
                     // Choose randomly an reachable side
                     int nbElements = static_cast<int>(reachableSides.size());
                     int pos = randomRange(0, nbElements);
-                    Vec2i nextDirection = reachableSides[pos];
-                    Vec2i nextPos = currPos + nextDirection;
+                    glm::ivec2 nextDirection = reachableSides[pos];
+                    glm::ivec2 nextPos = currPos + nextDirection;
 
                     std::shared_ptr<Street> newStreet(new Street(currPos, nextPos));
 
@@ -446,7 +452,7 @@ void MapElementsByIsland::landIslands()
     {
         for (int i = 0; i < lands->getWidth(); ++i)
         {
-            if (_city->lands().get(Vec2i(i, j))->getIslandIdentifier() != -1)
+            if (_city->lands().get(glm::ivec2(i, j))->getIslandIdentifier() != -1)
             {
                 int landType = randomRange(0, (int) Land::NB_TYPES);
 
@@ -457,47 +463,47 @@ void MapElementsByIsland::landIslands()
     }
 }
 
-float MapElementsByIsland::landHeightDiff(const cellar::Vec2i& landPos)
+float MapElementsByIsland::landHeightDiff(const glm::ivec2& landPos)
 {
-    return  max(    max(_city->ground().heightAt( landPos ), _city->ground().heightAt( landPos + Vec2i(0,1) ) ),
-                    max(_city->ground().heightAt( landPos + Vec2i(1,0) ), _city->ground().heightAt( landPos + Vec2i(1,1) ) ) );
+    return  max(    max(_city->ground().heightAt( landPos ), _city->ground().heightAt( landPos + glm::ivec2(0,1) ) ),
+                    max(_city->ground().heightAt( landPos + glm::ivec2(1,0) ), _city->ground().heightAt( landPos + glm::ivec2(1,1) ) ) );
 }
 
-float MapElementsByIsland::slope (const cellar::Vec2i& endA, const cellar::Vec2i& endB)
+float MapElementsByIsland::slope (const glm::ivec2& endA, const glm::ivec2& endB)
 {
     float heightDiff = _city->ground().heightAt(endA) -
                        _city->ground().heightAt(endB);
 
-    float distance = cellar::Vec2f(endA - endB).length();
+    float distance = glm::length(glm::vec2(endA - endB));
 
     return heightDiff / distance;
 }
 
-bool MapElementsByIsland::isJunctionInBounds(Vec2i position)
+bool MapElementsByIsland::isJunctionInBounds(glm::ivec2 position)
 {
-    return !(position.x() >= _mapSize.x() ||
-             position.y() >= _mapSize.y() ||
-             position.x() < 0 ||
-             position.y() < 0);
+    return !(position.x >= _mapSize.x ||
+             position.y >= _mapSize.y ||
+             position.x < 0 ||
+             position.y < 0);
 }
 
-bool MapElementsByIsland::isJunctionAboveWater(Vec2i position)
+bool MapElementsByIsland::isJunctionAboveWater(glm::ivec2 position)
 {
     return (_city->ground().heightAt(position) > 0);
 }
 
-bool MapElementsByIsland::isLandInBounds(Vec2i position)
+bool MapElementsByIsland::isLandInBounds(glm::ivec2 position)
 {
-    return !(position.x() >= _mapSize.x() - 1 ||
-             position.y() >= _mapSize.y() - 1 ||
-             position.x() < 0 ||
-             position.y() < 0);
+    return !(position.x >= _mapSize.x - 1 ||
+             position.y >= _mapSize.y - 1 ||
+             position.x < 0 ||
+             position.y < 0);
 }
 
-bool MapElementsByIsland::isLandAboveWater(Vec2i position)
+bool MapElementsByIsland::isLandAboveWater(glm::ivec2 position)
 {
-    int x = position.x();
-    int y = position.y();
+    int x = position.x;
+    int y = position.y;
     return (_city->ground().heightAt(x,     y) > 0 &&
             _city->ground().heightAt(x + 1, y) > 0 &&
             _city->ground().heightAt(x,     y + 1) > 0 &&

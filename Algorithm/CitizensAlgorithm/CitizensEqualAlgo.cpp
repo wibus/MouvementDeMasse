@@ -3,6 +3,8 @@
 using namespace std;
 using namespace cellar;
 
+#include <CellarWorkbench/Geometry/Segment2D.h>
+
 
 CitizensEqualAlgo::CitizensEqualAlgo()
 {
@@ -12,14 +14,14 @@ void CitizensEqualAlgo::setup(City &city)
 {
     CitizensAlgorithm::setup(city);
 
-    for(int j=0; j<_mapSize.y(); ++j)
+    for(int j=0; j<_mapSize.y; ++j)
     {
-        for(int i=0; i<_mapSize.x(); ++i)
+        for(int i=0; i<_mapSize.x; ++i)
         {
             if(_city->junctions().get(i, j)->type() == Junction::ASPHALT)
             {
                 Citizen ctz;
-                ctz.position(i, j, _ground->heightAt(i, j));
+                ctz.position = glm::vec3(i, j, _ground->heightAt(i, j));
                 ctz.walkingSpeed = (0.8f + randomRange(-0.5f, 0.5f)) * _city->description().unitPerMeter;
 
                 _city->citizens().insert(make_pair(ctz.id(), ctz));
@@ -39,32 +41,34 @@ void CitizensEqualAlgo::update()
 
         if(ctz.curState == CITIZEN_AT_HOME)
         {
-            Vec2i pos(floor(ctz.position.x() + 0.5f),  floor(ctz.position.y() + 0.5f));
-            Vec2i dir(floor(ctz.direction.x() + 0.5f), floor(ctz.direction.y() + 0.5f));
-            dir = perpCCW(dir);
+            glm::ivec2 pos(floor(ctz.position.x + 0.5f),  floor(ctz.position.y + 0.5f));
+            glm::ivec2 dir(floor(ctz.direction.x + 0.5f), floor(ctz.direction.y + 0.5f));
+            dir = Segment2D::perpCCW(dir);
 
             Junction& junc = *_city->junctions().get( pos );
 
             while(! junc.getStreet(toDirection( dir )))
-                dir = perpCW(dir);
+                dir = Segment2D::perpCW(dir);
 
-            Vec2i right = dir;
-            right = perpCW(right);
-            Vec2f rightSide = Vec2f(right) * roadQuarterWidth;
+            glm::ivec2 right = dir;
+            right = Segment2D::perpCW(right);
+            glm::vec2 rightSide = glm::vec2(right) * roadQuarterWidth;
 
             ctz.curState = CITIZEN_GOTO_WORK;
-            ctz.direction(dir.x(), dir.y(), 0.0f);
+            ctz.direction = glm::vec3(dir.x, dir.y, 0.0f);
             ctz.homeToWorkPath.destination = pos + dir;
-            ctz.position(pos.x() + rightSide.x(),
-                         pos.y() + rightSide.y(),
-                         _ground->heightAt(pos));
+            ctz.position = glm::vec3(
+                pos.x + rightSide.x,
+                pos.y + rightSide.y,
+                _ground->heightAt(pos));
         }
         else
         {
             ctz.position += ctz.direction * ctz.walkingSpeed;
-            ctz.position.setZ( _ground->heightAt(ctz.position.x(), ctz.position.y()));
+            ctz.position.z = _ground->heightAt(ctz.position.x, ctz.position.y);
 
-            if(Vec2f(ctz.position).distanceTo(Vec2f(ctz.homeToWorkPath.destination)) < ctz.walkingSpeed + roadQuarterWidth)
+            if(glm::length(glm::vec2(ctz.position) - (glm::vec2(ctz.homeToWorkPath.destination)))
+                    < ctz.walkingSpeed + roadQuarterWidth)
                 ctz.curState = CITIZEN_AT_HOME;
         }
     }

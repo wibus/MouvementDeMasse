@@ -13,11 +13,11 @@ public:
     virtual void update();
 
 protected:
-    float dist(const cellar::Vec2i& p1, const cellar::Vec2i& p2);
-    bool isAccessible(const cellar::Vec2i& pos);
-    cellar::Vec2i randomAccessPointTo(const cellar::Vec2i& pos);
+    float dist(const glm::ivec2& p1, const glm::ivec2& p2);
+    bool isAccessible(const glm::ivec2& pos);
+    glm::ivec2 randomAccessPointTo(const glm::ivec2& pos);
 
-    bool homeToWorkPathByAStar(Path& path, const cellar::Vec2i& src, const cellar::Vec2i& dst);
+    bool homeToWorkPathByAStar(Path& path, const glm::ivec2& src, const glm::ivec2& dst);
     void initializeAStarStructures();
     void cleanAStarStructures();
 
@@ -29,9 +29,9 @@ protected:
 
 
 // IMPLEMENTATION //
-inline float CitizensDistribByIsland::dist(const cellar::Vec2i& p1, const cellar::Vec2i &p2)
+inline float CitizensDistribByIsland::dist(const glm::ivec2& p1, const glm::ivec2 &p2)
 {
-    return static_cast<float>(cellar::Vec2f(p1).distanceTo(p2));
+    return static_cast<float>(glm::distance(glm::vec2(p1), glm::vec2(p2)));
 }
 
 #endif // CITIZENSDISTRIBBYISLAND_H

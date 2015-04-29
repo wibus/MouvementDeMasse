@@ -24,24 +24,24 @@ CardinalDirection turnCCW(CardinalDirection dir)
     }
 }
 
-CardinalDirection toDirection(const cellar::Vec2i& vec)
+CardinalDirection toDirection(const glm::ivec2& vec)
 {
-         if(vec == cellar::Vec2i( 1,  0)) return EAST;
-    else if(vec == cellar::Vec2i(-1,  0)) return WEST;
-    else if(vec == cellar::Vec2i( 0,  1)) return NORTH;
-    else if(vec == cellar::Vec2i( 0, -1)) return SOUTH;
+         if(vec == glm::ivec2( 1,  0)) return EAST;
+    else if(vec == glm::ivec2(-1,  0)) return WEST;
+    else if(vec == glm::ivec2( 0,  1)) return NORTH;
+    else if(vec == glm::ivec2( 0, -1)) return SOUTH;
 
     return DIRECTION_ERROR;
 }
 
-cellar::Vec2i toVec(CardinalDirection dir)
+glm::ivec2 toVec(CardinalDirection dir)
 {
     switch(dir)
     {
-    case EAST : return cellar::Vec2i(1, 0);
-    case WEST : return cellar::Vec2i(-1, 0);
-    case NORTH : return cellar::Vec2i(0, 1);
-    case SOUTH : return cellar::Vec2i(0, -1);
-    default : return cellar::Vec2i(0, 0);
+    case EAST : return glm::ivec2(1, 0);
+    case WEST : return glm::ivec2(-1, 0);
+    case NORTH : return glm::ivec2(0, 1);
+    case SOUTH : return glm::ivec2(0, -1);
+    default : return glm::ivec2(0, 0);
     }
 }

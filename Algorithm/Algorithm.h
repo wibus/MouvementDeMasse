@@ -1,8 +1,6 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-#include <DataStructure/Vector.h>
-
 #include "City/City.h"
 
 
@@ -20,7 +18,7 @@ protected:
     City*         _city;
     Ground*       _ground;
     Description*  _description;
-    cellar::Vec2i _mapSize;
+    glm::ivec2    _mapSize;
 
     static const CardinalDirection _cardinalDirections[NB_DIRECTIONS];
 };

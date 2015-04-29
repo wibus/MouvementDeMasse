@@ -1,6 +1,6 @@
 #include "DrawCityModule.h"
 
-#include <gl3w.h>
+#include <GL3/gl3w.h>
 
 #include "City/City.h"
 #include "SkyComponent.h"
@@ -127,8 +127,8 @@ void DrawCityModule::setupShaders()
     _skyShader.setVec4f("SkylineColor", _description->skylineColor);
     _skyShader.setVec4f("SunColor",     _description->sunColor);
     _skyShader.setFloat("SunRadius",    _description->sunRadius);
-    _skyShader.setVec3f("SunPosition",  Vec3f(0.0f, 0.0f, -1.0f));
-    _skyShader.setVec2f("TexShift",     Vec2f(0.0f, 0.0f));
+    _skyShader.setVec3f("SunPosition",  glm::vec3(0.0f, 0.0f, -1.0f));
+    _skyShader.setVec2f("TexShift",     glm::vec2(0.0f, 0.0f));
     _skyShader.setInt("CloudsTexUnit",  0);
     _skyShader.setInt("StarsTexUnit",   1);
     _skyShader.setMat4f("SkyRotMatrix",  _city->sun().rotationMatrix());
@@ -160,8 +160,8 @@ void DrawCityModule::setupShaders()
     _infrastructShader.setVec4f("sun.diffuse",   _description->sunLight.diffuse);
     _infrastructShader.setVec4f("sun.specular",  _description->sunLight.specular);
     _infrastructShader.setFloat("Shininess",     128.0f);
-    _infrastructShader.setVec3f("Translation",   Vec3f(0.0f, 0.0f, 0.0f));
-    _infrastructShader.setVec2f("RepeatFrom",    Vec2f(1.0f, 1.0f));
+    _infrastructShader.setVec3f("Translation",   glm::vec3(0.0f, 0.0f, 0.0f));
+    _infrastructShader.setVec2f("RepeatFrom",    glm::vec2(1.0f, 1.0f));
     _infrastructShader.setInt("TexUnit",         0);
     _infrastructShader.setInt("SpecUnit",        1);
     _infrastructShader.popProgram();
@@ -182,10 +182,10 @@ void DrawCityModule::update()
     // Sky color
 
     const double skyCoefCorrection = 0.1;
-    Vec4f  nLightDir    = _description->sunLight.direction.normalized();
-    float sunIntensity = maxVal(dot(nLightDir, Vec4f(0, 0, -1, 0)) + skyCoefCorrection, 0.0);
+    glm::vec4  nLightDir = glm::normalize(_description->sunLight.direction);
+    float sunIntensity = maxVal(dot(nLightDir, glm::vec4(0, 0, -1, 0)) + skyCoefCorrection, 0.0);
     float skyColorCoef = pow(sunIntensity, 0.75) / (skyCoefCorrection + 1.0);
-    Vec4f  skyCol = _description->nightSkyColor * (1 - skyColorCoef) +
+    glm::vec4  skyCol = _description->nightSkyColor * (1 - skyColorCoef) +
                     _description->daySkyColor   * skyColorCoef;
     skyCol += _description->skylineColor;
     glClearColor(skyCol[0], skyCol[1], skyCol[2], skyCol[3]);
@@ -195,12 +195,12 @@ void DrawCityModule::update()
     // Sun ambient light
     const float AMBIENT_EFF_FACT = 0.50f;
     const float BASE_INTENSITY = 0.03f;
-    const Vec4f BASE_LIGHT = Vec4f(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
+    const glm::vec4 BASE_LIGHT = glm::vec4(BASE_INTENSITY, BASE_INTENSITY, BASE_INTENSITY, 0.0f);
     _description->sunLight.ambient = BASE_LIGHT + skyCol * AMBIENT_EFF_FACT;
 
 
     // Sun position
-    Vec4f sunDir = _city->sun().direction().normalized();
+    glm::vec4 sunDir = glm::normalize(_city->sun().direction());
     _description->sunLight.direction = sunDir;
     _description->viewedSunDirection = _description->viewMat * sunDir;
 
@@ -213,14 +213,14 @@ void DrawCityModule::update()
 
 void DrawCityModule::updateShaders()
 {
-    static Vec2f shift(0.0f, 0.0f);
+    static glm::vec2 shift(0.0f, 0.0f);
     shift[1] += 0.0008f;
 
     _skyShader.pushProgram();
-    _skyShader.setVec4f("VCSunPosition", -_city->sun().direction().normalize());
+    _skyShader.setVec4f("VCSunPosition", -glm::normalize(_city->sun().direction()));
     _skyShader.setVec4f("ECSunPosition", -_description->viewedSunDirection);
     _skyShader.setVec2f("TexShift",      shift);
-    _skyShader.setMat4f("SkyRotMatrix",   transpose(_city->sun().rotationMatrix()));
+    _skyShader.setMat4f("SkyRotMatrix",  transpose(_city->sun().rotationMatrix()));
     _skyShader.popProgram();
 
     _groundShader.pushProgram();
@@ -239,7 +239,7 @@ void DrawCityModule::updateShaders()
     _infrastructShader.popProgram();
 }
 
-void DrawCityModule::updateProjectionMatrix(const Mat4f& proj)
+void DrawCityModule::updateProjectionMatrix(const glm::mat4& proj)
 {
     _description->projMat = proj;
 
@@ -269,10 +269,10 @@ void DrawCityModule::updateShadersProjectionMatrix()
     _infrastructShader.popProgram();
 }
 
-void DrawCityModule::updateModelViewMatrix(const Mat4f& view)
+void DrawCityModule::updateModelViewMatrix(const glm::mat4& view)
 {
     _description->viewMat = view;
-    _description->normalMat = submat(view, 3, 3);
+    _description->normalMat = glm::mat3(view);
 
     updateShadersModelViewMatrix();
 }

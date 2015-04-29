@@ -1,47 +1,47 @@
 #ifndef SUN_H
 #define SUN_H
 
-#include <DateAndTime/Calendar.h>
-#include <DataStructure/Vector.h>
-#include <DataStructure/Matrix.h>
+#include <GLM/glm.hpp>
+
+#include <CellarWorkbench/DateAndTime/Calendar.h>
 
 class Sun
 {
 public:
-    Sun(const cellar::Vec4f& midnightDirection, const cellar::Vec3f& rotationAxis);
+    Sun(const glm::vec4& midnightDirection, const glm::vec3& rotationAxis);
 
     virtual void setTime(const cellar::Time& time);
-    cellar::Vec4f direction() const;
-    cellar::Vec4f midnightDirection() const;
-    cellar::Vec3f rotationAxis() const;
-    const cellar::Mat4f& rotationMatrix() const;
+    glm::vec4 direction() const;
+    glm::vec4 midnightDirection() const;
+    glm::vec3 rotationAxis() const;
+    const glm::mat4& rotationMatrix() const;
 
 protected:
-    cellar::Vec4f _direction;
-    cellar::Vec4f _midnightDirection;
-    cellar::Vec3f _rotationAxis;
-    cellar::Mat4f _rotationMatrix;
+    glm::vec4 _direction;
+    glm::vec4 _midnightDirection;
+    glm::vec3 _rotationAxis;
+    glm::mat4 _rotationMatrix;
 };
 
 
 
 // IMPLEMENTATION //
-inline cellar::Vec4f Sun::direction() const
+inline glm::vec4 Sun::direction() const
 {
     return _direction;
 }
 
-inline cellar::Vec4f Sun::midnightDirection() const
+inline glm::vec4 Sun::midnightDirection() const
 {
     return _midnightDirection;
 }
 
-inline cellar::Vec3f Sun::rotationAxis() const
+inline glm::vec3 Sun::rotationAxis() const
 {
     return _rotationAxis;
 }
 
-inline const cellar::Mat4f& Sun::rotationMatrix() const
+inline const glm::mat4& Sun::rotationMatrix() const
 {
     return _rotationMatrix;
 }

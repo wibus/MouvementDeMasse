@@ -2,12 +2,12 @@
 
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
 
-#include <gl3w.h>
-#include <GL/GlToolkit.h>
-#include <Image/ImageBank.h>
+#include <GL3/gl3w.h>
+#include <MediaWorkbench/GL/GlToolkit.h>
+#include <MediaWorkbench/Image/ImageBank.h>
 using namespace media;
 
 
@@ -36,77 +36,77 @@ StreetsComponent::~StreetsComponent()
 void StreetsComponent::setup()
 {
     // Collect streets to draw
-    vector<Vec3f> positions;
-    vector<Vec3f> normals;
-    vector<Vec2f> texCoords;
+    vector<glm::vec3> positions;
+    vector<glm::vec3> normals;
+    vector<glm::vec2> texCoords;
 
     float roadHalfWidth = _description.roadWidth * 0.5f;
     float lengthRatio = (1-2*_description.roadWidth) / roadHalfWidth;
 
 
-    for(int j=0; j<_city.size().y()+1; ++j)
+    for(int j=0; j<_city.size().y+1; ++j)
     {
-        for(int i=0; i<_city.size().x()+1; ++i)
+        for(int i=0; i<_city.size().x+1; ++i)
         {
             if(_city.junctions().get(i , j)->getStreet(EAST) != 0x0)
             {
                 float startHeight = _ground.heightAt(i, j);
                 float endHeight   = _ground.heightAt(i+1, j);
-                Vec3f dzdx = Vec3f(_ground.dzdx(i+0.5, j), 0, 1).normalize();
+                glm::vec3 dzdx = glm::normalize(glm::vec3(_ground.dzdx(i+0.5, j), 0, 1));
 
-                positions.push_back(Vec3f(i + roadHalfWidth, j-roadHalfWidth, startHeight));
+                positions.push_back(glm::vec3(i + roadHalfWidth, j-roadHalfWidth, startHeight));
                 normals.push_back(dzdx);
-                texCoords.push_back(Vec2f(0, 0));
+                texCoords.push_back(glm::vec2(0, 0));
 
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j-roadHalfWidth, endHeight));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j-roadHalfWidth, endHeight));
                 normals.push_back(dzdx);
-                texCoords.push_back(Vec2f(lengthRatio, 0));
+                texCoords.push_back(glm::vec2(lengthRatio, 0));
 
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, endHeight));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j+roadHalfWidth, endHeight));
                 normals.push_back(dzdx);
-                texCoords.push_back(Vec2f(lengthRatio, 1));
+                texCoords.push_back(glm::vec2(lengthRatio, 1));
 
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, endHeight));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j+roadHalfWidth, endHeight));
                 normals.push_back(dzdx);
-                texCoords.push_back(Vec2f(lengthRatio, 1));
+                texCoords.push_back(glm::vec2(lengthRatio, 1));
 
-                positions.push_back(Vec3f(i + roadHalfWidth, j+roadHalfWidth, startHeight));
+                positions.push_back(glm::vec3(i + roadHalfWidth, j+roadHalfWidth, startHeight));
                 normals.push_back(dzdx);
-                texCoords.push_back(Vec2f(0, 1));
+                texCoords.push_back(glm::vec2(0, 1));
 
-                positions.push_back(Vec3f(i + roadHalfWidth, j-roadHalfWidth, startHeight));
+                positions.push_back(glm::vec3(i + roadHalfWidth, j-roadHalfWidth, startHeight));
                 normals.push_back(dzdx);
-                texCoords.push_back(Vec2f(0, 0));
+                texCoords.push_back(glm::vec2(0, 0));
             }
             if(_city.junctions().get(i , j)->getStreet(NORTH) != 0x0)
             {
                 float startHeight = _ground.heightAt(i, j);
                 float endHeight = _ground.heightAt(i, j+1);
-                Vec3f dzdy = Vec3f(_ground.dzdy(i, j+0.5), 0, 1).normalize();
+                glm::vec3 dzdy = glm::normalize(glm::vec3(_ground.dzdy(i, j+0.5), 0, 1));
 
-                positions.push_back(Vec3f(i-roadHalfWidth, j + roadHalfWidth, startHeight));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j + roadHalfWidth, startHeight));
                 normals.push_back(dzdy);
-                texCoords.push_back(Vec2f(0, 1));
+                texCoords.push_back(glm::vec2(0, 1));
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j + roadHalfWidth, startHeight));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j + roadHalfWidth, startHeight));
                 normals.push_back(dzdy);
-                texCoords.push_back(Vec2f(0, 0));
+                texCoords.push_back(glm::vec2(0, 0));
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, endHeight));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+1-roadHalfWidth, endHeight));
                 normals.push_back(dzdy);
-                texCoords.push_back(Vec2f(lengthRatio, 0));
+                texCoords.push_back(glm::vec2(lengthRatio, 0));
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, endHeight));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+1-roadHalfWidth, endHeight));
                 normals.push_back(dzdy);
-                texCoords.push_back(Vec2f(lengthRatio, 0));
+                texCoords.push_back(glm::vec2(lengthRatio, 0));
 
-                positions.push_back(Vec3f(i-roadHalfWidth, j+1-roadHalfWidth, endHeight));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j+1-roadHalfWidth, endHeight));
                 normals.push_back(dzdy);
-                texCoords.push_back(Vec2f(lengthRatio, 1));
+                texCoords.push_back(glm::vec2(lengthRatio, 1));
 
-                positions.push_back(Vec3f(i-roadHalfWidth, j + roadHalfWidth, startHeight));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j + roadHalfWidth, startHeight));
                 normals.push_back(dzdy);
-                texCoords.push_back(Vec2f(0, 1));
+                texCoords.push_back(glm::vec2(0, 1));
             }
         }
     }

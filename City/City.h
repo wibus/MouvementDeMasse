@@ -5,9 +5,8 @@
 #include <vector>
 #include <map>
 
-#include <DateAndTime/Calendar.h>
-#include <DataStructure/PGrid2D.h>
-#include <DataStructure/Vector.h>
+#include <CellarWorkbench/DateAndTime/Calendar.h>
+#include <CellarWorkbench/DataStructure/PGrid2D.h>
 
 #include "Citizen.h"
 #include "Sky.h"
@@ -33,7 +32,7 @@ class City
 public:
     City(int width, int height);
 
-    cellar::Vec2i  size() const;
+    glm::ivec2  size() const;
     cellar::DateAndTime& dateAndTime();
     cellar::DateAndTime& timeJump();
     Sky& sky();
@@ -67,7 +66,7 @@ protected:
             QString& skyMapFileName);
 
 private:
-    cellar::Vec2i _size;
+    glm::ivec2 _size;
     cellar::DateAndTime _dateAndTime;
     cellar::DateAndTime _timeJump;
     Sky _sky;
@@ -83,7 +82,7 @@ private:
 
 
 // Implementation //
-inline cellar::Vec2i City::size() const
+inline glm::ivec2 City::size() const
 {
     return _size;
 }

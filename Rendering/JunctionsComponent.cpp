@@ -2,12 +2,12 @@
 
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
 
-#include <gl3w.h>
-#include <GL/GlToolkit.h>
-#include <Image/ImageBank.h>
+#include <GL3/gl3w.h>
+#include <MediaWorkbench/GL/GlToolkit.h>
+#include <MediaWorkbench/Image/ImageBank.h>
 using namespace media;
 
 
@@ -36,36 +36,36 @@ JunctionsComponent::~JunctionsComponent()
 void JunctionsComponent::setup()
 {
     // Collect junctions to draw
-    vector<Vec3f> positions;
-    vector<Vec2f> texCoords;
+    vector<glm::vec3> positions;
+    vector<glm::vec2> texCoords;
 
     float roadHalfWidth = _description.roadWidth * 0.5f;
 
 
-    for(int j=0; j<_city.size().y()+1; ++j)
+    for(int j=0; j<_city.size().y+1; ++j)
     {
-        for(int i=0; i<_city.size().x()+1; ++i)
+        for(int i=0; i<_city.size().x+1; ++i)
         {
             if(_city.junctions().get(i , j)->type() != Junction::GRASS)
             {
                 float height = _ground.heightAt(i, j);
-                positions.push_back(Vec3f(i-roadHalfWidth, j-roadHalfWidth, height));
-                texCoords.push_back(Vec2f(0, 0));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j-roadHalfWidth, height));
+                texCoords.push_back(glm::vec2(0, 0));
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j-roadHalfWidth, height));
-                texCoords.push_back(Vec2f(1, 0));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j-roadHalfWidth, height));
+                texCoords.push_back(glm::vec2(1, 0));
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, height));
-                texCoords.push_back(Vec2f(1, 1));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+roadHalfWidth, height));
+                texCoords.push_back(glm::vec2(1, 1));
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, height));
-                texCoords.push_back(Vec2f(1, 1));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+roadHalfWidth, height));
+                texCoords.push_back(glm::vec2(1, 1));
 
-                positions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth, height));
-                texCoords.push_back(Vec2f(0, 1));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j+roadHalfWidth, height));
+                texCoords.push_back(glm::vec2(0, 1));
 
-                positions.push_back(Vec3f(i-roadHalfWidth, j-roadHalfWidth, height));
-                texCoords.push_back(Vec2f(0, 0));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j-roadHalfWidth, height));
+                texCoords.push_back(glm::vec2(0, 0));
             }
         }
     }

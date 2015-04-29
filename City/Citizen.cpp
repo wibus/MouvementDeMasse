@@ -44,7 +44,7 @@ Path::Path() :
 {
 }
 
-Path::Path(const cellar::Vec2i& source, const cellar::Vec2i& destination) :
+Path::Path(const glm::ivec2& source, const glm::ivec2& destination) :
     lenght(0.0f),
     source(source),
     destination(destination),

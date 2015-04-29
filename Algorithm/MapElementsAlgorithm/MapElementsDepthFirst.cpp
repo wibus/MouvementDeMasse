@@ -3,7 +3,8 @@
 #include <vector>
 #include <memory>
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <CellarWorkbench/Geometry/Segment2D.h>
 using namespace cellar;
 
 
@@ -22,14 +23,14 @@ void MapElementsDepthFirst::setup(City& city)
     MapElementsAlgorithm::setup(city);
 
     // Begining of algorithm
-    Vec2i currentPoint(_mapSize / 2);
+    glm::ivec2 currentPoint(_mapSize / 2);
 
     while (_ground->heightAt( currentPoint ) < _ground->waterHeight())
     {
-        currentPoint += Vec2i(1, 1);
-        if (currentPoint.x() >= _mapSize.x())
+        currentPoint += glm::ivec2(1, 1);
+        if (currentPoint.x >= _mapSize.x)
         {
-            currentPoint(randomRange(0, _mapSize.x()), randomRange(0, _mapSize.y()));
+            currentPoint = glm::ivec2(randomRange(0, _mapSize.x), randomRange(0, _mapSize.y));
         }
     }
 
@@ -39,27 +40,27 @@ void MapElementsDepthFirst::setup(City& city)
     // Main loop
     while (!_junctionsStack.empty())
     {
-        Vec2i currPos = _junctionsStack.top();
+        glm::ivec2 currPos = _junctionsStack.top();
         Junction* currJunc = _city->junctions().get(currPos);
         currJunc->setType(Junction::ASPHALT);
 
         // Check wich sides are free (not under water and not visited)
         // And wich are reachable (not under water)
-        std::vector<Vec2i> reachableSides;
-        std::vector<Vec2i> freeSides;
+        std::vector<glm::ivec2> reachableSides;
+        std::vector<glm::ivec2> freeSides;
 
-        Vec2i direction(1, 0);
+        glm::ivec2 direction(1, 0);
 
         for (int i = 0; i < 4; i++)
         {
-            direction = perpCCW(direction);
-            Vec2i neighPos = currPos + direction;
+            direction = Segment2D::perpCCW(direction);
+            glm::ivec2 neighPos = currPos + direction;
 
             // In bounds
-            if (neighPos.x() >= _mapSize.x() ||
-                neighPos.y() >= _mapSize.y() ||
-                neighPos.x() < 0 ||
-                neighPos.y() < 0)
+            if (neighPos.x >= _mapSize.x ||
+                neighPos.y >= _mapSize.y ||
+                neighPos.x < 0 ||
+                neighPos.y < 0)
                 continue;
 
             // Not under water
@@ -81,8 +82,8 @@ void MapElementsDepthFirst::setup(City& city)
             // Choose randomly a free side
             int nbElements = static_cast<int>(freeSides.size());
             int pos = randomRange(0, nbElements);
-            Vec2i nextDirection = freeSides[pos];
-            Vec2i nextPos = currPos + nextDirection;
+            glm::ivec2 nextDirection = freeSides[pos];
+            glm::ivec2 nextPos = currPos + nextDirection;
 
             std::shared_ptr<Street> newStreet(new Street(currPos, nextPos));
 
@@ -100,8 +101,8 @@ void MapElementsDepthFirst::setup(City& city)
                 // Choose randomly an reachable side
                 int nbElements = static_cast<int>(reachableSides.size());
                 int pos = randomRange(0, nbElements);
-                Vec2i nextDirection = reachableSides[pos];
-                Vec2i nextPos = currPos + nextDirection;
+                glm::ivec2 nextDirection = reachableSides[pos];
+                glm::ivec2 nextPos = currPos + nextDirection;
 
                 std::shared_ptr<Street> newStreet(new Street(currPos, nextPos));
 

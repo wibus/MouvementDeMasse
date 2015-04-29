@@ -1,8 +1,9 @@
 #ifndef DESCRIPTION_H
 #define DESCRIPTION_H
 
-#include <DataStructure/Matrix.h>
-#include <Light/Light3D.h>
+#include <string>
+
+#include <MediaWorkbench/Light/Light3D.h>
 
 
 class Description
@@ -14,24 +15,24 @@ public:
     bool save(const std::string& fileName);
 
     // Matrices
-    cellar::Mat4f projMat;
-    cellar::Mat4f viewMat;
-    cellar::Mat3f normalMat;
+    glm::mat4 projMat;
+    glm::mat4 viewMat;
+    glm::mat3 normalMat;
 
     // Sun
     float sunRadius;
     media::DirectionnalLight3D sunLight;
-    cellar::Vec4f viewedSunDirection;
+    glm::vec4 viewedSunDirection;
 
     // Colors
-    cellar::Vec4f sunColor;
-    cellar::Vec4f nightSkyColor;
-    cellar::Vec4f daySkyColor;
-    cellar::Vec4f sunSetColor;
-    cellar::Vec4f skylineColor;
-    cellar::Vec4f grassColor;
-    cellar::Vec4f mudColor;
-    cellar::Vec4f waterColor;
+    glm::vec4 sunColor;
+    glm::vec4 nightSkyColor;
+    glm::vec4 daySkyColor;
+    glm::vec4 sunSetColor;
+    glm::vec4 skylineColor;
+    glm::vec4 grassColor;
+    glm::vec4 mudColor;
+    glm::vec4 waterColor;
 
     // Shininesses
     float waterShininess;

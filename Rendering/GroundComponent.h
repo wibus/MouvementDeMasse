@@ -1,8 +1,6 @@
 #ifndef GROUNDCOMPONENT_H
 #define GROUNDCOMPONENT_H
 
-#include <DataStructure/Vector.h>
-
 #include "MdMTypes.h"
 #include "AbstractComponent.h"
 

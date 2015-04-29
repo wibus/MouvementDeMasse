@@ -5,8 +5,8 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 
-#include <Misc/CellarUtils.h>
-#include <Misc/Log.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/Log.h>
 
 using namespace cellar;
 
@@ -32,13 +32,15 @@ Description::Description() :
     storyHeight(   8.0f * unitPerMeter),
     normalWalkingSpeed( 1.4f * unitPerMeter) // real life = 1.4 m/s
 {
-    sunLight.direction(1.0f, 1.0f, 0.0f, 0.0f).normalize();
-    sunLight.diffuse( 0.76f, 0.74f, 0.72f);
-    sunLight.specular(0.65f, 0.58f, 0.46f);
+    sunLight.direction = glm::normalize(glm::vec4(1.0f, 1.0f, 0.0f, 0.0f));
+    sunLight.diffuse = glm::vec4( 0.76f, 0.74f, 0.72f , 1.0f);
+    sunLight.specular = glm::vec4(0.65f, 0.58f, 0.46f, 1.0f);
 }
 
 bool Description::load(const std::string& fileName)
 {
+    throw std::exception();
+/*
     QFile xmlFile(fileName.c_str());
     xmlFile.open(QIODevice::ReadOnly);
     QTextStream xmlStream(&xmlFile);
@@ -102,11 +104,14 @@ bool Description::load(const std::string& fileName)
 
         return false;
     }
+    */
     return true;
 }
 
 bool Description::save(const std::string& fileName)
 {
+    throw std::exception();
+/*
     QString xmlDoc;
     QXmlStreamWriter xml(&xmlDoc);
 
@@ -159,5 +164,6 @@ bool Description::save(const std::string& fileName)
     QTextStream stream(&file);
     stream << xmlDoc;
     file.close();
+    */
     return true;
 }

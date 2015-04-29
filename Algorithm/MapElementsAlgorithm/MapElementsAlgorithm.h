@@ -18,8 +18,8 @@ public:
 protected:
     Land::Type _typesOfLand[Land::NB_TYPES];
 
-    CardinalDirection toCardinal(const cellar::Vec2i& dir);
-    cellar::Vec2i    getNeighbor(const cellar::Vec2i& pos, const cellar::Vec2i& dir);
+    CardinalDirection toCardinal(const glm::ivec2& dir);
+    glm::ivec2    getNeighbor(const glm::ivec2& pos, const glm::ivec2& dir);
 };
 
 #endif // MAPELEMENTSALGORITHM_H

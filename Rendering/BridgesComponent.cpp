@@ -1,14 +1,15 @@
 #include "BridgesComponent.h"
 
 #include <cmath>
-#include <gl3w.h>
+#include <GL3/gl3w.h>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <CellarWorkbench/Geometry/Segment2D.h>
 using namespace cellar;
 
-#include <GL/GlToolkit.h>
-#include <Image/ImageBank.h>
+#include <MediaWorkbench/GL/GlToolkit.h>
+#include <MediaWorkbench/Image/ImageBank.h>
 using namespace media;
 
 
@@ -36,39 +37,39 @@ BridgesComponent::~BridgesComponent()
 
 void BridgesComponent::setup()
 {
-    vector<Vec3f> positions;
-    vector<Vec3f> normals;
-    vector<Vec2f> texCoords;
+    vector<glm::vec3> positions;
+    vector<glm::vec3> normals;
+    vector<glm::vec2> texCoords;
 
     float roadHalfwidth = _description.roadWidth * 0.5f;
     float bridgeHalfWidth = _description.bridgeWidth * 0.5f;
-    float diagonal = Vec2f(_description.bridgeWidth, _description.bridgeWidth).length();
+    float diagonal = glm::length(glm::vec2(_description.bridgeWidth, _description.bridgeWidth));
 
-    Vec3f corners[4];
+    glm::vec3 corners[4];
 
     for(size_t b=0; b<_city.bridges().size(); ++b)
     {
-        Vec3f endA = Vec3f(_city.bridges()[b].endA(),
+        glm::vec3 endA = glm::vec3(_city.bridges()[b].endA(),
                            _ground.heightAt(_city.bridges()[b].endA()));
-        Vec3f endB = Vec3f(_city.bridges()[b].endB(),
+        glm::vec3 endB = glm::vec3(_city.bridges()[b].endB(),
                            _ground.heightAt(_city.bridges()[b].endB()));
 
 
-        float length = ((endB - endA).length() - 2.0f*bridgeHalfWidth) / _description.bridgeWidth;
+        float length = (glm::distance(endA, endB) - 2.0f*bridgeHalfWidth) / _description.bridgeWidth;
         float texDeckRepeat = length;
         float texBracingRepeat = floor(length / 4.0f + 0.5f);
 
-        Vec3f dir = (endB - endA).normalize();
-        Vec3f perp = Vec3f(perpCCW(Vec2f(dir).normalize()), 0.0f);
-        Vec3f up = cross(dir, perp) * _description.bridgeHeight;
+        glm::vec3 dir = glm::normalize((endB - endA));
+        glm::vec3 perp = glm::vec3(Segment2D::perpCCW(glm::normalize(glm::vec2(dir))), 0.0f);
+        glm::vec3 up = cross(dir, perp) * _description.bridgeHeight;
 
-        Vec2f domDirAxe, domDiraxePerp;
-        if(absolute(dir.x()) < absolute(dir.y()))
-            domDirAxe(0, sign(dir.y()));
+        glm::vec2 domDirAxe, domDiraxePerp;
+        if(absolute(dir.x) < absolute(dir.y))
+            domDirAxe = glm::vec2(0, sign(dir.y));
         else
-            domDirAxe(sign(dir.x()), 0);
+            domDirAxe = glm::vec2(sign(dir.x), 0);
         domDiraxePerp = domDirAxe;
-        domDiraxePerp = perpCCW(domDiraxePerp);
+        domDiraxePerp = Segment2D::perpCCW(domDiraxePerp);
 
 
         // Positions
@@ -90,50 +91,50 @@ void BridgesComponent::setup()
         for(int c=0; c<6; ++c)
             normals.push_back(up);
 
-        texCoords.push_back(Vec2f(0.0f,          0.5f));
-        texCoords.push_back(Vec2f(0.0f,          0.0f));
-        texCoords.push_back(Vec2f(texDeckRepeat, 0.0f));
-        texCoords.push_back(Vec2f(texDeckRepeat, 0.0f));
-        texCoords.push_back(Vec2f(texDeckRepeat, 0.5f));
-        texCoords.push_back(Vec2f(0.0f,          0.5f));
+        texCoords.push_back(glm::vec2(0.0f,          0.5f));
+        texCoords.push_back(glm::vec2(0.0f,          0.0f));
+        texCoords.push_back(glm::vec2(texDeckRepeat, 0.0f));
+        texCoords.push_back(glm::vec2(texDeckRepeat, 0.0f));
+        texCoords.push_back(glm::vec2(texDeckRepeat, 0.5f));
+        texCoords.push_back(glm::vec2(0.0f,          0.5f));
 
 
 
         // Entrance 1
-        positions.push_back(endA + Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
-        positions.push_back(endA + Vec3f(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endA + glm::vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endA + glm::vec3(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
         positions.push_back(corners[1]);
         positions.push_back(corners[0]);
         positions.push_back(corners[1]);
-        positions.push_back(endA + Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endA + glm::vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
 
         for(int c=0; c<6; ++c)
             normals.push_back(up);
 
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
 
         // Entrance 2
-        positions.push_back(endB - Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
-        positions.push_back(endB - Vec3f(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endB - glm::vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endB - glm::vec3(domDirAxe - domDiraxePerp, 0.0f) * roadHalfwidth);
         positions.push_back(corners[3]);
         positions.push_back(corners[3]);
         positions.push_back(corners[2]);
-        positions.push_back(endB - Vec3f(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
+        positions.push_back(endB - glm::vec3(domDirAxe + domDiraxePerp, 0.0f) * roadHalfwidth);
 
         for(int c=0; c<6; ++c)
             normals.push_back(up);
 
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
-        texCoords.push_back(Vec2f(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
+        texCoords.push_back(glm::vec2(0.125f, 0.125f));
 
 
 
@@ -148,12 +149,12 @@ void BridgesComponent::setup()
         for(int c=0; c<6; ++c)
             normals.push_back(-perp);
 
-        texCoords.push_back(Vec2f(0.0f,             0.50f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.50f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
-        texCoords.push_back(Vec2f(0.0f,             0.75f));
-        texCoords.push_back(Vec2f(0.0f,             0.50f));
+        texCoords.push_back(glm::vec2(0.0f,             0.50f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.50f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.75f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.75f));
+        texCoords.push_back(glm::vec2(0.0f,             0.75f));
+        texCoords.push_back(glm::vec2(0.0f,             0.50f));
 
         // Side 2
         positions.push_back(corners[0]);
@@ -166,12 +167,12 @@ void BridgesComponent::setup()
         for(int c=0; c<6; ++c)
             normals.push_back(perp);
 
-        texCoords.push_back(Vec2f(0.0f,             0.50f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.50f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
-        texCoords.push_back(Vec2f(0.0f,             0.75f));
-        texCoords.push_back(Vec2f(0.0f,             0.50f));
+        texCoords.push_back(glm::vec2(0.0f,             0.50f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.50f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.75f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.75f));
+        texCoords.push_back(glm::vec2(0.0f,             0.75f));
+        texCoords.push_back(glm::vec2(0.0f,             0.50f));
 
 
 
@@ -186,12 +187,12 @@ void BridgesComponent::setup()
         for(int c=0; c<6; ++c)
             normals.push_back(up);
 
-        texCoords.push_back(Vec2f(0.0f,             1.0f));
-        texCoords.push_back(Vec2f(0.0f,             0.75f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 0.75f));
-        texCoords.push_back(Vec2f(texBracingRepeat, 1.0f));
-        texCoords.push_back(Vec2f(0.0f,             1.0f));
+        texCoords.push_back(glm::vec2(0.0f,             1.0f));
+        texCoords.push_back(glm::vec2(0.0f,             0.75f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.75f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 0.75f));
+        texCoords.push_back(glm::vec2(texBracingRepeat, 1.0f));
+        texCoords.push_back(glm::vec2(0.0f,             1.0f));
     }
 
     _bridgeNbElems = static_cast<int>(positions.size());

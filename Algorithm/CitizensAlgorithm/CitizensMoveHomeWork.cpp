@@ -1,6 +1,10 @@
 #include "CitizensMoveHomeWork.h"
 
+#include <iostream>
+
 using namespace std;
+
+#include <CellarWorkbench/Geometry/Segment2D.h>
 using namespace cellar;
 
 
@@ -142,7 +146,7 @@ float CitizensMoveHomeWork::gotoWork(Citizen& ctz, float timeToMove)
 
     while( !path.isEndReached() )
     {
-        float distance = Vec2f(path.nextNode->pos - path.curNode->pos).length();
+        float distance = glm::length(glm::vec2(path.nextNode->pos - path.curNode->pos));
         float toWalk = distance * (1.0f - path.nodeProgession);
 
         if(toWalk < canWalk)
@@ -190,7 +194,7 @@ float CitizensMoveHomeWork::gotoHome(Citizen& ctz, float timeToMove)
 
     while( !ctz.homeToWorkPath.isRevEndReached() )
     {
-        float distance = Vec2f(path.revNextNode->pos - path.revCurNode->pos).length();
+        float distance = glm::length(glm::vec2(path.revNextNode->pos - path.revCurNode->pos));
         float toWalk = distance * (1.0f - path.nodeProgession);
 
         if(toWalk < canWalk)
@@ -223,7 +227,7 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
     Path& path = ctz.homeToWorkPath;
     float progression = path.nodeProgession;
 
-    Vec2i begPos, endPos;
+    glm::ivec2 begPos, endPos;
     if(ctz.curState == CITIZEN_GOTO_WORK)
     {
         begPos = path.curNode->pos;
@@ -235,37 +239,37 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
         endPos = path.revNextNode->pos;
     }
 
-    Vec2f juncToJunc     = endPos - begPos;
-    float totalLength    = juncToJunc.length();
+    glm::vec2 juncToJunc     = endPos - begPos;
+    float totalLength    = glm::length(juncToJunc);
     float roadLength     = totalLength - _juncLength;
     float walkedLength   = progression * totalLength;
 
     if(_juncHalfLength <= walkedLength && walkedLength <= _juncHalfLength + roadLength)
     {
         // Direction
-        Vec2f dir2D        = juncToJunc.normalized();
-        Vec2f roadVec      = dir2D * roadLength;
+        glm::vec2 dir2D        = glm::normalize(juncToJunc);
+        glm::vec2 roadVec      = dir2D * roadLength;
 
         // Height
         float begHeight = _ground->heightAt(begPos);
         float endHeight = _ground->heightAt(endPos);
         float deltaz = endHeight - begHeight;
 
-        ctz.direction(roadVec.x(), roadVec.y(), deltaz).normalize();
+        ctz.direction = glm::normalize(glm::vec3(roadVec.x, roadVec.y, deltaz));
 
 
         // Progression
         float road3DLength = sqrt(roadLength*roadLength + deltaz*deltaz);
         float streetProg   = (walkedLength - _juncHalfLength) / roadLength;
-        Vec2f right( perpCW(dir2D * _juncLength / 4.0f) );
+        glm::vec2 right( Segment2D::perpCW(dir2D * _juncLength / 4.0f) );
 
-        ctz.position  = Vec3f(right + begPos + dir2D*_juncHalfLength, begHeight);
+        ctz.position  = glm::vec3(right + glm::vec2(begPos) + dir2D*_juncHalfLength, begHeight);
         ctz.position += ctz.direction*streetProg*road3DLength;
     }
     else
     {
         //
-        Vec2i prevPos, nextPos;
+        glm::ivec2 prevPos, nextPos;
         if(ctz.curState == CITIZEN_GOTO_WORK)
         {
             if( !path.isBeginReached() ) prevPos = (path.curNode-1)->pos;
@@ -283,8 +287,8 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
 
         float juncHeight;
         float juncProg;
-        Vec2f juncPos;
-        Vec2f lastDir2d, lastRight, lastRealPos,
+        glm::vec2 juncPos;
+        glm::vec2 lastDir2d, lastRight, lastRealPos,
               nextDir2d, nextRight, nextRealPos;
 
         if(progression < 0.5f)
@@ -310,28 +314,28 @@ void CitizensMoveHomeWork::placeCitizenOnRoad(Citizen& ctz)
         float nextWeight = juncProg;
 
         // Direction
-        Vec2f dirInterpol = (lastWeight*lastDir2d + nextWeight*nextDir2d).normalize();
-        ctz.direction(dirInterpol.x(), dirInterpol.y(), 0.0f);
+        glm::vec2 dirInterpol = glm::normalize(lastWeight*lastDir2d + nextWeight*nextDir2d);
+        ctz.direction = glm::vec3(dirInterpol.x, dirInterpol.y, 0.0f);
 
         // Position
-        lastDir2d.normalize();
+        lastDir2d = glm::normalize(lastDir2d);
         lastDir2d *= _juncHalfLength;
-        lastRight = perpCW(lastDir2d / 2.0f);
+        lastRight = Segment2D::perpCW(lastDir2d / 2.0f);
         lastRealPos = -lastDir2d + lastRight;
 
-        nextDir2d.normalize();
+        nextDir2d = glm::normalize(nextDir2d);
         nextDir2d *= _juncHalfLength;
-        nextRight = perpCW(nextDir2d / 2.0f);
+        nextRight = Segment2D::perpCW(nextDir2d / 2.0f);
         nextRealPos = nextDir2d + nextRight;
 
-        Vec2f posInterpol = juncPos + lastWeight*lastRealPos + nextWeight*nextRealPos;
-        ctz.position(posInterpol.x(), posInterpol.y(), juncHeight);
+        glm::vec2 posInterpol = juncPos + lastWeight*lastRealPos + nextWeight*nextRealPos;
+        ctz.position = glm::vec3(posInterpol.x, posInterpol.y, juncHeight);
     }
 }
 
 void CitizensMoveHomeWork::placeCitizenOnBuilding(Citizen& ctz)
 {
-    Vec2i buildingPos;
+    glm::ivec2 buildingPos;
     if(ctz.curState == CITIZEN_AT_HOME)
         buildingPos = ctz.homePos;
     else if(ctz.curState == CITIZEN_AT_WORK)
@@ -339,13 +343,13 @@ void CitizensMoveHomeWork::placeCitizenOnBuilding(Citizen& ctz)
     else return;
 
     // XY Position
-    const Vec2f center(0.5f, 0.5f);
-    Vec2f randomRoofPos(randomRange(-0.4f, 0.4f), randomRange(-0.4f, 0.4f));
-    Vec2f pos2d = center + buildingPos + randomRoofPos;
+    const glm::vec2 center(0.5f, 0.5f);
+    glm::vec2 randomRoofPos(randomRange(-0.4f, 0.4f), randomRange(-0.4f, 0.4f));
+    glm::vec2 pos2d = center + glm::vec2(buildingPos) + randomRoofPos;
 
     // Height
     float baseHeight = _ground->landLowerCornerAt(buildingPos);
     float buildingHeight = _city->lands().get(buildingPos)->nbStories() * _description->storyHeight;
 
-    ctz.position(pos2d.x(), pos2d.y(), baseHeight + buildingHeight);
+    ctz.position = glm::vec3(pos2d.x, pos2d.y, baseHeight + buildingHeight);
 }

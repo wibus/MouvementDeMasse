@@ -1,9 +1,8 @@
 #ifndef GROUND_H
 #define GROUND_H
 
-#include <DataStructure/Vector.h>
-#include <DataStructure/Grid2D.h>
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/DataStructure/Grid2D.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
 
 
 class Ground
@@ -22,18 +21,18 @@ public:
     void setWaterHeight(float height);
 
     float heightAt(int x, int y) const;
-    float heightAt(const cellar::Vec2i& pos) const;
+    float heightAt(const glm::ivec2& pos) const;
     float heightAt(float x, float y) const;
-    float heightAt(const cellar::Vec2f& pos) const;
+    float heightAt(const glm::vec2& pos) const;
     float landLowerCornerAt(int x, int y) const;
-    float landLowerCornerAt(const cellar::Vec2i& pos) const;
+    float landLowerCornerAt(const glm::ivec2& pos) const;
     float landHigherCornerAt(int x, int y) const;
-    float landHigherCornerAt(const cellar::Vec2i& pos) const;
+    float landHigherCornerAt(const glm::ivec2& pos) const;
 
     void setHeightAt(int x, int y, float height);
-    void setHeightAt(const cellar::Vec2i& pos, float height);
+    void setHeightAt(const glm::ivec2& pos, float height);
 
-    cellar::Vec3f normalAt(float x, float y) const;
+    glm::vec3 normalAt(float x, float y) const;
     float dzdx(float x, float y) const;
     float dzdy(float x, float y) const;
 
@@ -95,25 +94,25 @@ inline float Ground::heightAt(int x, int y) const
                         cellar::clamp(y, 0, _height-1));
 }
 
-inline float Ground::heightAt(const cellar::Vec2i& pos) const
+inline float Ground::heightAt(const glm::ivec2& pos) const
 {
-    return _heights.get(cellar::clamp(pos.x(), 0, _width-1),
-                        cellar::clamp(pos.y(), 0, _height-1));
+    return _heights.get(cellar::clamp(pos.x, 0, _width-1),
+                        cellar::clamp(pos.y, 0, _height-1));
 }
 
-inline float Ground::heightAt(const cellar::Vec2f& pos) const
+inline float Ground::heightAt(const glm::vec2& pos) const
 {
-    return heightAt(pos.x(), pos.y());
+    return heightAt(pos.x, pos.y);
 }
 
-inline float Ground::landLowerCornerAt(const cellar::Vec2i& pos) const
+inline float Ground::landLowerCornerAt(const glm::ivec2& pos) const
 {
-    return landLowerCornerAt(pos.x(), pos.y());
+    return landLowerCornerAt(pos.x, pos.y);
 }
 
-inline float Ground::landHigherCornerAt(const cellar::Vec2i& pos) const
+inline float Ground::landHigherCornerAt(const glm::ivec2& pos) const
 {
-    return landHigherCornerAt(pos.x(), pos.y());
+    return landHigherCornerAt(pos.x, pos.y);
 }
 
 inline void Ground::setHeightAt(int x, int y, float height)
@@ -121,14 +120,14 @@ inline void Ground::setHeightAt(int x, int y, float height)
     _heights.set(x, y , height);
 }
 
-inline void Ground::setHeightAt(const cellar::Vec2i &pos, float height)
+inline void Ground::setHeightAt(const glm::ivec2 &pos, float height)
 {
     _heights.set(pos, height);
 }
 
-inline cellar::Vec3f Ground::normalAt(float x, float y) const
+inline glm::vec3 Ground::normalAt(float x, float y) const
 {
-    return cellar::Vec3f(-dzdx(x, y), -dzdy(x, y), 1.0f).normalize();
+    return glm::normalize(glm::vec3(-dzdx(x, y), -dzdy(x, y), 1.0f));
 }
 
 const float ds = 0.25;

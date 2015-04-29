@@ -1,7 +1,7 @@
 #ifndef ABSTRACTCOMPONENT_H
 #define ABSTRACTCOMPONENT_H
 
-#include <GL/GlProgram.h>
+#include <MediaWorkbench/GL/GlProgram.h>
 #include <City/City.h>
 
 
@@ -9,8 +9,10 @@ class AbstractComponent
 {
 public:
     AbstractComponent(City& city, media::GlProgram& shader) :
-        _city(city),                      _ground(city.ground()),
-        _description(city.description()), _shader(shader)
+        _city(city),
+        _ground(city.ground()),
+        _description(city.description()),
+        _shader(shader)
     {}
     virtual ~AbstractComponent() {}
 

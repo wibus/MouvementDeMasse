@@ -1,6 +1,7 @@
 #include "City.h"
 
 #include <cmath>
+#include <iostream>
 using namespace std;
 
 #include <QFile>
@@ -17,7 +18,7 @@ City::City(int width, int height):
     _dateAndTime(2000, (int)EMonth::JANUARY, 0, 18, 0, 0),
     _timeJump(0, 0, 0, 0, 0, 20),
     _sky(256, 256),
-    _sun(Vec4f(-1, -1, 2, 0).normalize(), Vec3f(1.0, 1.0, 1.0).normalize()),
+    _sun(glm::normalize(glm::vec4(-1, -1, 2, 0)), glm::normalize(glm::vec3(1.0, 1.0, 1.0))),
     _ground(   width+1, height+1),    
     _lands(    width,   height),
     _junctions(width+1, height+1),
@@ -91,8 +92,8 @@ bool City::save(const string& fileName)
 
     xml.writeStartElement("city");
         xml.writeStartElement("size");
-            xml.writeAttribute("width", QString::number(_size.x()));
-            xml.writeAttribute("height", QString::number(_size.y()));
+            xml.writeAttribute("width", QString::number(_size.x));
+            xml.writeAttribute("height", QString::number(_size.y));
         xml.writeEndElement(); // size
 
         xml.writeStartElement("calendar");
@@ -117,8 +118,9 @@ bool City::save(const string& fileName)
         xml.writeEndElement(); //sky
 
         xml.writeStartElement("sun");
-            xml.writeAttribute("midhightDirection", toString(_sun.midnightDirection()).c_str());
-            xml.writeAttribute("rotationAxis",      toString(_sun.rotationAxis()).c_str());
+        // TODO wbussiere 2015-04-27 : Output vectors
+//            xml.writeAttribute("midhightDirection", toString(_sun.midnightDirection()).c_str());
+//            xml.writeAttribute("rotationAxis",      toString(_sun.rotationAxis()).c_str());
         xml.writeEndElement(); //sun
 
         xml.writeStartElement("ground");
@@ -142,7 +144,8 @@ bool City::save(const string& fileName)
                 for(int i=0; i<_lands.getWidth(); ++i)
                 {
                     xml.writeStartElement("land");
-                        xml.writeAttribute("pos", toString(Vec2i(i, j)).c_str());
+                    // TODO wbussiere 2015-04-27 : Output vectors
+//                        xml.writeAttribute("pos", toString(glm::ivec2(i, j)).c_str());
                         xml.writeAttribute("type", Land::TYPE_STRINGS[_lands.get(i, j)->type()].c_str());
                         xml.writeAttribute("nbStories",   QString::number(_lands.get(i, j)->nbStories()));
                         xml.writeAttribute("capacity",    QString::number(_lands.get(i, j)->capacity()));
@@ -164,7 +167,8 @@ bool City::save(const string& fileName)
                 for(int i=0; i<_junctions.getWidth(); ++i)
                 {
                     xml.writeStartElement("junction");
-                        xml.writeAttribute("pos", toString(Vec2i(i, j)).c_str());
+                    // TODO wbussiere 2015-04-27 : Output vectors
+//                        xml.writeAttribute("pos", toString(glm::ivec2(i, j)).c_str());
                         xml.writeAttribute("type", Junction::TYPE_STRINGS[_junctions.get(i, j)->type()].c_str());
                         for(int d=0; d<NB_DIRECTIONS; ++d)
                         {
@@ -186,8 +190,9 @@ bool City::save(const string& fileName)
             for(BridgeIterator b=_bridges.begin(); b!=_bridges.end(); ++b)
             {
                 xml.writeStartElement("bridge");
-                    xml.writeAttribute("endA", toString( b->endA() ).c_str());
-                    xml.writeAttribute("endB", toString( b->endB() ).c_str());
+                // TODO wbussiere 2015-04-27 : Output vectors
+//                    xml.writeAttribute("endA", toString( b->endA() ).c_str());
+//                    xml.writeAttribute("endB", toString( b->endB() ).c_str());
                 xml.writeEndElement();
             }
         xml.writeEndElement(); //bridges
@@ -203,22 +208,25 @@ bool City::save(const string& fileName)
                     xml.writeAttribute("id",    QString::number(ctz.id()));
                     xml.writeAttribute("state", CITIZEN_STATE_STRINGS[ctz.curState].c_str());
                     xml.writeAttribute("walkingSpeed", QString::number(ctz.walkingSpeed));
-                    xml.writeAttribute("position", toString(ctz.position).c_str());
-                    xml.writeAttribute("direction", toString(ctz.direction).c_str());
-                    xml.writeAttribute("homePos", toString(ctz.homePos).c_str());
-                    xml.writeAttribute("workPos", toString(ctz.workPos).c_str());
+                    // TODO wbussiere 2015-04-27 : Output vectors
+//                    xml.writeAttribute("position", toString(ctz.position).c_str());
+//                    xml.writeAttribute("direction", toString(ctz.direction).c_str());
+//                    xml.writeAttribute("homePos", toString(ctz.homePos).c_str());
+//                    xml.writeAttribute("workPos", toString(ctz.workPos).c_str());
 
                     xml.writeStartElement("path");
                         xml.writeAttribute("name", "Home to Work path");
-                        xml.writeAttribute("src", toString(ctz.homeToWorkPath.source).c_str());
-                        xml.writeAttribute("dst", toString(ctz.homeToWorkPath.destination).c_str());
+                        // TODO wbussiere 2015-04-27 : Output vectors
+//                        xml.writeAttribute("src", toString(ctz.homeToWorkPath.source).c_str());
+//                        xml.writeAttribute("dst", toString(ctz.homeToWorkPath.destination).c_str());
                         xml.writeAttribute("nbNodes", QString::number(ctz.homeToWorkPath.nodes.size()));
                         for(Path::NodeIterator n=ctz.homeToWorkPath.nodes.begin();
                             n != ctz.homeToWorkPath.nodes.end(); ++n)
                         {
                             xml.writeStartElement("node");
                                 xml.writeAttribute("type", Path::NODE_TYPE_STRINGS[n->type].c_str());
-                                xml.writeAttribute("position", toString(n->pos).c_str());
+                                // TODO wbussiere 2015-04-27 : Output vectors
+//                                xml.writeAttribute("position", toString(n->pos).c_str());
                             xml.writeEndElement(); //node
                         }
                     xml.writeEndElement(); //path

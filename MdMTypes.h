@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <DataStructure/Vector.h>
+#include <GLM/glm.hpp>
 
 
 enum CardinalDirection{EAST, WEST, NORTH, SOUTH, NB_DIRECTIONS, DIRECTION_ERROR};
@@ -17,7 +17,7 @@ const CardinalDirection INT_TO_CARDINAL_DIRECTION[NB_DIRECTIONS] = {
 
 CardinalDirection turnCW(CardinalDirection dir);
 CardinalDirection turnCCW(CardinalDirection dir);
-CardinalDirection toDirection(const cellar::Vec2i& vec);
-cellar::Vec2i     toVec(CardinalDirection dir);
+CardinalDirection toDirection(const glm::ivec2& vec);
+glm::ivec2        toVec(CardinalDirection dir);
 
 #endif // MDMTYPES_H

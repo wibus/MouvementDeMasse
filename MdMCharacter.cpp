@@ -3,20 +3,22 @@
 #include <iostream>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
-#include <Misc/Log.h>
-#include <DateAndTime/Timer.h>
+#include <GLM/gtc/matrix_transform.hpp>
+
+#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/Log.h>
+#include <CellarWorkbench/DateAndTime/Clock.h>
 using namespace cellar;
 
 using namespace media;
 
-#include <PropTeam/AbstractPropTeam.h>
+#include <PropRoom2D/PropTeam/AbstractPropTeam.h>
 using namespace prop2;
 
-#include <Stage/Event/StageTime.h>
-#include <Stage/Event/SynchronousKeyboard.h>
-#include <Stage/Event/SynchronousMouse.h>
-#include <Stage/AbstractStage.h>
+#include <Scaena/Stage/Event/StageTime.h>
+#include <Scaena/Stage/Event/SynchronousKeyboard.h>
+#include <Scaena/Stage/Event/SynchronousMouse.h>
+#include <Scaena/Stage/AbstractStage.h>
 using namespace scaena;
 
 #include "City/City.h"
@@ -40,9 +42,7 @@ MdMCharacter::MdMCharacter(AbstractStage& stage) :
     _fpsText(),
     _upsText()
 {
-    stage.camera().setTripod(Vec3f(_city->size().x() / 2.0f, 0.0f, _city->ground().maxHeight()),
-                             Vec3f(_city->size().x() / 2.0f, _city->size().y() / 2.0f, 0.0f),
-                             Vec3f(0.0f, 0.0f, 1.0f));
+    _camMan.setPosition(glm::vec3(_city->size().x / 2.0f, 0.0f, _city->ground().maxHeight()));
     stage.camera().registerObserver( *this );
 }
 
@@ -57,23 +57,26 @@ MdMCharacter::~MdMCharacter()
 
 void MdMCharacter::enterStage()
 {
-    setAlgorithms();
+    setupAlgorithms();
     stage().camera().refresh();
 
-    _dateText = stage().propTeam().createTextHud();
-    _dateText->setHandlePosition(Vec2r(10, -30));
+    _dateText = stage().propTeam2D().createTextHud();
+    _dateText->setHandlePosition(glm::dvec2(10, -30));
     _dateText->setHorizontalAnchor(EHorizontalAnchor::LEFT);
     _dateText->setVerticalAnchor(EVerticalAnchor::TOP);
+    _dateText->setHeight(16);
 
-    _fpsText = stage().propTeam().createTextHud();
-    _fpsText->setHandlePosition(Vec2r(5, 5));
+    _fpsText = stage().propTeam2D().createTextHud();
+    _fpsText->setHandlePosition(glm::dvec2(5, 5));
     _fpsText->setHorizontalAnchor(EHorizontalAnchor::LEFT);
     _fpsText->setVerticalAnchor(EVerticalAnchor::BOTTOM);
+    _fpsText->setHeight(16);
 
-    _upsText = stage().propTeam().createTextHud();
-    _upsText->setHandlePosition(Vec2r(5, 25));
+    _upsText = stage().propTeam2D().createTextHud();
+    _upsText->setHandlePosition(glm::dvec2(5, 25));
     _upsText->setHorizontalAnchor(EHorizontalAnchor::LEFT);
     _upsText->setVerticalAnchor(EVerticalAnchor::BOTTOM);
+    _upsText->setHeight(16);
 }
 
 void MdMCharacter::beginStep(const StageTime &time)
@@ -111,11 +114,11 @@ void MdMCharacter::updateCamera(float elapsedtime)
         _camMan.sideward(velocity);
     }
 
-    if(stage().synchronousMouse().displacement() != Vec2i(0, 0) &&
+    if(stage().synchronousMouse().displacement() != glm::ivec2(0, 0) &&
        stage().synchronousMouse().buttonIsPressed(EMouseButton::LEFT))
     {
-        _camMan.turnHorizontaly(stage().synchronousMouse().displacement().x() * turnSpeed);
-        _camMan.turnVerticaly(  stage().synchronousMouse().displacement().y() * turnSpeed);
+        _camMan.pan( stage().synchronousMouse().displacement().x * -turnSpeed);
+        _camMan.tilt(stage().synchronousMouse().displacement().y * -turnSpeed);
     }
 }
 
@@ -132,9 +135,9 @@ void MdMCharacter::draw(const scaena::StageTime &time)
 
 void MdMCharacter::exitStage()
 {
-    stage().propTeam().deleteTextHud(_dateText);
-    stage().propTeam().deleteTextHud(_fpsText);
-    stage().propTeam().deleteTextHud(_upsText);
+    stage().propTeam2D().deleteTextHud(_dateText);
+    stage().propTeam2D().deleteTextHud(_fpsText);
+    stage().propTeam2D().deleteTextHud(_upsText);
 }
 
 void MdMCharacter::notify(CameraMsg &msg)
@@ -170,9 +173,9 @@ bool MdMCharacter::loadCity(const std::string& fileName)
     return _city->load( fileName );
 }
 
-void MdMCharacter::setAlgorithms()
+void MdMCharacter::setupAlgorithms()
 {
-    Timer timer;
+    Clock timer;
     timer.start();
     getLog().postMessage(new Message('I', false, "Start city algorithms", "MdMCharacter"));
 
@@ -183,18 +186,22 @@ void MdMCharacter::setAlgorithms()
 
     // Height algorithm
     _heightsAlgo->setup( *_city );
-    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Height algo finished.", "MdMCharacter"));
+    timer.tick();
+    getLog().postMessage(new Message('I', false, toString(timer.totalSeconds()) + " -> Height algo finished.", "MdMCharacter"));
 
     // Map elements
     _mapElemAlgo->setup( *_city );
-    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Map Elements algo finished.", "MdMCharacter"));
+    timer.tick();
+    getLog().postMessage(new Message('I', false, toString(timer.totalSeconds()) + " -> Map Elements algo finished.", "MdMCharacter"));
 
     // Citizens
     _citizensDistribAlgo->setup( *_city );
     _citizenMoveAlgo->setup( *_city );
-    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Citizens algo finished.", "MdMCharacter"));
+    timer.tick();
+    getLog().postMessage(new Message('I', false, toString(timer.totalSeconds()) + " -> Citizens algo finished.", "MdMCharacter"));
 
     // Rendering
     _drawCityModule->setup( *_city );
-    getLog().postMessage(new Message('I', false, toString(timer.counter()) + " -> Draw module finished.", "MdMCharacter"));
+    timer.tick();
+    getLog().postMessage(new Message('I', false, toString(timer.totalSeconds()) + " -> Draw module finished.", "MdMCharacter"));
 }

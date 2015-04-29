@@ -1,7 +1,7 @@
 #ifndef MDMPLAY_H
 #define MDMPLAY_H
 
-#include <Play/SingleActPlay.h>
+#include <Scaena/Play/SingleActPlay.h>
 
 
 class MdMPlay : public scaena::SingleActPlay

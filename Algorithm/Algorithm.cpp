@@ -19,6 +19,7 @@ void Algorithm::setup(City &city)
     _city = &city;
     _ground  = &(city.ground());
     _description  = &(city.description());
-    _mapSize(_city->junctions().getWidth(),
-             _city->junctions().getHeight());
+    _mapSize = glm::ivec2(
+        _city->junctions().getWidth(),
+        _city->junctions().getHeight());
 }

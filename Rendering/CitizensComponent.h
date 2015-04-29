@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <DataStructure/Matrix.h>
-
 #include "AbstractComponent.h"
 
 
@@ -24,7 +22,7 @@ protected:
     unsigned int _citizenVao;
     unsigned int _citizenTex;
     int _citizenNbElems;
-    std::vector<cellar::Mat4f> _modelMats;
+    std::vector<glm::mat4> _modelMats;
 };
 
 #endif // CITIZENSCOMPONENT_H

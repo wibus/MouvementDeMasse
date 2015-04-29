@@ -1,13 +1,13 @@
 #include "BuildingsComponent.h"
 
-#include <gl3w.h>
+#include <GL3/gl3w.h>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
 
-#include <GL/GlToolkit.h>
-#include <Image/ImageBank.h>
+#include <MediaWorkbench/GL/GlToolkit.h>
+#include <MediaWorkbench/Image/ImageBank.h>
 using namespace media;
 
 
@@ -94,27 +94,27 @@ void BuildingsComponent::setupPositions()
     _commerceNbStories.clear();
 
 
-    for(int j=0; j<_city.size().y(); ++j)
+    for(int j=0; j<_city.size().y; ++j)
     {
-        for(int i=0; i<_city.size().x(); ++i)
+        for(int i=0; i<_city.size().x; ++i)
         {
             if(_city.lands().get(i,j)->type() == Land::GRASS)
                 continue;
 
-            Vec3f pos = Vec3f(i, j, _ground.landLowerCornerAt(i, j));
+            glm::vec3 pos = glm::vec3(i, j, _ground.landLowerCornerAt(i, j));
             float height = _city.lands().get(i,j)->nbStories() * _description.storyHeight;
 
-            _roofPos.push_back(Vec3f(pos.x(), pos.y(), pos.z() + height));
+            _roofPos.push_back(glm::vec3(pos.x, pos.y, pos.z + height));
 
             if(_city.lands().get(i,j)->type() == Land::RESIDENTIAL)
             {
-                _apartmentPos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
+                _apartmentPos.push_back( pos + glm::vec3(0.5f, 0.5f, 0.0f) );
                 _apartmentNbStories.push_back( _city.lands().get(i,j)->nbStories() );
             }
 
             if(_city.lands().get(i,j)->type() == Land::COMMERCIAL)
             {
-                _commercePos.push_back( pos + Vec3f(0.5f, 0.5f, 0.0f) );
+                _commercePos.push_back( pos + glm::vec3(0.5f, 0.5f, 0.0f) );
                 _commerceNbStories.push_back( _city.lands().get(i,j)->nbStories() );
             }
         }
@@ -125,48 +125,48 @@ void BuildingsComponent::setupBuidlindSides()
 {
     float halfWidth = 0.5f-_description.roadWidth*0.5f;
 
-    vector<Vec3f> positions;
-    vector<Vec3f> normals;
-    vector<Vec2f> texCoords;
+    vector<glm::vec3> positions;
+    vector<glm::vec3> normals;
+    vector<glm::vec2> texCoords;
 
 
     for(int s=0; s <= Land::maxNbStories(); ++s)
     {
         // South
-        positions.push_back(Vec3f(-halfWidth, -halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(0.0f,       -1.0f,      0.0f));
-        texCoords.push_back(Vec2f(0.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(-halfWidth, -halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(0.0f,       -1.0f,      0.0f));
+        texCoords.push_back(glm::vec2(0.0f,       s / 4.0f));
 
-        positions.push_back(Vec3f(+halfWidth, -halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(0.0f,       -1.0f,      0.0f));
-        texCoords.push_back(Vec2f(1.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(+halfWidth, -halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(0.0f,       -1.0f,      0.0f));
+        texCoords.push_back(glm::vec2(1.0f,       s / 4.0f));
 
         // East
-        positions.push_back(Vec3f(+halfWidth, -halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(+1.0f,      0.0f,       0.0f));
-        texCoords.push_back(Vec2f(0.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(+halfWidth, -halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(+1.0f,      0.0f,       0.0f));
+        texCoords.push_back(glm::vec2(0.0f,       s / 4.0f));
 
-        positions.push_back(Vec3f(+halfWidth, +halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(+1.0f,      0.0f,       0.0f));
-        texCoords.push_back(Vec2f(1.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(+halfWidth, +halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(+1.0f,      0.0f,       0.0f));
+        texCoords.push_back(glm::vec2(1.0f,       s / 4.0f));
 
         // North
-        positions.push_back(Vec3f(+halfWidth, +halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(0.0f,       +1.0f,      0.0f));
-        texCoords.push_back(Vec2f(0.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(+halfWidth, +halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(0.0f,       +1.0f,      0.0f));
+        texCoords.push_back(glm::vec2(0.0f,       s / 4.0f));
 
-        positions.push_back(Vec3f(-halfWidth, +halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(0.0f,       +1.0f,      0.0f));
-        texCoords.push_back(Vec2f(1.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(-halfWidth, +halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(0.0f,       +1.0f,      0.0f));
+        texCoords.push_back(glm::vec2(1.0f,       s / 4.0f));
 
         // West
-        positions.push_back(Vec3f(-halfWidth, +halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(-1.0f,      0.0f,       0.0f));
-        texCoords.push_back(Vec2f(0.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(-halfWidth, +halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(-1.0f,      0.0f,       0.0f));
+        texCoords.push_back(glm::vec2(0.0f,       s / 4.0f));
 
-        positions.push_back(Vec3f(-halfWidth, -halfWidth, s*_description.storyHeight));
-        normals.push_back(  Vec3f(-1.0f,      0.0f,       0.0f));
-        texCoords.push_back(Vec2f(1.0f,       s / 4.0f));
+        positions.push_back(glm::vec3(-halfWidth, -halfWidth, s*_description.storyHeight));
+        normals.push_back(  glm::vec3(-1.0f,      0.0f,       0.0f));
+        texCoords.push_back(glm::vec2(1.0f,       s / 4.0f));
 
 
         // Primitive assembly for the a building of 's' number of stories
@@ -216,20 +216,20 @@ void BuildingsComponent::setupRoofTop()
 
     float roadHalfWidth = _description.roadWidth * 0.5f;
 
-    Vec3f positions[4] =
+    glm::vec3 positions[4] =
     {
-        Vec3f(roadHalfWidth,   roadHalfWidth,   0),
-        Vec3f(1-roadHalfWidth, roadHalfWidth,   0),
-        Vec3f(1-roadHalfWidth, 1-roadHalfWidth, 0),
-        Vec3f(roadHalfWidth,   1-roadHalfWidth, 0)
+        glm::vec3(roadHalfWidth,   roadHalfWidth,   0),
+        glm::vec3(1-roadHalfWidth, roadHalfWidth,   0),
+        glm::vec3(1-roadHalfWidth, 1-roadHalfWidth, 0),
+        glm::vec3(roadHalfWidth,   1-roadHalfWidth, 0)
     };
 
-    Vec2f texCoords[4] =
+    glm::vec2 texCoords[4] =
     {
-        Vec2f(0,0),
-        Vec2f(1,0),
-        Vec2f(1,1),
-        Vec2f(0,1)
+        glm::vec2(0,0),
+        glm::vec2(1,0),
+        glm::vec2(1,1),
+        glm::vec2(0,1)
     };
 
 
@@ -267,7 +267,7 @@ void BuildingsComponent::draw()
 
     glBindVertexArray(_buildingWallsVao);
 
-    _shader.setVec2f("RepeatFrom", Vec2f(0.5f, 0.5f));
+    _shader.setVec2f("RepeatFrom", glm::vec2(0.5f, 0.5f));
     for(size_t i=0; i<_apartmentPos.size(); ++i)
     {
         _shader.setVec3f("Translation", _apartmentPos[i]);
@@ -277,8 +277,8 @@ void BuildingsComponent::draw()
             GL_UNSIGNED_INT,
             _buildingIndices[_apartmentNbStories[i]].data());
     }
-    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
-    _shader.setVec2f("RepeatFrom", Vec2f(1.0f, 1.0f));
+    _shader.setVec3f("Translation", glm::vec3(0.0f, 0.0f, 0.0f));
+    _shader.setVec2f("RepeatFrom", glm::vec2(1.0f, 1.0f));
 
 
     // Commercial
@@ -289,7 +289,7 @@ void BuildingsComponent::draw()
 
     glBindVertexArray(_buildingWallsVao);
 
-    _shader.setVec2f("RepeatFrom", Vec2f(0.5f, 0.5f));
+    _shader.setVec2f("RepeatFrom", glm::vec2(0.5f, 0.5f));
     for(size_t i=0; i<_commercePos.size(); ++i)
     {
         _shader.setVec3f("Translation", _commercePos[i]);
@@ -298,8 +298,8 @@ void BuildingsComponent::draw()
             GL_UNSIGNED_INT,
             _buildingIndices[_commerceNbStories[i]].data());
     }
-    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
-    _shader.setVec2f("RepeatFrom", Vec2f(1.0f, 1.0f));
+    _shader.setVec3f("Translation", glm::vec3(0.0f, 0.0f, 0.0f));
+    _shader.setVec2f("RepeatFrom", glm::vec2(1.0f, 1.0f));
 
 
     // Roof tops
@@ -315,7 +315,7 @@ void BuildingsComponent::draw()
         _shader.setVec3f("Translation", _roofPos[i] );
         glDrawArrays(GL_TRIANGLE_FAN , 0, _roofNbElems);
     }
-    _shader.setVec3f("Translation", Vec3f(0.0f, 0.0f, 0.0f));
+    _shader.setVec3f("Translation", glm::vec3(0.0f, 0.0f, 0.0f));
 
     _shader.popProgram();
 }

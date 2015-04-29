@@ -1,7 +1,6 @@
 #ifndef MAPELEMENTSDEPTHFIRST_H
 #define MAPELEMENTSDEPTHFIRST_H
 
-#include <DataStructure/Vector.h>
 #include <stack>
 
 #include "MapElementsAlgorithm.h"
@@ -15,7 +14,7 @@ public:
     virtual void setup(City& city);
 
 protected:
-    std::stack<cellar::Vec2i> _junctionsStack;
+    std::stack<glm::ivec2> _junctionsStack;
 };
 
 #endif // MAPELEMENTSDEPTHFIRST_H

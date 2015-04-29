@@ -3,13 +3,16 @@
 
 #include <memory>
 
-#include <DateAndTime/Calendar.h>
-#include <DesignPattern/SpecificObserver.h>
-#include <Camera/Camera.h>
-#include <Camera/CameraManFree.h>
-#include <Character/AbstractCharacter.h>
+#include <CellarWorkbench/DateAndTime/Calendar.h>
+#include <CellarWorkbench/DesignPattern/SpecificObserver.h>
 
-#include <Hud/TextHud.h>
+#include <MediaWorkbench/Camera/Camera.h>
+#include <MediaWorkbench/Camera/CameraManFree.h>
+
+#include <PropRoom2D/Hud/TextHud.h>
+
+#include <Scaena/Character/AbstractCharacter.h>
+
 
 class City;
 class DrawCityModule;
@@ -43,7 +46,7 @@ public:
     bool loadCity(const std::string& fileName);
 
 private:
-    void setAlgorithms();
+    void setupAlgorithms();
     void updateCamera(float elapsedtime);
 
     City* _city;

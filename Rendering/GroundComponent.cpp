@@ -4,12 +4,12 @@
 #include <vector>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
 
-#include <gl3w.h>
-#include <GL/GlToolkit.h>
-#include <Image/ImageBank.h>
+#include <GL3/gl3w.h>
+#include <MediaWorkbench/GL/GlToolkit.h>
+#include <MediaWorkbench/Image/ImageBank.h>
 using namespace media;
 
 
@@ -58,55 +58,55 @@ void GroundComponent::setup()
 
 void GroundComponent::setupLands()
 {
-    vector<Vec3f> positions;
-    vector<Vec3f> normals;
-    vector<Vec2f> texCoords;
+    vector<glm::vec3> positions;
+    vector<glm::vec3> normals;
+    vector<glm::vec2> texCoords;
 
     float roadHalfWidth = _description.roadWidth * 0.5f;
 
-    for(int j=0; j<_city.size().y(); ++j)
+    for(int j=0; j<_city.size().y; ++j)
     {
-        for(int i=0; i<_city.size().x(); ++i)
+        for(int i=0; i<_city.size().x; ++i)
         {
             if(_city.lands().get(i, j)->type() != Land::GRASS)
                 continue;
 
             if(_city.junctions().get(i, j)->type() != Junction::GRASS)
-                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i, j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i, j)));
             else
-                positions.push_back(Vec3f(i, j, _ground.heightAt(i, j)));
+                positions.push_back(glm::vec3(i, j, _ground.heightAt(i, j)));
 
             if(_city.junctions().get(i+1, j)->type() != Junction::GRASS)
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
             else
-                positions.push_back(Vec3f(i+1, j, _ground.heightAt(i+1, j)));
+                positions.push_back(glm::vec3(i+1, j, _ground.heightAt(i+1, j)));
 
             if(_city.junctions().get(i+1, j+1)->type() != Junction::GRASS)
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i+1, j+1)));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i+1, j+1)));
             else
-                positions.push_back(Vec3f(i+1, j+1, _ground.heightAt(i+1, j+1)));
+                positions.push_back(glm::vec3(i+1, j+1, _ground.heightAt(i+1, j+1)));
 
             if(_city.junctions().get(i+1, j+1)->type() != Junction::GRASS)
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i+1, j+1)));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i+1, j+1)));
             else
-                positions.push_back(Vec3f(i+1, j+1, _ground.heightAt(i+1, j+1)));
+                positions.push_back(glm::vec3(i+1, j+1, _ground.heightAt(i+1, j+1)));
 
             if(_city.junctions().get(i, j+1)->type() != Junction::GRASS)
-                positions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
             else
-                positions.push_back(Vec3f(i, j+1, _ground.heightAt(i, j+1)));
+                positions.push_back(glm::vec3(i, j+1, _ground.heightAt(i, j+1)));
 
             if(_city.junctions().get(i, j)->type() != Junction::GRASS)
-                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i, j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i, j)));
             else
-                positions.push_back(Vec3f(i, j, _ground.heightAt(i, j)));
+                positions.push_back(glm::vec3(i, j, _ground.heightAt(i, j)));
 
-            texCoords.push_back(Vec2f(0, 0));
-            texCoords.push_back(Vec2f(1, 0));
-            texCoords.push_back(Vec2f(1, 1));
-            texCoords.push_back(Vec2f(1, 1));
-            texCoords.push_back(Vec2f(0, 1));
-            texCoords.push_back(Vec2f(0, 0));
+            texCoords.push_back(glm::vec2(0, 0));
+            texCoords.push_back(glm::vec2(1, 0));
+            texCoords.push_back(glm::vec2(1, 1));
+            texCoords.push_back(glm::vec2(1, 1));
+            texCoords.push_back(glm::vec2(0, 1));
+            texCoords.push_back(glm::vec2(0, 0));
 
             normals.push_back(_ground.normalAt(i,   j));
             normals.push_back(_ground.normalAt(i+1, j));
@@ -149,31 +149,31 @@ void GroundComponent::setupLands()
 
 void GroundComponent::setupRoads()
 {
-    vector<Vec3f> positions;
-    vector<Vec3f> normals;
-    vector<Vec2f> texCoords;
+    vector<glm::vec3> positions;
+    vector<glm::vec3> normals;
+    vector<glm::vec2> texCoords;
 
     float roadHalfWidth = _description.roadWidth * 0.5f;
 
-    for(int j=0; j<_city.size().y(); ++j)
+    for(int j=0; j<_city.size().y; ++j)
     {
-        for(int i=0; i<_city.size().x(); ++i)
+        for(int i=0; i<_city.size().x; ++i)
         {
             if( isGrassRoad(i, j, EAST) )
             {
-                positions.push_back(Vec3f(i+roadHalfWidth,   j-roadHalfWidth, _ground.heightAt(i,   j)));
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j-roadHalfWidth, _ground.heightAt(i+1, j)));
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
-                positions.push_back(Vec3f(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
-                positions.push_back(Vec3f(i+roadHalfWidth,   j+roadHalfWidth, _ground.heightAt(i,   j)));
-                positions.push_back(Vec3f(i+roadHalfWidth,   j-roadHalfWidth, _ground.heightAt(i,   j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth,   j-roadHalfWidth, _ground.heightAt(i,   j)));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j-roadHalfWidth, _ground.heightAt(i+1, j)));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
+                positions.push_back(glm::vec3(i+1-roadHalfWidth, j+roadHalfWidth, _ground.heightAt(i+1, j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth,   j+roadHalfWidth, _ground.heightAt(i,   j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth,   j-roadHalfWidth, _ground.heightAt(i,   j)));
 
-                texCoords.push_back(Vec2f(0, -roadHalfWidth));
-                texCoords.push_back(Vec2f(1, -roadHalfWidth));
-                texCoords.push_back(Vec2f(1, roadHalfWidth));
-                texCoords.push_back(Vec2f(1, roadHalfWidth));
-                texCoords.push_back(Vec2f(0, roadHalfWidth));
-                texCoords.push_back(Vec2f(0, -roadHalfWidth));
+                texCoords.push_back(glm::vec2(0, -roadHalfWidth));
+                texCoords.push_back(glm::vec2(1, -roadHalfWidth));
+                texCoords.push_back(glm::vec2(1, roadHalfWidth));
+                texCoords.push_back(glm::vec2(1, roadHalfWidth));
+                texCoords.push_back(glm::vec2(0, roadHalfWidth));
+                texCoords.push_back(glm::vec2(0, -roadHalfWidth));
 
                 normals.push_back(_ground.normalAt(i,   j));
                 normals.push_back(_ground.normalAt(i+1, j));
@@ -185,19 +185,19 @@ void GroundComponent::setupRoads()
 
             if( isGrassRoad(i, j, NORTH) )
             {
-                positions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
-                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
-                positions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
-                positions.push_back(Vec3f(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
-                positions.push_back(Vec3f(i-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
-                positions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j+1-roadHalfWidth, _ground.heightAt(i, j+1)));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j+roadHalfWidth,   _ground.heightAt(i, j)));
 
-                texCoords.push_back(Vec2f(-roadHalfWidth, 0));
-                texCoords.push_back(Vec2f(roadHalfWidth,  0));
-                texCoords.push_back(Vec2f(roadHalfWidth,  1));
-                texCoords.push_back(Vec2f(roadHalfWidth,  1));
-                texCoords.push_back(Vec2f(-roadHalfWidth, 1));
-                texCoords.push_back(Vec2f(-roadHalfWidth, 0));
+                texCoords.push_back(glm::vec2(-roadHalfWidth, 0));
+                texCoords.push_back(glm::vec2(roadHalfWidth,  0));
+                texCoords.push_back(glm::vec2(roadHalfWidth,  1));
+                texCoords.push_back(glm::vec2(roadHalfWidth,  1));
+                texCoords.push_back(glm::vec2(-roadHalfWidth, 1));
+                texCoords.push_back(glm::vec2(-roadHalfWidth, 0));
 
                 normals.push_back(_ground.normalAt(i, j));
                 normals.push_back(_ground.normalAt(i, j));
@@ -241,10 +241,10 @@ void GroundComponent::setupRoads()
 
 bool GroundComponent::isGrassRoad(int i, int j, CardinalDirection dir)
 {
-    Vec2i vecDir = toVec(dir);
+    glm::ivec2 vecDir = toVec(dir);
 
     if(_city.junctions().get(i, j)->type() != Junction::GRASS)
-        if(_city.junctions().get(i + vecDir.x(), j + vecDir.y())->type() != Junction::GRASS)
+        if(_city.junctions().get(i + vecDir.x, j + vecDir.y)->type() != Junction::GRASS)
             if(_city.junctions().get(i, j)->getStreet(dir) == 0x0)
                 return true;
 
@@ -253,29 +253,29 @@ bool GroundComponent::isGrassRoad(int i, int j, CardinalDirection dir)
 
 void GroundComponent::setupTriangles()
 {
-    vector<Vec3f> positions;
-    vector<Vec3f> normals;
-    vector<Vec2f> texCoords;
+    vector<glm::vec3> positions;
+    vector<glm::vec3> normals;
+    vector<glm::vec2> texCoords;
 
     float roadHalfWidth = _description.roadWidth * 0.5f;
 
     // East
-    for(int j=0; j<_city.size().y()+1; ++j)
+    for(int j=0; j<_city.size().y+1; ++j)
     {
-        for(int i=0; i<_city.size().x(); ++i)
+        for(int i=0; i<_city.size().x; ++i)
         {
             if(_city.junctions().get(i, j)->type() != Junction::GRASS)
             if(_city.junctions().get(i+1, j)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i+roadHalfWidth, j-roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i+1, j, _ground.heightAt(i+1, j)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j-roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i+1, j, _ground.heightAt(i+1, j)));
 
-                texCoords.push_back(Vec2f(0, -roadHalfWidth));
-                texCoords.push_back(Vec2f(0, +roadHalfWidth));
-                texCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
+                texCoords.push_back(glm::vec2(0, -roadHalfWidth));
+                texCoords.push_back(glm::vec2(0, +roadHalfWidth));
+                texCoords.push_back(glm::vec2(1 - roadHalfWidth, 0));
 
                 normals.push_back(_ground.normalAt(i,   j));
                 normals.push_back(_ground.normalAt(i,   j));
@@ -285,22 +285,22 @@ void GroundComponent::setupTriangles()
     }
 
     // North
-    for(int j=0; j<_city.size().y(); ++j)
+    for(int j=0; j<_city.size().y; ++j)
     {
-        for(int i=0; i<_city.size().x()+1; ++i)
+        for(int i=0; i<_city.size().x+1; ++i)
         {
             if(_city.junctions().get(i, j)->type() != Junction::GRASS)
             if(_city.junctions().get(i, j+1)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                positions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i+roadHalfWidth, j+roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i, j+1, _ground.heightAt(i, j+1)));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j+roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j+roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i, j+1, _ground.heightAt(i, j+1)));
 
-                texCoords.push_back(Vec2f(0, -roadHalfWidth));
-                texCoords.push_back(Vec2f(0, +roadHalfWidth));
-                texCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
+                texCoords.push_back(glm::vec2(0, -roadHalfWidth));
+                texCoords.push_back(glm::vec2(0, +roadHalfWidth));
+                texCoords.push_back(glm::vec2(1 - roadHalfWidth, 0));
 
                 normals.push_back(_ground.normalAt(i, j));
                 normals.push_back(_ground.normalAt(i, j));
@@ -310,22 +310,22 @@ void GroundComponent::setupTriangles()
     }
 
     // West
-    for(int j=0; j<_city.size().y()+1; ++j)
+    for(int j=0; j<_city.size().y+1; ++j)
     {
-        for(int i=1; i<_city.size().x()+1; ++i)
+        for(int i=1; i<_city.size().x+1; ++i)
         {
             if(_city.junctions().get(i, j)->type() != Junction::GRASS)
             if(_city.junctions().get(i-1, j)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                positions.push_back(Vec3f(i-roadHalfWidth, j-roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i-roadHalfWidth, j+roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i-1, j, _ground.heightAt(i-1, j)));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j-roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j+roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i-1, j, _ground.heightAt(i-1, j)));
 
-                texCoords.push_back(Vec2f(0, -roadHalfWidth));
-                texCoords.push_back(Vec2f(0, +roadHalfWidth));
-                texCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
+                texCoords.push_back(glm::vec2(0, -roadHalfWidth));
+                texCoords.push_back(glm::vec2(0, +roadHalfWidth));
+                texCoords.push_back(glm::vec2(1 - roadHalfWidth, 0));
 
                 normals.push_back(_ground.normalAt(i,   j));
                 normals.push_back(_ground.normalAt(i,   j));
@@ -335,22 +335,22 @@ void GroundComponent::setupTriangles()
     }
 
     // South
-    for(int j=1; j<_city.size().y()+1; ++j)
+    for(int j=1; j<_city.size().y+1; ++j)
     {
-        for(int i=0; i<_city.size().x()+1; ++i)
+        for(int i=0; i<_city.size().x+1; ++i)
         {
             if(_city.junctions().get(i, j)->type() != Junction::GRASS)
             if(_city.junctions().get(i, j-1)->type() == Junction::GRASS)
             {
                 float curJuncHeight = _ground.heightAt(i, j);
 
-                positions.push_back(Vec3f(i+roadHalfWidth, j-roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i-roadHalfWidth, j-roadHalfWidth, curJuncHeight));
-                positions.push_back(Vec3f(i, j-1, _ground.heightAt(i, j-1)));
+                positions.push_back(glm::vec3(i+roadHalfWidth, j-roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i-roadHalfWidth, j-roadHalfWidth, curJuncHeight));
+                positions.push_back(glm::vec3(i, j-1, _ground.heightAt(i, j-1)));
 
-                texCoords.push_back(Vec2f(0, -roadHalfWidth));
-                texCoords.push_back(Vec2f(0, +roadHalfWidth));
-                texCoords.push_back(Vec2f(1 - roadHalfWidth, 0));
+                texCoords.push_back(glm::vec2(0, -roadHalfWidth));
+                texCoords.push_back(glm::vec2(0, +roadHalfWidth));
+                texCoords.push_back(glm::vec2(1 - roadHalfWidth, 0));
 
                 normals.push_back(_ground.normalAt(i, j));
                 normals.push_back(_ground.normalAt(i, j));

@@ -2,7 +2,6 @@
 #define BUILDINGSCOMPONENT_H
 
 #include <vector>
-#include <DataStructure/Vector.h>
 
 #include "AbstractComponent.h"
 
@@ -33,16 +32,16 @@ protected:
     int          _roofNbElems;
     unsigned int _roofTex;
     unsigned int _roofSpec;
-    std::vector< cellar::Vec3f > _roofPos;
+    std::vector< glm::vec3 > _roofPos;
 
     unsigned int _apartmentTex;
     unsigned int _apartmentSpec;
-    std::vector< cellar::Vec3f > _apartmentPos;
+    std::vector< glm::vec3 > _apartmentPos;
     std::vector< int >           _apartmentNbStories;
 
     unsigned int _commerceTex;
     unsigned int _commerceSpec;
-    std::vector< cellar::Vec3f > _commercePos;
+    std::vector< glm::vec3 > _commercePos;
     std::vector< int >           _commerceNbStories;
 };
 

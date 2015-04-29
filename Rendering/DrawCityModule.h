@@ -2,7 +2,7 @@
 #define DRAWCITYMODULE_H
 
 #include <vector>
-#include <GL/GlProgram.h>
+#include <MediaWorkbench/GL/GlProgram.h>
 
 class City;
 class Ground;
@@ -29,8 +29,8 @@ public:
     void draw();
     void update();
 
-    void updateProjectionMatrix(const cellar::Mat4f& proj);
-    void updateModelViewMatrix(const cellar::Mat4f& view);
+    void updateProjectionMatrix(const glm::mat4& proj);
+    void updateModelViewMatrix(const glm::mat4& view);
 
 protected:
     void setupShaders();

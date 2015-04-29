@@ -3,7 +3,9 @@
 
 #include <vector>
 #include <map>
-#include <DataStructure/Vector.h>
+
+#include <GLM/glm.hpp>
+
 
 class Island
 {
@@ -14,16 +16,16 @@ public:
     void setIslandId(int id);
     int getIslandId() const;
 
-    void addJunction(cellar::Vec2i junction);
-    const std::vector<cellar::Vec2i>& getJunctions() const;
+    void addJunction(glm::ivec2 junction);
+    const std::vector<glm::ivec2>& getJunctions() const;
 
-    void addBridge (int islandBridgedTo, cellar::Vec2i bridgePosition);
-    std::multimap<int, cellar::Vec2i>::const_iterator bridgesForTravel (int islandToReachId) const;
+    void addBridge (int islandBridgedTo, glm::ivec2 bridgePosition);
+    std::multimap<int, glm::ivec2>::const_iterator bridgesForTravel (int islandToReachId) const;
 
 private:
     int _islandId;
-    std::vector<cellar::Vec2i> _junctions;
-    std::multimap<int, cellar::Vec2i> _bridges;
+    std::vector<glm::ivec2> _junctions;
+    std::multimap<int, glm::ivec2> _bridges;
 };
 
 
@@ -38,22 +40,22 @@ inline int Island::getIslandId() const
     return _islandId;
 }
 
-inline void Island::addJunction(cellar::Vec2i junction)
+inline void Island::addJunction(glm::ivec2 junction)
 {
     _junctions.push_back(junction);
 }
 
-inline const std::vector<cellar::Vec2i>& Island::getJunctions() const
+inline const std::vector<glm::ivec2>& Island::getJunctions() const
 {
     return _junctions;
 }
 
-inline void Island::addBridge (int islandBridgedTo, cellar::Vec2i bridgePosition)
+inline void Island::addBridge (int islandBridgedTo, glm::ivec2 bridgePosition)
 {
-    _bridges.insert(std::pair<int, cellar::Vec2i>(islandBridgedTo, bridgePosition));
+    _bridges.insert(std::pair<int, glm::ivec2>(islandBridgedTo, bridgePosition));
 }
 
-inline std::multimap<int, cellar::Vec2i>::const_iterator Island::bridgesForTravel (int islandToReachId) const
+inline std::multimap<int, glm::ivec2>::const_iterator Island::bridgesForTravel (int islandToReachId) const
 {
     return _bridges.find(islandToReachId);
 }

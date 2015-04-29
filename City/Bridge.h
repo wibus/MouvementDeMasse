@@ -1,42 +1,43 @@
 #ifndef BRIDGE_H
 #define BRIDGE_H
 
-#include <DataStructure/Vector.h>
+#include <GLM/glm.hpp>
+
 
 class Bridge
 {
 public:
-    Bridge(const cellar::Vec2i& endA, const cellar::Vec2i& endB);
+    Bridge(const glm::ivec2& endA, const glm::ivec2& endB);
 
-    cellar::Vec2i& endA();
-    cellar::Vec2i& endB();
-    cellar::Vec2i& otherEnd(const cellar::Vec2i end);
-    bool           isAnEnd(const cellar::Vec2i end);
+    glm::ivec2& endA();
+    glm::ivec2& endB();
+    glm::ivec2& otherEnd(const glm::ivec2 end);
+    bool           isAnEnd(const glm::ivec2 end);
 
 private:
-    cellar::Vec2i _endA;
-    cellar::Vec2i _endB;
+    glm::ivec2 _endA;
+    glm::ivec2 _endB;
 };
 
 // Implementation //
-inline cellar::Vec2i& Bridge::endA()
+inline glm::ivec2& Bridge::endA()
 {
     return _endA;
 }
 
-inline cellar::Vec2i& Bridge::endB()
+inline glm::ivec2& Bridge::endB()
 {
     return _endB;
 }
 
-inline cellar::Vec2i& Bridge::otherEnd(const cellar::Vec2i end)
+inline glm::ivec2& Bridge::otherEnd(const glm::ivec2 end)
 {
     if(end == _endA)
         return _endB;
     return _endA;
 }
 
-inline bool Bridge::isAnEnd(const cellar::Vec2i end)
+inline bool Bridge::isAnEnd(const glm::ivec2 end)
 {
     return (end == _endA || end == _endB);
 }

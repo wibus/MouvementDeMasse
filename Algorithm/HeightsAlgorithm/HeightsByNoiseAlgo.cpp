@@ -3,8 +3,8 @@
 #include <iostream>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
-#include <Algorithm/Noise.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/SimplexNoise.h>
 using namespace cellar;
 
 HeightByNoiseAlgo::HeightByNoiseAlgo()
@@ -22,25 +22,25 @@ void HeightByNoiseAlgo::setup(City &city)
         4.0f,
         8.0f
     };
-    Vec2f ORIG[NB_FREQ];
+    glm::vec2 ORIG[NB_FREQ];
     for(int i=0; i<NB_FREQ; ++i)
-        ORIG[i] = Vec2f(randomRange(-10.0f, 10.0f), randomRange(-10.0f, 10.0f));
+        ORIG[i] = glm::vec2(randomRange(-10.0f, 10.0f), randomRange(-10.0f, 10.0f));
 
     float middleHeight = (_ground->maxHeight() + _ground->minHeight()) / 2.0f;
     float amplitude    = (_ground->maxHeight() - _ground->minHeight()) / 2.0f;
 
-    for(int j=0; j< _mapSize.y(); ++j)
+    for(int j=0; j< _mapSize.y; ++j)
     {
-        for(int i=0; i< _mapSize.x(); ++i)
+        for(int i=0; i< _mapSize.x; ++i)
         {
-            float xc = i/(float)_mapSize.x();
-            float yc = j/(float)_mapSize.y();
+            float xc = i/(float)_mapSize.x;
+            float yc = j/(float)_mapSize.y;
 
             float height = 0.0f;
             for(int k=0; k<NB_FREQ; ++k)
                 height += amplitude/(FREQ[k]*FREQ[k]) * SimplexNoise::noiseTile2d(
-                    ORIG[k].x() + xc*FREQ[k],
-                    ORIG[k].x() + yc*FREQ[k],
+                    ORIG[k].x + xc*FREQ[k],
+                    ORIG[k].x + yc*FREQ[k],
                     0.5f);
 
             _ground->setHeightAt(i, j, middleHeight + height);

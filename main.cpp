@@ -2,12 +2,12 @@
 #include <iostream>
 using namespace std;
 
-#include <Misc/Log.h>
+#include <CellarWorkbench/Misc/Log.h>
 using namespace cellar;
 
-#include <ScaenaApplication/Application.h>
-#include <ScaenaApplication/GlMainWindow.h>
-#include <Stage/QGLStage.h>
+#include <Scaena/ScaenaApplication/Application.h>
+#include <Scaena/ScaenaApplication/GlMainWindow.h>
+#include <Scaena/Stage/QGLStage.h>
 using namespace scaena;
 
 #include "MdMPlay.h"

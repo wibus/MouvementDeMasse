@@ -2,10 +2,10 @@
 
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
 
-#include <gl3w.h>
+#include <GL3/gl3w.h>
 using namespace media;
 
 
@@ -28,11 +28,11 @@ void WaterComponent::setup()
 {
     // Positions
     float waterHeight = _ground.waterHeight();
-    Vec3f positions[_WATER_NB_ELEMS];
-    positions[0] = Vec3f(0.0,              0.0,                waterHeight);
-    positions[1] = Vec3f(_city.size().x(), 0.0,                waterHeight);
-    positions[2] = Vec3f(_city.size().x(), _city.size().y(),   waterHeight);
-    positions[3] = Vec3f(0.0,              _city.size().y(),   waterHeight);
+    glm::vec3 positions[_WATER_NB_ELEMS];
+    positions[0] = glm::vec3(0.0,              0.0,                waterHeight);
+    positions[1] = glm::vec3(_city.size().x, 0.0,                waterHeight);
+    positions[2] = glm::vec3(_city.size().x, _city.size().y,   waterHeight);
+    positions[3] = glm::vec3(0.0,              _city.size().y,   waterHeight);
 
 
     // Water VAO setup

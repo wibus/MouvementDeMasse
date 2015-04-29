@@ -1,11 +1,13 @@
 #include "CitizensComponent.h"
 
-#include <gl3w.h>
+#include <GLM/gtc/matrix_transform.hpp>
+
+#include <GL3/gl3w.h>
 using namespace std;
 
 using namespace cellar;
 
-#include <GL/GlToolkit.h>
+#include <MediaWorkbench/GL/GlToolkit.h>
 using namespace media;
 
 
@@ -31,24 +33,25 @@ CitizensComponent::~CitizensComponent()
 void CitizensComponent::setup()
 {
     // Vertices colors
-    vector<Vec4f> colors;
-    colors.push_back(Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
-    colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
-    colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
-    colors.push_back(Vec4f(0.0f, 0.0f, 1.0f, 1.0f));
-    colors.push_back(Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
-    colors.push_back(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
+    vector<glm::vec4> colors;
+    colors.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    colors.push_back(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    colors.push_back(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    colors.push_back(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+    colors.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    colors.push_back(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
     // Vertices positions
-    vector<Vec3f> positions;
-    Vec2f halfBase(1.0f, 0.0f);
-    float angle = -PI*2.0f/3.0f;
-    positions.push_back(Vec3f(halfBase, 0.0f));
-    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
-    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
-    positions.push_back(Vec3f(0.0f, 0.0f, 1.0f));
-    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
-    positions.push_back(Vec3f(halfBase = rotate(halfBase, angle ), 0.0f));
+    vector<glm::vec3> positions;
+    glm::vec2 halfBase(1.0f, 0.0f);
+    float angle = -glm::pi<float>()*2.0f/3.0f;
+    glm::mat2 rot = glm::mat2(glm::rotate(glm::mat4(), angle, glm::vec3(0, 0, 1)));
+    positions.push_back(glm::vec3(halfBase, 0.0f));
+    positions.push_back(glm::vec3(halfBase = rot * halfBase, 0.0f));
+    positions.push_back(glm::vec3(halfBase = rot * halfBase, 0.0f));
+    positions.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+    positions.push_back(glm::vec3(halfBase = rot * halfBase, 0.0f));
+    positions.push_back(glm::vec3(halfBase = rot * halfBase, 0.0f));
     _citizenNbElems = static_cast<int>(positions.size());
 
     // Scale
@@ -97,7 +100,7 @@ void CitizensComponent::update()
     _modelMats.clear();
     _modelMats.reserve( _city.citizens().size() );
 
-    Mat4f mat;
+    glm::mat4 mat;
 
     for(CitizenIterator cit = _city.citizens().begin();
         cit != _city.citizens().end();
@@ -105,13 +108,15 @@ void CitizensComponent::update()
     {
         Citizen& citizen = (*cit).second;
 
-        mat.loadIdentity();
-        mat *= translate(citizen.position.x(),
-                         citizen.position.y(),
-                         citizen.position.z());
-        mat *= rotate(
-            0.0f, 0.0f, 1.0f,
-            atan2(citizen.direction.y(), citizen.direction.x()));
+        mat = glm::mat4();
+        mat *= glm::translate(glm::mat4(), glm::vec3(
+            citizen.position.x,
+            citizen.position.y,
+            citizen.position.z));
+        mat *= glm::rotate(
+            glm::mat4(),
+            atan2(citizen.direction.y, citizen.direction.x),
+            glm::vec3(0.0f, 0.0f, 1.0f));
 
         _modelMats.push_back( mat );
     }

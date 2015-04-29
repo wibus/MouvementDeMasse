@@ -2,35 +2,37 @@
 #define STREET_H
 
 #include <cassert>
-#include <DataStructure/Vector.h>
+
+#include <GLM/glm.hpp>
+
 
 class Street
 {
 public:
-    Street(const cellar::Vec2i& posA, const cellar::Vec2i& posB);
+    Street(const glm::ivec2& posA, const glm::ivec2& posB);
 
-    cellar::Vec2i junctionA() const;
-    cellar::Vec2i junctionB() const;
-    cellar::Vec2i oppositeJunction(const cellar::Vec2i& junction);
+    glm::ivec2 junctionA() const;
+    glm::ivec2 junctionB() const;
+    glm::ivec2 oppositeJunction(const glm::ivec2& junction);
 
 private:
-    cellar::Vec2i _junctions[2];
+    glm::ivec2 _junctions[2];
 };
 
 
 
 // IMPLEMENTATION //
-inline cellar::Vec2i Street::junctionA() const
+inline glm::ivec2 Street::junctionA() const
 {
     return _junctions[0];
 }
 
-inline cellar::Vec2i Street::junctionB() const
+inline glm::ivec2 Street::junctionB() const
 {
     return _junctions[1];
 }
 
-inline cellar::Vec2i Street::oppositeJunction(const cellar::Vec2i& junction)
+inline glm::ivec2 Street::oppositeJunction(const glm::ivec2& junction)
 {
     if (junction != _junctions[0])
     {

@@ -4,8 +4,9 @@
 #include <vector>
 #include <list>
 
-#include <DataStructure/Vector.h>
-#include <DateAndTime/Calendar.h>
+#include <GLM/glm.hpp>
+
+#include <CellarWorkbench/DateAndTime/Calendar.h>
 
 
 enum CitizenState {CITIZEN_GOTO_HOME, CITIZEN_AT_HOME,
@@ -23,16 +24,16 @@ public:
     enum NodeType {LAND, JUNCTION, BRIDGE_END, METRO, BUS_STOP, NB_NODE_TYPES};
     struct Node
     {
-        Node(NodeType type, const cellar::Vec2i& pos) : type(type), pos(pos) {}
+        Node(NodeType type, const glm::ivec2& pos) : type(type), pos(pos) {}
         NodeType type;
-        cellar::Vec2i pos;
+        glm::ivec2 pos;
     };
     typedef std::vector< Node >     NodeContainer;
     typedef NodeContainer::iterator NodeIterator;
     typedef NodeContainer::reverse_iterator NodeRevIterator;
 
     Path();
-    Path(const cellar::Vec2i& source, const cellar::Vec2i& destination);
+    Path(const glm::ivec2& source, const glm::ivec2& destination);
 
     void gotoEnd();
     void gotoBegin();
@@ -47,8 +48,8 @@ public:
 
 
     float           lenght;
-    cellar::Vec2i   source;
-    cellar::Vec2i   destination;
+    glm::ivec2   source;
+    glm::ivec2   destination;
     NodeContainer   nodes;
     NodeIterator    curNode;
     NodeIterator    nextNode;
@@ -106,10 +107,10 @@ public:
     Id            id()          const {return _id;}
     CitizenState  curState;
     float         walkingSpeed;
-    cellar::Vec3f position;
-    cellar::Vec3f direction;
-    cellar::Vec2i homePos;
-    cellar::Vec2i workPos;
+    glm::vec3 position;
+    glm::vec3 direction;
+    glm::ivec2 homePos;
+    glm::ivec2 workPos;
     Path          homeToWorkPath;
     Schedule      schedule;
 

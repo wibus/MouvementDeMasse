@@ -7,9 +7,28 @@
 #include <algorithm>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
 
+
+
+class ivec2Less
+{
+public:
+    inline bool operator ()(const glm::ivec2& p1, const glm::ivec2& p2)
+    {
+        if(p1.y < p2.y)
+            return true;
+
+        if(p1.y > p2.y)
+            return false;
+
+        if(p1.x < p2.x)
+            return true;
+
+        return false;
+    }
+};
 
 struct AStarNode
 {
@@ -29,7 +48,7 @@ struct AStarNode
 
 struct CitizensDistribByIsland::DataStructures
 {
-    map< cellar::Vec2i, cellar::Vec2i > _bridgeEnds;
+    map< glm::ivec2, glm::ivec2, ivec2Less > _bridgeEnds;
     Grid2D< AStarNode > _aStarGrid;
     Grid2D< std::vector<Path::Node> > _nodesToBeConsidered;
 };
@@ -39,8 +58,8 @@ AStarNode::AStarNode() :
     status(NOT_VISITED),
     distToDst(0.0f),
     distToSrc(0.0f),
-    node(Path::Node(Path::JUNCTION, cellar::Vec2i(0, 0))),
-    last(Path::Node(Path::JUNCTION, cellar::Vec2i(0, 0)))
+    node(Path::Node(Path::JUNCTION, glm::ivec2(0, 0))),
+    last(Path::Node(Path::JUNCTION, glm::ivec2(0, 0)))
 {
 }
 
@@ -65,10 +84,10 @@ void CitizensDistribByIsland::setup(City &city)
     CitizensAlgorithm::setup( city );
 
 
-    vector<Vec2i> residential;
+    vector<glm::ivec2> residential;
     int residentialRooms = 0;
 
-    vector<Vec2i> commercial;
+    vector<glm::ivec2> commercial;
     int commercialRooms = 0;
 
     Land* land;
@@ -76,7 +95,7 @@ void CitizensDistribByIsland::setup(City &city)
     {
         for(int i=0; i<_city->lands().getWidth(); ++i)
         {
-            Vec2i pos(i, j);
+            glm::ivec2 pos(i, j);
             land = _city->lands().get(i, j);
             if(land->type() == Land::RESIDENTIAL && isAccessible(pos))
             {
@@ -105,8 +124,8 @@ void CitizensDistribByIsland::setup(City &city)
 
         // Randomly find a home that have a junction nearby
         int homeIdx = randomRange(0, static_cast<int>(residential.size()));
-        Vec2i homePos = residential[ homeIdx ];
-        Vec2i homeAccessPoint = randomAccessPointTo(homePos);
+        glm::ivec2 homePos = residential[ homeIdx ];
+        glm::ivec2 homeAccessPoint = randomAccessPointTo(homePos);
         Land* home = _city->lands().get( homePos );
         home->allocateRoom( ctz.id() );
         if(home->isFull())
@@ -117,8 +136,8 @@ void CitizensDistribByIsland::setup(City &city)
 
         // Randomly find a work that have a junction nearby
         int workIdx = randomRange(0, static_cast<int>(commercial.size()));
-        Vec2i workPos = commercial[ workIdx ];
-        Vec2i workAccessPoint = randomAccessPointTo(workPos);
+        glm::ivec2 workPos = commercial[ workIdx ];
+        glm::ivec2 workAccessPoint = randomAccessPointTo(workPos);
         Land* work = _city->lands().get( workPos );
         work->allocateRoom( ctz.id() );
         if(work->isFull())
@@ -136,8 +155,8 @@ void CitizensDistribByIsland::setup(City &city)
 
         // Build The citizen
         ctz.curState = CITIZEN_AT_HOME; // Will be set in Move algorithm setup()
-        ctz.position(0, 0, 0);          // Will be set in Move algorithm setup()
-        ctz.direction(0.0f, 0.0f, 0.0f);
+        ctz.position = glm::vec3(0, 0, 0);          // Will be set in Move algorithm setup()
+        ctz.direction = glm::vec3(0.0f, 0.0f, 0.0f);
         ctz.homePos = homePos;
         ctz.workPos = workPos;
         ctz.homeToWorkPath = homeToWorkPath;
@@ -160,22 +179,22 @@ void CitizensDistribByIsland::update()
 {
 }
 
-bool CitizensDistribByIsland::isAccessible(const Vec2i& pos)
+bool CitizensDistribByIsland::isAccessible(const glm::ivec2& pos)
 {
-    if(_city->junctions().get(pos+Vec2i(0,0))->type() != Junction::GRASS) return true;
-    if(_city->junctions().get(pos+Vec2i(1,0))->type() != Junction::GRASS) return true;
-    if(_city->junctions().get(pos+Vec2i(1,1))->type() != Junction::GRASS) return true;
-    if(_city->junctions().get(pos+Vec2i(0,1))->type() != Junction::GRASS) return true;
+    if(_city->junctions().get(pos+glm::ivec2(0,0))->type() != Junction::GRASS) return true;
+    if(_city->junctions().get(pos+glm::ivec2(1,0))->type() != Junction::GRASS) return true;
+    if(_city->junctions().get(pos+glm::ivec2(1,1))->type() != Junction::GRASS) return true;
+    if(_city->junctions().get(pos+glm::ivec2(0,1))->type() != Junction::GRASS) return true;
     return false;
 }
 
-Vec2i CitizensDistribByIsland::randomAccessPointTo(const Vec2i& pos)
+glm::ivec2 CitizensDistribByIsland::randomAccessPointTo(const glm::ivec2& pos)
 {
-    const Vec2i offsets[] = {
-        Vec2i(0, 0),
-        Vec2i(1, 0),
-        Vec2i(1, 1),
-        Vec2i(0, 1)
+    const glm::ivec2 offsets[] = {
+        glm::ivec2(0, 0),
+        glm::ivec2(1, 0),
+        glm::ivec2(1, 1),
+        glm::ivec2(0, 1)
     };
 
     int turn = randomRange(0, 4);
@@ -186,18 +205,18 @@ Vec2i CitizensDistribByIsland::randomAccessPointTo(const Vec2i& pos)
     return pos + offsets[turn];
 }
 
-bool CitizensDistribByIsland::homeToWorkPathByAStar(Path& path, const Vec2i& src, const Vec2i& dst)
+bool CitizensDistribByIsland::homeToWorkPathByAStar(Path& path, const glm::ivec2& src, const glm::ivec2& dst)
 {
     Grid2D< AStarNode >& aStarGrid = _data->_aStarGrid;
     Grid2D< std::vector<Path::Node> >& nodesToBeConsidered = _data->_nodesToBeConsidered;
 
-    float inf = _city->size().x() * _city->size().y();
+    float inf = _city->size().x * _city->size().y;
 
     for(int j=0; j<aStarGrid.getHeight(); ++j)
         for(int i=0; i<aStarGrid.getWidth(); ++i)
-            aStarGrid.set(i, j, AStarNode(AStarNode::NOT_VISITED, dist(Vec2i(i, j), dst), inf,
-                                     Path::Node(Path::BUS_STOP, Vec2i(i, j)),
-                                     Path::Node(Path::BUS_STOP, Vec2i(-1, -1))));
+            aStarGrid.set(i, j, AStarNode(AStarNode::NOT_VISITED, dist(glm::ivec2(i, j), dst), inf,
+                                     Path::Node(Path::BUS_STOP, glm::ivec2(i, j)),
+                                     Path::Node(Path::BUS_STOP, glm::ivec2(-1, -1))));
 
     vector< AStarNode > priority;
     aStarGrid.get(src).distToSrc = 0.0f;
@@ -209,7 +228,7 @@ bool CitizensDistribByIsland::homeToWorkPathByAStar(Path& path, const Vec2i& src
         make_heap(priority.begin(), priority.end());
         pop_heap( priority.begin(), priority.end());
         AStarNode curAsNode = priority.back();
-        Vec2i     curPos    = curAsNode.node.pos;
+        glm::ivec2     curPos    = curAsNode.node.pos;
         priority.pop_back();
 
 
@@ -222,7 +241,7 @@ bool CitizensDistribByIsland::homeToWorkPathByAStar(Path& path, const Vec2i& src
             revPath.push( curAsNode );
             while(revPath.top().node.pos != src)
             {
-                Vec2i prevNode = revPath.top().last.pos;
+                glm::ivec2 prevNode = revPath.top().last.pos;
                 revPath.push( aStarGrid.get(prevNode) );
             }
 
@@ -242,7 +261,7 @@ bool CitizensDistribByIsland::homeToWorkPathByAStar(Path& path, const Vec2i& src
         {
             AStarNode& nextAsNode = aStarGrid.get(candidates[c].pos);
             nextAsNode.node.type  = candidates[c].type;
-            Vec2i nextPos         = candidates[c].pos;
+            glm::ivec2 nextPos         = candidates[c].pos;
             float distToSrc       = curAsNode.distToSrc + dist(curPos, nextPos);
 
             if(nextAsNode.status == AStarNode::VISITED)
@@ -285,7 +304,7 @@ bool CitizensDistribByIsland::homeToWorkPathByAStar(Path& path, const Vec2i& src
 
 void CitizensDistribByIsland::initializeAStarStructures()
 {
-    map< cellar::Vec2i, cellar::Vec2i >& bridgeEnds = _data->_bridgeEnds;
+    map< glm::ivec2, glm::ivec2, ivec2Less >& bridgeEnds = _data->_bridgeEnds;
     Grid2D< AStarNode >& aStarGrid = _data->_aStarGrid;
     Grid2D< std::vector<Path::Node> >& nodesToBeConsidered = _data->_nodesToBeConsidered;
 
@@ -308,7 +327,7 @@ void CitizensDistribByIsland::initializeAStarStructures()
     {
         for(int i=0; i<ntbcWidth; ++i)
         {
-            Vec2i pos(i, j);
+            glm::ivec2 pos(i, j);
 
             // Junctions
             streets.clear();
@@ -321,7 +340,7 @@ void CitizensDistribByIsland::initializeAStarStructures()
 
 
             // Bridge ends
-            map< cellar::Vec2i, cellar::Vec2i >::iterator bridge = bridgeEnds.find(pos);
+            map< glm::ivec2, glm::ivec2, ivec2Less >::iterator bridge = bridgeEnds.find(pos);
             if(bridge != bridgeEnds.end())
             {
                 nodesToBeConsidered.get(i, j).push_back(

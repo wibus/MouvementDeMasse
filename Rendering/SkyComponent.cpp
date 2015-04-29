@@ -3,11 +3,13 @@
 #include <vector>
 using namespace std;
 
-#include <Misc/CellarUtils.h>
+#include <GLM/gtc/constants.hpp>
+
+#include <CellarWorkbench/Misc/CellarUtils.h>
 using namespace cellar;
 
-#include <GL/GlToolkit.h>
-#include <gl3w.h>
+#include <MediaWorkbench/GL/GlToolkit.h>
+#include <GL3/gl3w.h>
 using namespace media;
 
 
@@ -40,15 +42,15 @@ void SkyComponent::setup()
 
 void SkyComponent::setupSky()
 {
-    vector<Vec3f> positions;
+    vector<glm::vec3> positions;
 
     const float r = 2.0f;
 
-    positions.push_back(Vec3f(0.0f,           0.0f,          r));
-    positions.push_back(Vec3f(r*cos(6*PI/3),  r*sin(6*PI/3), -r/2.0f));
-    positions.push_back(Vec3f(r*cos(4*PI/3),  r*sin(4*PI/3), -r/2.0f));
-    positions.push_back(Vec3f(r*cos(2*PI/3),  r*sin(2*PI/3), -r/2.0f));
-    positions.push_back(Vec3f(r*cos(0*PI/3),  r*sin(0*PI/3), -r/2.0f));
+    positions.push_back(glm::vec3(0.0f,           0.0f,          r));
+    positions.push_back(glm::vec3(r*cos(6*glm::pi<float>()/3),  r*sin(6*glm::pi<float>()/3), -r/2.0f));
+    positions.push_back(glm::vec3(r*cos(4*glm::pi<float>()/3),  r*sin(4*glm::pi<float>()/3), -r/2.0f));
+    positions.push_back(glm::vec3(r*cos(2*glm::pi<float>()/3),  r*sin(2*glm::pi<float>()/3), -r/2.0f));
+    positions.push_back(glm::vec3(r*cos(0*glm::pi<float>()/3),  r*sin(0*glm::pi<float>()/3), -r/2.0f));
     _skyNbElems = static_cast<int>(positions.size());
 
 

@@ -2,7 +2,6 @@
 #define BRIDGESCOMPONENT_H
 
 #include <vector>
-#include <DataStructure/Vector.h>
 
 #include "AbstractComponent.h"
 

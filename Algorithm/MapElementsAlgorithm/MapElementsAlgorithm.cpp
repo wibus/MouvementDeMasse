@@ -21,20 +21,20 @@ void MapElementsAlgorithm::setup(City& city)
     Algorithm::setup(city);
 }
 
-CardinalDirection MapElementsAlgorithm::toCardinal(const Vec2i& dir)
+CardinalDirection MapElementsAlgorithm::toCardinal(const glm::ivec2& dir)
 {
-    if(dir == cellar::Vec2i(1, 0))
+    if(dir == glm::ivec2(1, 0))
         return EAST;
-    else if(dir == cellar::Vec2i(-1, 0))
+    else if(dir == glm::ivec2(-1, 0))
         return WEST;
-    else if(dir == cellar::Vec2i(0, 1))
+    else if(dir == glm::ivec2(0, 1))
         return NORTH;
-    else if(dir != cellar::Vec2i(0, -1))
+    else if(dir != glm::ivec2(0, -1))
         assert(false /*Not a valide Cardinal Direction*/);
     return SOUTH;
 }
 
-Vec2i MapElementsAlgorithm::getNeighbor(const Vec2i& pos, const Vec2i& dir)
+glm::ivec2 MapElementsAlgorithm::getNeighbor(const glm::ivec2& pos, const glm::ivec2& dir)
 {
-    return Vec2i(pos.x() + dir.x(), pos.y() + dir.y());
+    return glm::ivec2(pos.x + dir.x, pos.y + dir.y);
 }
