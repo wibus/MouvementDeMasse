@@ -2,7 +2,7 @@
 
 #include <GLM/gtc/random.hpp>
 
-#include <PropRoom2D/Shape/Segment2D.h>
+#include <PropRoom2D/Prop/Shape/Segment2D.h>
 
 using namespace std;
 using namespace cellar;

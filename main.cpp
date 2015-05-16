@@ -6,34 +6,34 @@ using namespace std;
 using namespace cellar;
 
 #include <Scaena/ScaenaApplication/Application.h>
-#include <Scaena/ScaenaApplication/GlMainWindow.h>
-#include <Scaena/Stage/QGLStage.h>
+#include <Scaena/ScaenaApplication/QGlWidgetView.h>
+#include <Scaena/Play/Play.h>
+#include <Scaena/Play/Act.h>
 using namespace scaena;
 
-#include "MdMPlay.h"
+#include "MdMCharacter.h"
 
 
 int main(int argc, char** argv) try
 {
     getLog().setOuput(std::cout);
-
     getApplication().init(argc, argv);
-    getApplication().setPlay(shared_ptr<AbstractPlay>(new MdMPlay()));
 
-    QGLStage* stage = new QGLStage();
-    getApplication().addCustomStage(stage);
-    getApplication().chooseStage(stage->id());
+    std::shared_ptr<Play> play(new Play("Mouvement de Masse"));
+    std::shared_ptr<Character> character(new MdMCharacter());
+    std::shared_ptr<Act> act(new Act("City 1"));
+    act->addCharacter(character);
+    play->appendAct(act);
 
-    stage->setDrawSynch( false );
-    stage->setDrawInterval( 0 );
-    stage->setUpdateInterval( 0 );
+    std::shared_ptr<QGlWidgetView> view(
+        new QGlWidgetView("MainView"));
+    view->setGlWindowSpace(800, 600);
+    view->centerOnScreen();
+    view->show();
 
-    GlMainWindow window(stage);
-    window.setGlWindowSpace(800, 600);
-    window.centerOnScreen();
-    window.show();
-    
+    play->addView(view);
 
+    getApplication().setPlay(play);
     return getApplication().execute();    
 }
 catch(exception& e)

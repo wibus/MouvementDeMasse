@@ -8,9 +8,9 @@
 #include <CellarWorkbench/DateAndTime/Calendar.h>
 #include <CellarWorkbench/DesignPattern/SpecificObserver.h>
 
-#include <PropRoom2D/Hud/TextHud.h>
+#include <PropRoom2D/Prop/Hud/TextHud.h>
 
-#include <Scaena/Character/AbstractCharacter.h>
+#include <Scaena/Play/Character.h>
 
 
 class City;
@@ -21,19 +21,20 @@ class CitizensAlgorithm;
 class SaveAndLoadAlgorithm;
 
 
-class MdMCharacter : public scaena::AbstractCharacter,
+class MdMCharacter : public scaena::Character,
                      public cellar::SpecificObserver<cellar::CameraMsg>
 {
 public:
-    MdMCharacter(scaena::AbstractStage& stage);
+    MdMCharacter();
     ~MdMCharacter();
 
     // Character interface
-    virtual void enterStage();
-    virtual void beginStep(const scaena::StageTime &time);
-    virtual void endStep(const scaena::StageTime &time);
-    virtual void draw(const scaena::StageTime &time);
-    virtual void exitStage();
+    virtual void enterStage() override;
+    virtual void beginStep(const scaena::StageTime &time) override;
+    virtual void endStep(const scaena::StageTime &time) override;
+    virtual void draw(const std::shared_ptr<scaena::View> &view,
+                      const scaena::StageTime &time) override;
+    virtual void exitStage() override;
 
     // Specific observer interface
     virtual void notify(cellar::CameraMsg &msg);
@@ -55,7 +56,7 @@ private:
     CitizensAlgorithm*    _citizensDistribAlgo;
     CitizensAlgorithm*    _citizenMoveAlgo;
 
-    cellar::CameraManFree _camMan;
+    std::shared_ptr<cellar::CameraManFree> _camMan;
     std::shared_ptr<prop2::TextHud> _dateText;
     std::shared_ptr<prop2::TextHud> _fpsText;
     std::shared_ptr<prop2::TextHud> _upsText;

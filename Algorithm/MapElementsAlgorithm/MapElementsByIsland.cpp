@@ -5,7 +5,7 @@
 
 #include <GLM/gtc/random.hpp>
 
-#include <PropRoom2D/Shape/Segment2D.h>
+#include <PropRoom2D/Prop/Shape/Segment2D.h>
 
 #include <Algorithm/Kruskal/KruskalAlgorithm.h>
 
@@ -269,7 +269,7 @@ void MapElementsByIsland::addAPossibleBridge(int firstIsland, int secondIsland)
     double currDistance;
 
     int size = static_cast<int>(_islandEdges[firstIsland].size());
-    bestJuncFirst = glm::linearRand(0, size - 2);
+    bestJuncFirst = glm::linearRand(0, glm::max(size - 2, 0));
     bestJuncSecond = 0;
 
     int nbIslandEdges2 = static_cast<int>(_islandEdges[secondIsland].size());

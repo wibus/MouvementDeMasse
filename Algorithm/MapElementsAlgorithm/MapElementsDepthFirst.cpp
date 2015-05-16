@@ -7,7 +7,7 @@
 
 
 
-#include <PropRoom2D/Shape/Segment2D.h>
+#include <PropRoom2D/Prop/Shape/Segment2D.h>
 
 using namespace cellar;
 using namespace prop2;
